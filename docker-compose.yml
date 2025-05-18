@@ -7,13 +7,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
+      - '9229:9229' # Thêm cổng debug cho WebStorm
     environment:
       - NODE_ENV=development
-      - DATABASE_HOST=db
-      - DATABASE_PORT=5432
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=123123
-      - DATABASE_NAME=medical-service-web
+      - DATABASE_URL=postgresql://postgres:123123@db:5432/medical-service-web?schema=public
     depends_on:
       - db
     networks:
@@ -21,6 +18,12 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    command: npm run start:dev # Đảm bảo hot-reload trong development
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   db:
     image: postgres:17
@@ -34,6 +37,11 @@ services:
       - postgres-data:/var/lib/postgresql/data
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   app-network:
