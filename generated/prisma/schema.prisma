@@ -17,3 +17,13 @@ datasource db {
 model Account {
   id String @unique @default(uuid())
 }
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  username String?
+  password String
+  phone    String?
+
+  @@map("users")
+}

@@ -1,12 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// schema.prisma
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -15,5 +10,184 @@ datasource db {
 }
 
 model Account {
-  id String @unique @default(uuid())
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password_hash String
+  role          String
+  created_at    DateTime @default(now())
+  updated_at    DateTime
+
+  user User?
+}
+
+model User {
+  id            String   @id @default(uuid())
+  full_name     String
+  phone         String
+  address       String
+  gender        String
+  date_of_birth DateTime
+  created_at    DateTime @default(now())
+  updated_at    DateTime
+
+  account   Account? @relation(fields: [id], references: [id])
+  patient   Patient?
+  doctor    Doctor?
+  documents Document[]
+}
+
+model Patient {
+  id         Int       @id @default(autoincrement())
+  user_id    String @unique
+  plan_id    Int?
+  created_at DateTime  @default(now())
+  updated_at DateTime
+
+  user        User     @relation(fields: [user_id], references: [id])
+  plan        TreatmentPlan? @relation(fields: [plan_id], references: [id])
+  reminders   Reminder[]
+  appointments Appointment[]
+}
+
+model Doctor {
+  id              Int       @id @default(autoincrement())
+  user_id         String @unique
+  qualifications  String
+  work_eniority   Int
+  specialty       String
+  hospital        String
+  created_at      DateTime  @default(now())
+  updated_at      DateTime
+
+  user            User      @relation(fields: [user_id], references: [id])
+  schedules       DoctorSchedule[]
+  appointments    Appointment[]
+  examination_reports ExaminationReport[]
+  blog_posts      BlogPost[]
+}
+
+model DoctorSchedule {
+  id          Int      @id @default(autoincrement())
+  doctor_id   Int
+  start_time  DateTime
+  end_time    DateTime
+  is_available Boolean  @default(true)
+  created_at  DateTime  @default(now())
+
+  doctor      Doctor   @relation(fields: [doctor_id], references: [id])
+  appointments Appointment[]
+}
+
+model Appointment {
+  id                Int      @id @default(autoincrement())
+  patient_id        Int
+  doctor_id         Int
+  schedule_id       Int
+  appointment_type  String
+  appointment_date  DateTime
+  status            String   @default("pending")
+  is_anonymous      Boolean  @default(false)
+  created_at        DateTime @default(now())
+  updated_at        DateTime
+
+  patient           Patient  @relation(fields: [patient_id], references: [id])
+  doctor            Doctor   @relation(fields: [doctor_id], references: [id])
+  schedule          DoctorSchedule @relation(fields: [schedule_id], references: [id])
+}
+
+model TreatmentPlan {
+  id                    Int       @id @default(autoincrement())
+  name                  String
+  hiv_diagnosis_date    DateTime?
+  start_date            DateTime
+  end_date              DateTime?
+  notes                 String?
+  created_at            DateTime @default(now())
+  updated_at            DateTime
+
+  examinations          ExaminationReport[]
+  patients              Patient[]
+}
+
+model ExaminationReport {
+  id              Int      @id @default(autoincrement())
+  name            String
+  doctor_id       Int
+  risk_assessment String
+  is_HIV          Boolean
+  HIV_test_file   String
+  regimen_id      Int
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+
+  doctor          Doctor   @relation(fields: [doctor_id], references: [id])
+  regimen         Regimen  @relation(fields: [regimen_id], references: [id])
+
+  TreatmentPlan TreatmentPlan[]
+}
+
+model Regimen {
+  id             Int      @id @default(autoincrement())
+  care_stage     String
+  regimen_type   String
+  medication_lits String
+  user_guide     String
+  is_default     Boolean
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+
+  examination_reports ExaminationReport[]
+}
+
+model Medication {
+  medication_id      Int    @id @default(autoincrement())
+  medication_name    String @unique
+  available_quantity Int
+  created_at         DateTime @default(now())
+  updated_at         DateTime @default(now())
+}
+
+model Reminder {
+  reminder_id    Int      @id @default(autoincrement())
+  patient_id     Int
+  reminder_type  String
+  reminder_time  DateTime
+  message        String
+  status         String   @default("pending")
+  created_at     DateTime @default(now())
+
+  patient        Patient  @relation(fields: [patient_id], references: [id])
+}
+
+model BlogPost {
+  post_id     Int      @id @default(autoincrement())
+  title       String
+  content     String
+  author_id   Int
+  category    String
+  published_at DateTime?
+  created_at  DateTime @default(now())
+  updated_at  DateTime
+
+  author      Doctor   @relation(fields: [author_id], references: [id])
+}
+
+model Document {
+  document_id  Int      @id @default(autoincrement())
+  title        String
+  file_url     String
+  category     String
+  uploaded_by  String
+  created_at   DateTime @default(now())
+  updated_at   DateTime
+
+  user         User     @relation(fields: [uploaded_by], references: [id])
+}
+
+model DashboardReport {
+  report_id    Int      @id @default(autoincrement())
+  report_type  String
+  generated_at DateTime
+  data         Json
+  created_at   DateTime @default(now())
 }
