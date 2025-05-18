@@ -2,9 +2,9 @@
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
-    "username" TEXT,
+    "user" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "phone" TEXT,
+    "phone" INTEGER NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
