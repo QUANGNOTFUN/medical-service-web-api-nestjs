@@ -1,0 +1,7 @@
+npm install @nestjs/config zod
+
+npm install @prisma/client
+
+npm i --save @nestjs/config
+
+npm i @nestjs/graphql @nestjs/apollo @apollo/server graphql
