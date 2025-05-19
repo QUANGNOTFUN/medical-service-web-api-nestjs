@@ -2,6 +2,103 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  """Unique identifier for the user"""
+  id: ID!
+
+  """Full name of the user"""
+  full_name: String!
+
+  """Phone number of the user"""
+  phone: String
+
+  """Address of the user"""
+  address: String
+
+  """Gender of the user"""
+  gender: String!
+
+  """Date of birth of the user"""
+  date_of_birth: Date
+
+  """Creation date of the user record"""
+  created_at: Date!
+
+  """Last update date of the user record"""
+  updated_at: Date!
+}
+
+"""
+A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Date
+
+type UserPaginationResponse {
+  """List of users"""
+  data: [User!]!
+
+  """Total number of users"""
+  total: Int!
+
+  """Current page number"""
+  currentPage: Int!
+
+  """Number of items per page"""
+  itemsPerPage: Int!
+}
+
 type Query {
-  hello: String!
+  """Lấy thông tin người dùng theo ID"""
+  getUserById(input: GetUserByIdInput!): User!
+
+  """Lấy danh sách người dùng với phân trang"""
+  getUsers(page: Int! = 1, itemsPerPage: Int! = 10): UserPaginationResponse!
+}
+
+input GetUserByIdInput {
+  """ID of the user to retrieve"""
+  id: ID!
+}
+
+type Mutation {
+  """Tạo người dùng mới"""
+  createUser(input: CreateUserInput!): User!
+
+  """Cập nhật thông tin người dùng"""
+  updateUser(id: String!, input: UpdateUserInput!): User!
+
+  """Xóa người dùng"""
+  deleteUser(id: String!): User!
+}
+
+input CreateUserInput {
+  """Full name of the user"""
+  full_name: String!
+
+  """Phone number of the user"""
+  phone: String
+
+  """Address of the user"""
+  address: String
+
+  """Gender of the user"""
+  gender: String!
+  date_of_birth: Date
+}
+
+input UpdateUserInput {
+  """Full name of the user"""
+  full_name: String
+
+  """Phone number of the user"""
+  phone: String
+
+  """Address of the user"""
+  address: String
+
+  """Gender of the user"""
+  gender: String
+
+  """Date of birth of the user"""
+  date_of_birth: Date
 }
