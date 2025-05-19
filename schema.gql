@@ -8,6 +8,7 @@ type User {
 
   """Full name of the user"""
   full_name: String!
+  email: String!
 
   """Phone number of the user"""
   phone: String
@@ -33,26 +34,9 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 """
 scalar Date
 
-type UserPaginationResponse {
-  """List of users"""
-  data: [User!]!
-
-  """Total number of users"""
-  total: Int!
-
-  """Current page number"""
-  currentPage: Int!
-
-  """Number of items per page"""
-  itemsPerPage: Int!
-}
-
 type Query {
   """Lấy thông tin người dùng theo ID"""
   getUserById(input: GetUserByIdInput!): User!
-
-  """Lấy danh sách người dùng với phân trang"""
-  getUsers(page: Int! = 1, itemsPerPage: Int! = 10): UserPaginationResponse!
 }
 
 input GetUserByIdInput {
@@ -63,42 +47,14 @@ input GetUserByIdInput {
 type Mutation {
   """Tạo người dùng mới"""
   createUser(input: CreateUserInput!): User!
-
-  """Cập nhật thông tin người dùng"""
-  updateUser(id: String!, input: UpdateUserInput!): User!
-
-  """Xóa người dùng"""
-  deleteUser(id: String!): User!
 }
 
 input CreateUserInput {
-  """Full name of the user"""
   full_name: String!
-
-  """Phone number of the user"""
   phone: String
-
-  """Address of the user"""
+  email: String!
+  password: String!
   address: String
-
-  """Gender of the user"""
   gender: String!
-  date_of_birth: Date
-}
-
-input UpdateUserInput {
-  """Full name of the user"""
-  full_name: String
-
-  """Phone number of the user"""
-  phone: String
-
-  """Address of the user"""
-  address: String
-
-  """Gender of the user"""
-  gender: String
-
-  """Date of birth of the user"""
   date_of_birth: Date
 }

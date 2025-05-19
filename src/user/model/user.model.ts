@@ -1,6 +1,6 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
-import { IsDate, IsDateString, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 @ObjectType()
 export class User {
@@ -9,6 +9,9 @@ export class User {
 
   @Field(() => String, { description: 'Full name of the user' })
   full_name: string;
+
+  @Field(() => String)
+  email: string;
 
   @Field(() => String, { nullable: true, description: 'Phone number of the user' })
   phone?: string;
@@ -26,7 +29,7 @@ export class User {
   created_at: Date;
 
   @Field(() => GraphQLDate, { description: 'Last update date of the user record' })
-  updated_at: Date;
+  updated_at?: Date;
 }
 
 @ObjectType()
@@ -54,50 +57,67 @@ export class GetUserByIdInput {
 
 @InputType()
 export class CreateUserInput {
-  @Field(() => String, { description: 'Full name of the user' })
-  @IsString({ message: 'Tên đầy đủ phải là chuỗi' })
-  @IsNotEmpty({ message: 'Tên đầy đủ không được để trống' })
-  @MinLength(3, { message: 'Tên đầy đủ phải có ít nhất 3 ký tự' })
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
   full_name: string;
 
-  @Field(() => String, { nullable: true, description: 'Phone number of the user' })
-  @IsString({ message: 'Số điện thoại phải là chuỗi' })
-  phone: string;
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  phone?: string;
 
-  @Field(() => String, { nullable: true, description: 'Address of the user' })
-  @IsString({ message: 'Địa chỉ phải là chuỗi' })
-  address: string;
+  @Field(() => String)
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
-  @Field(() => String, { description: 'Gender of the user' })
-  @IsString({ message: 'Giới tính phải là chuỗi' })
-  @IsNotEmpty({ message: 'Giới tính không được để trống' })
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
   gender: string;
 
   @Field(() => GraphQLDate, { nullable: true })
-  @IsDate({ message: 'Ngày sinh phải là định dạng ngày hợp lệ' }) // ✅ Đổi dòng này
-  date_of_birth: Date;
+  @IsOptional()
+  date_of_birth?: string;
 }
 
 @InputType()
 export class UpdateUserInput {
-  @Field(() => String, { nullable: true, description: 'Full name of the user' })
-  @IsString({ message: 'Tên đầy đủ phải là chuỗi' })
-  @MinLength(3, { message: 'Tên đầy đủ phải có ít nhất 3 ký tự' })
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  @MinLength(3)
   full_name?: string;
 
-  @Field(() => String, { nullable: true, description: 'Phone number of the user' })
-  @IsString({ message: 'Số điện thoại phải là chuỗi' })
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
   phone?: string;
 
-  @Field(() => String, { nullable: true, description: 'Address of the user' })
-  @IsString({ message: 'Địa chỉ phải là chuỗi' })
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
   address?: string;
 
-  @Field(() => String, { nullable: true, description: 'Gender of the user' })
-  @IsString({ message: 'Giới tính phải là chuỗi' })
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
   gender?: string;
 
-  @Field(() => GraphQLDate, { nullable: true, description: 'Date of birth of the user' })
-  @IsDateString({}, { message: 'Ngày sinh phải là định dạng ngày hợp lệ' })
-  date_of_birth?: Date;
+  @Field(() => GraphQLDate, { nullable: true })
+  @IsOptional()
+  @IsDateString()
+  date_of_birth?: string;
 }
