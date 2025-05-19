@@ -8,158 +8,146 @@ datasource db {
 }
 
 model Account {
-  id            String   @id @default(uuid())
+  id            String   @id @default(uuid()) @db.Uuid
   email         String   @unique
   password_hash String
   role          String
   created_at    DateTime @default(now())
   updated_at    DateTime
-
-  user User?
+  user          User?
 }
 
 model User {
-  id            String   @id @default(uuid())
+  id            String     @id @db.Uuid
   full_name     String
   phone         String
   address       String
   gender        String
   date_of_birth DateTime
-  created_at    DateTime @default(now())
+  created_at    DateTime   @default(now())
   updated_at    DateTime
-
-  account   Account?   @relation(fields: [id], references: [id])
-  patient   Patient?
-  doctor    Doctor?
-  documents Document[]
+  doctor        Doctor?
+  documents     Document[]
+  patient       Patient?
+  account       Account    @relation(fields: [id], references: [id])
 }
 
 model Patient {
-  id         Int      @id @default(autoincrement())
-  user_id    String   @unique
-  plan_id    Int?
-  created_at DateTime @default(now())
-  updated_at DateTime
-
-  user         User           @relation(fields: [user_id], references: [id])
-  plan         TreatmentPlan? @relation(fields: [plan_id], references: [id])
-  reminders    Reminder[]
+  id           Int            @id @default(autoincrement())
+  user_id      String         @unique @db.Uuid
+  plan_id      Int?
   appointments Appointment[]
+  created_at   DateTime       @default(now())
+  updated_at   DateTime
+  plan         TreatmentPlan? @relation(fields: [plan_id], references: [id])
+  user         User           @relation(fields: [user_id], references: [id])
+  reminders    Reminder[]
 }
 
 model Doctor {
-  id             Int      @id @default(autoincrement())
-  user_id        String   @unique
-  qualifications String
-  work_eniority  Int
-  specialty      String
-  hospital       String
-  created_at     DateTime @default(now())
-  updated_at     DateTime
-
+  id                  Int                 @id @default(autoincrement())
+  user_id             String              @unique @db.Uuid
+  qualifications      String
+  work_eniority       Int
+  specialty           String
+  hospital            String
+  appointments        Appointment[]
+  created_at          DateTime            @default(now())
+  updated_at          DateTime
+  blog_posts          BlogPost[]
   user                User                @relation(fields: [user_id], references: [id])
   schedules           DoctorSchedule[]
-  appointments        Appointment[]
   examination_reports ExaminationReport[]
-  blog_posts          BlogPost[]
 }
 
 model DoctorSchedule {
-  id           Int      @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   doctor_id    Int
   start_time   DateTime
   end_time     DateTime
-  is_available Boolean  @default(true)
-  created_at   DateTime @default(now())
-
-  doctor       Doctor        @relation(fields: [doctor_id], references: [id])
+  is_available Boolean       @default(true)
+  created_at   DateTime      @default(now())
   appointments Appointment[]
+  doctor       Doctor        @relation(fields: [doctor_id], references: [id])
 }
 
 model Appointment {
-  id               Int      @id @default(autoincrement())
+  id               Int            @id @default(autoincrement())
   patient_id       Int
   doctor_id        Int
   schedule_id      Int
   appointment_type String
   appointment_date DateTime
-  status           String   @default("pending")
-  is_anonymous     Boolean  @default(false)
-  created_at       DateTime @default(now())
+  status           String         @default("pending")
+  is_anonymous     Boolean        @default(false)
+  created_at       DateTime       @default(now())
   updated_at       DateTime
-
-  patient  Patient        @relation(fields: [patient_id], references: [id])
-  doctor   Doctor         @relation(fields: [doctor_id], references: [id])
-  schedule DoctorSchedule @relation(fields: [schedule_id], references: [id])
+  doctor           Doctor         @relation(fields: [doctor_id], references: [id])
+  patient          Patient        @relation(fields: [patient_id], references: [id])
+  schedule         DoctorSchedule @relation(fields: [schedule_id], references: [id])
 }
 
 model TreatmentPlan {
-  id                 Int       @id @default(autoincrement())
+  id                 Int                 @id @default(autoincrement())
   name               String
   hiv_diagnosis_date DateTime?
   start_date         DateTime
   end_date           DateTime?
   notes              String?
-  created_at         DateTime  @default(now())
+  created_at         DateTime            @default(now())
   updated_at         DateTime
-
-  examinations ExaminationReport[]
-  patients     Patient[]
+  patients           Patient[]
+  examinations       ExaminationReport[] @relation("ExaminationReportToTreatmentPlan")
 }
 
 model ExaminationReport {
-  id              Int      @id @default(autoincrement())
+  id              Int             @id @default(autoincrement())
   name            String
   doctor_id       Int
   risk_assessment String
   is_HIV          Boolean
   HIV_test_file   String
   regimen_id      Int
-  created_at      DateTime @default(now())
+  created_at      DateTime        @default(now())
   updated_at      DateTime
-
-  doctor  Doctor  @relation(fields: [doctor_id], references: [id])
-  regimen Regimen @relation(fields: [regimen_id], references: [id])
-
-  TreatmentPlan TreatmentPlan[]
+  doctor          Doctor          @relation(fields: [doctor_id], references: [id])
+  regimen         Regimen         @relation(fields: [regimen_id], references: [id])
+  TreatmentPlan   TreatmentPlan[] @relation("ExaminationReportToTreatmentPlan")
 }
 
 model Regimen {
-  id              Int      @id @default(autoincrement())
-  care_stage      String
-  regimen_type    String
-  medication_list String
-  user_guide      String
-  is_default      Boolean
-  created_at      DateTime @default(now())
-  updated_at      DateTime @default(now())
-
+  id                  Int                 @id @default(autoincrement())
+  care_stage          String
+  regimen_type        String
+  user_guide          String
+  is_default          Boolean
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @default(now())
+  medication_list     String
   examination_reports ExaminationReport[]
 }
 
 model Medication {
   id                 Int      @id @default(autoincrement())
   name               String   @unique
-  price              Decimal
+  price              Decimal  @db.Money
   available_quantity Int
   created_at         DateTime @default(now())
   updated_at         DateTime @default(now())
 }
 
 model Reminder {
-  id            Int      @id @default(autoincrement())
   patient_id    Int
   reminder_type String
   reminder_time DateTime
   message       String
   status        String   @default("pending")
   created_at    DateTime @default(now())
-
-  patient Patient @relation(fields: [patient_id], references: [id])
+  id            Int      @id @default(autoincrement())
+  patient       Patient  @relation(fields: [patient_id], references: [id])
 }
 
 model BlogPost {
-  id           Int       @id @default(autoincrement())
   title        String
   content      String
   author_id    Int
@@ -167,26 +155,25 @@ model BlogPost {
   published_at DateTime?
   created_at   DateTime  @default(now())
   updated_at   DateTime
-
-  author Doctor @relation(fields: [author_id], references: [id])
+  id           Int       @id @default(autoincrement())
+  author       Doctor    @relation(fields: [author_id], references: [id])
 }
 
 model Document {
-  id          Int      @id @default(autoincrement())
   title       String
   file_url    String
   category    String
-  uploaded_by String
+  uploaded_by String   @unique @db.Uuid
   created_at  DateTime @default(now())
   updated_at  DateTime
-
-  user User @relation(fields: [uploaded_by], references: [id])
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [uploaded_by], references: [id])
 }
 
 model DashboardReport {
-  id           Int      @id @default(autoincrement())
-  type         String
   generated_at DateTime
   data         Json
   created_at   DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  type         String
 }
