@@ -1,11 +1,16 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Medication } from '@prisma/client';
-import { Int32 } from 'typeorm';
+import { Medication, Prisma } from '@prisma/client';
+import {
+  CreateMedicationInput,
+  UpdateMedicationInput,
+} from './types/medication.type';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class MedicationsService {
   private readonly logger = new Logger(MedicationsService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   async getMedications(): Promise<Medication[]> {
@@ -30,6 +35,60 @@ export class MedicationsService {
         errorStack,
       );
       throw error;
+    }
+  }
+
+  async createMedication(input: CreateMedicationInput) {
+    try {
+      return await this.prisma.medication.create({
+        data: input,
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new ConflictException(
+          'Thuốc đã tồn tại. Vui lòng nhập tên thuốc khác.',
+        );
+      }
+      this.logger.error('Lỗi khi tạo thuốc mới:');
+      throw error;
+    }
+  }
+
+  async updateMedication(id: number, input: UpdateMedicationInput) {
+    try {
+      return await this.prisma.medication.update({
+        where: { id: id },
+        data: {
+          ...input,
+          updated_at: new Date(),
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException('Không tìm thấy thuốc này');
+        }
+        throw new ConflictException(
+          'Thuốc đã tồn tại. Vui lòng nhập tên thuốc khác.',
+        );
+      }
+
+      this.logger.error('Lỗi khi cập nhật thuốc:');
+      throw error;
+    }
+  }
+
+  async removeMedication(id: number) {
+    try {
+      return await this.prisma.medication.delete({
+        where: { id: id },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') {
+          throw new NotFoundException('Không tìm thấy thuốc này');
+        }
+      }
     }
   }
 }

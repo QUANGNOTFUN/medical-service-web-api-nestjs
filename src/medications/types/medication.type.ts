@@ -1,4 +1,4 @@
-import { ArgsType, Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Decimal } from 'generated/prisma/runtime/library';
 import { GraphQLDate } from 'graphql-scalars';
 import { IsInt, Min } from 'class-validator';
@@ -24,7 +24,6 @@ export class Medication {
   updated_at: Date;
 }
 
-@ArgsType()
 @InputType()
 export class GetMedicationByIdInput {
   @Field()
@@ -51,6 +50,8 @@ export class UpdateMedicationInput {
   name?: string;
 
   @Field(() => Int, {nullable: true})
+  @IsInt({ message: 'Giá phải là số nguyên' })
+  @Min(0, { message: 'Giá phải lớn hơn 0 hoặc bằng 0' })
   price?: number;
 
   @Field(() => Int, {nullable: true})

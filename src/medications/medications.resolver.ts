@@ -1,6 +1,10 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { MedicationsService } from './medications.service';
-import { GetMedicationByIdInput, Medication } from './types/medication.type';
+import {
+  CreateMedicationInput,
+  GetMedicationByIdInput,
+  Medication, UpdateMedicationInput,
+} from './types/medication.type';
 import { NotFoundException } from '@nestjs/common';
 import { GraphQLError } from 'graphql/error';
 
@@ -25,6 +29,36 @@ export class MedicationsResolver {
           originalError: error,
         },
       })
+    }
+  }
+  
+  @Mutation(() => Medication, {name: 'createMedication'})
+  async createMedication(@Args('input') input: CreateMedicationInput){
+    try {
+      return await this.medicationsService.createMedication(input);
+    } catch (error) {
+      throw new GraphQLError(error instanceof Error ? error.message : 'Unknown error occurred')
+    }
+  }
+
+  @Mutation(() => Medication, {name: 'updateMedication'})
+  async updateMedication(
+    @Args('id', {type: () => Int}) id: number,
+    @Args('input') input: UpdateMedicationInput
+  ){
+    try {
+      return await this.medicationsService.updateMedication(id, input);
+    } catch (error) {
+      throw new GraphQLError(error instanceof Error ? error.message : 'Unknown error occurred')
+    }
+  }
+
+  @Mutation(() => Medication)
+  async deleteMedication(@Args('id', { type: () => Int }) id: number) {
+    try {
+      return await this.medicationsService.removeMedication(id);
+    } catch (error) {
+      throw new GraphQLError(error instanceof Error ? error.message : 'Unknown error occurred', {});
     }
   }
 }
