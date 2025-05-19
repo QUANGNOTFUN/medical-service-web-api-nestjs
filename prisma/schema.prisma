@@ -22,3 +22,12 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime?
 }
+
+model Medication {
+  id                 Int      @id @default(autoincrement())
+  name               String   @unique
+  price              Decimal  @db.Money
+  available_quantity Int
+  created_at         DateTime @default(now())
+  updated_at         DateTime @default(now())
+}

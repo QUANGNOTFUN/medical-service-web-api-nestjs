@@ -5,7 +5,6 @@ import {
   CreateMedicationInput,
   UpdateMedicationInput,
 } from './types/medication.type';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class MedicationsService {

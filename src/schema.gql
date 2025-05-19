@@ -8,6 +8,16 @@ input CreateMedicationInput {
   price: Float!
 }
 
+input CreateUserInput {
+  address: String
+  date_of_birth: Date
+  email: String!
+  full_name: String!
+  gender: String!
+  password: String!
+  phone: String
+}
+
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -15,6 +25,11 @@ scalar Date
 
 input GetMedicationByIdInput {
   id: Float!
+}
+
+input GetUserByIdInput {
+  """ID of the user to retrieve"""
+  id: ID!
 }
 
 type Medication {
@@ -28,12 +43,23 @@ type Medication {
 
 type Mutation {
   createMedication(input: CreateMedicationInput!): Medication!
+
+  """Tạo người dùng mới"""
+  createUser(input: CreateUserInput!): User!
   deleteMedication(id: Int!): Medication!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
 }
 
+input PaginationInput {
+  limit: Int! = 10
+  page: Int! = 1
+}
+
 type Query {
-  hello: String!
+  getAllUsers(pagination: PaginationInput): UserPaginationResponse!
+
+  """Lấy thông tin người dùng theo ID"""
+  getUserById(input: GetUserByIdInput!): User!
   medication(input: GetMedicationByIdInput!): Medication!
   medications: [Medication!]!
 }
@@ -42,4 +68,38 @@ input UpdateMedicationInput {
   available_quantity: Int
   name: String
   price: Int
+}
+
+type User {
+  """Address of the user"""
+  address: String
+
+  """Creation date of the user record"""
+  created_at: Date!
+
+  """Date of birth of the user"""
+  date_of_birth: Date
+  email: String!
+
+  """Full name of the user"""
+  full_name: String!
+
+  """Gender of the user"""
+  gender: String
+
+  """Unique identifier for the user"""
+  id: ID!
+
+  """Phone number of the user"""
+  phone: String
+
+  """Last update date of the user record"""
+  updated_at: Date
+}
+
+type UserPaginationResponse {
+  currentPage: Int!
+  data: [User!]!
+  itemsPerPage: Int!
+  total: Int!
 }

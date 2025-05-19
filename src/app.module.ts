@@ -5,6 +5,7 @@ import {GraphQLModule} from '@nestjs/graphql';
 import {ApolloDriver, ApolloDriverConfig} from '@nestjs/apollo';
 import { UserModule } from './user/user.module';
 import { APP_PIPE } from '@nestjs/core';
+import { MedicationsModule } from './medications/medications.module';
 
 @Module({
   imports: [
