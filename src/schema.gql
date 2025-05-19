@@ -2,6 +2,44 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateMedicationInput {
+  available_quantity: Float!
+  name: String!
+  price: Float!
+}
+
+"""
+A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Date
+
+input GetMedicationByIdInput {
+  id: Float!
+}
+
+type Medication {
+  available_quantity: Int!
+  created_at: Date!
+  id: Int!
+  name: String!
+  price: Float!
+  updated_at: Date!
+}
+
+type Mutation {
+  createMedication(input: CreateMedicationInput!): Medication!
+  deleteMedication(id: Int!): Medication!
+  updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
+}
+
 type Query {
   hello: String!
+  medication(input: GetMedicationByIdInput!): Medication!
+  medications: [Medication!]!
+}
+
+input UpdateMedicationInput {
+  available_quantity: Int
+  name: String
+  price: Int
 }

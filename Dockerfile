@@ -1,4 +1,17 @@
-FROM ubuntu:latest
-LABEL authors="OS"
+FROM node:20-slim
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+
+COPY package*.json ./
+COPY prisma ./prisma/
+
+RUN npm install
+RUN npm ci && npm cache clean --force
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start:dev"]

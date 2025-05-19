@@ -8,12 +8,14 @@ import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
-     GraphQLModule.forRoot<ApolloDriverConfig>({
-       driver: ApolloDriver,
-       playground: true,
-       autoSchemaFile: 'schema.gql',
-     }),
-     UserModule
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      graphiql: true,
+      autoSchemaFile: 'src/schema.gql',
+      sortSchema: true,
+    }),
+    UserModule,
+    MedicationsModule,
   ],
   controllers: [AppController],
   providers: [
