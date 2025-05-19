@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, User as PrismaUser } from '@prisma/client';
-import { CreateUserInput, PaginationInput, UserPaginationResponse } from './model/user.model'; // <- đây là model thực tế trong DB
+import { CreateUserInput, PaginationInput, UpdateUserInput, UserPaginationResponse } from './model/user.model'; // <- đây là model thực tế trong DB
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -53,4 +53,16 @@ export class UserService {
     };
   }
 
+  async update(id: string, input: UpdateUserInput): Promise<PrismaUser> {
+    await this.findById(id); // kiểm tra tồn tại
+    return this.prisma.user.update({
+      where: { id },
+      data: { ...input },
+    });
+  }
+
+  async delete(id: string): Promise<PrismaUser> {
+    await this.findById(id); // kiểm tra tồn tại
+    return this.prisma.user.delete({ where: { id } });
+  }
 }

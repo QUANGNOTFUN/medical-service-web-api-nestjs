@@ -1,6 +1,13 @@
 import { Resolver, Mutation, Args} from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { CreateUserInput, GetUserByIdInput, User, PaginationInput, UserPaginationResponse } from './model/user.model';
+import {
+  CreateUserInput,
+  GetUserByIdInput,
+  User,
+  PaginationInput,
+  UserPaginationResponse,
+  UpdateUserInput,
+} from './model/user.model';
 import { User as PrismaUser } from '@prisma/client';
 import { Query } from '@nestjs/graphql'; // ✅ đúng
 
@@ -19,10 +26,18 @@ export class UserResolver {
   }
 
   @Query(() => UserPaginationResponse, { name: 'getAllUsers' })
-  async getAllUsers(
-    @Args('pagination', { type: () => PaginationInput, nullable: true }) pagination: PaginationInput,
-  ): Promise<UserPaginationResponse> {
+  async getAllUsers(@Args('pagination', { type: () => PaginationInput, nullable: true }) pagination: PaginationInput,): Promise<UserPaginationResponse> {
     return this.userService.getAllUsers(pagination);
+  }
+
+  @Mutation(() => User, { description: 'Cập nhật thông tin người dùng' })
+  async updateUser(@Args('id') id: string, @Args('input') input: UpdateUserInput): Promise<User> {
+    return this.userService.update(id, input);
+  }
+
+  @Mutation(() => User, { description: 'Xóa người dùng' })
+  async deleteUser(@Args('id') id: string): Promise<User> {
+    return this.userService.delete(id);
   }
 
 }
