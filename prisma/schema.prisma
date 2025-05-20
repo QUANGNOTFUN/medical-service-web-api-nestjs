@@ -25,6 +25,7 @@ model User {
 
 model Medication {
   id                 Int      @id @default(autoincrement())
+  acronym            String   @unique
   name               String   @unique
   price              Decimal  @db.Money
   available_quantity Int

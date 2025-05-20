@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 input CreateMedicationInput {
+  acronym: String!
   available_quantity: Float!
   name: String!
   price: Float!
@@ -33,6 +34,7 @@ input GetUserByIdInput {
 }
 
 type Medication {
+  acronym: String!
   available_quantity: Int!
   created_at: Date!
   id: Int!
@@ -65,6 +67,7 @@ type Query {
 }
 
 input UpdateMedicationInput {
+  acronym: String
   available_quantity: Int
   name: String
   price: Int

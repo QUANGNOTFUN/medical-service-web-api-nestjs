@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, User as PrismaUser } from '@prisma/client';
-import { CreateUserInput, PaginationInput, UserPaginationResponse } from './model/user.model'; // <- đây là model thực tế trong DB
+import { CreateUserInput, PaginationInput, UserPaginationResponse } from './model/user.model';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
