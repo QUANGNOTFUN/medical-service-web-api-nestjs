@@ -14,37 +14,22 @@ export class User {
   email: string;
 
   @Field(() => String, { nullable: true, description: 'Phone number of the user' })
-  phone?: string | null; // ✅ đã đúng
+  phone?: string | null;
 
   @Field(() => String, { nullable: true, description: 'Address of the user' })
-  address?: string | null; // ✅ đã đúng
+  address?: string | null;
 
   @Field(() => String, { nullable: true, description: 'Gender of the user' })
   gender?: string | null;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Date of birth of the user' })
-  date_of_birth?: Date | null; // ✅ đã đúng
+  date_of_birth?: Date | null;
 
   @Field(() => GraphQLDate, { description: 'Creation date of the user record' })
   created_at: Date;
 
   @Field(() => GraphQLDate, {  nullable: true, description: 'Last update date of the user record' })
   updated_at?: Date | null; //
-}
-
-@InputType()
-export class PaginationInput {
-  @Field(() => Int, { defaultValue: 1 })
-  @IsInt({ message: 'page phải là số nguyên' })
-  @Min(1, { message: 'page phải >= 1' })
-  @IsOptional()
-  page?: number = 1;
-
-  @Field(() => Int, { defaultValue: 10 })
-  @IsInt({ message: 'limit phải là số nguyên' })
-  @Min(1, { message: 'limit phải >= 1' })
-  @IsOptional()
-  limit?: number = 10;
 }
 
 @ObjectType()
@@ -60,6 +45,21 @@ export class UserPaginationResponse {
 
   @Field(() => Int)
   itemsPerPage: number;
+}
+
+@InputType()
+export class PaginationInput {
+  @Field(() => Int, { defaultValue: 1 })
+  @IsInt({ message: 'page phải là số nguyên' })
+  @Min(1, { message: 'page phải >= 1' })
+  @IsOptional()
+  page?: number = 1;
+
+  @Field(() => Int, { defaultValue: 10 })
+  @IsInt({ message: 'limit phải là số nguyên' })
+  @Min(1, { message: 'limit phải >= 1' })
+  @IsOptional()
+  limit?: number = 10;
 }
 
 @InputType()
@@ -110,7 +110,7 @@ export class CreateUserInput {
 
 @InputType()
 export class UpdateUserInput {
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @IsString({ message: 'full_name phải là chuỗi' })
   @IsNotEmpty({ message: 'full_name không được để trống' })
   @MinLength(3, { message: 'full_name phải có ít nhất 3 ký tự' })
@@ -121,13 +121,16 @@ export class UpdateUserInput {
   @IsString({ message: 'phone phải là chuỗi' })
   phone?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @IsEmail({}, { message: 'email không đúng định dạng' })
+  @IsOptional()
   @IsNotEmpty({ message: 'email không được để trống' })
   email: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @IsString({ message: 'password phải là chuỗi' })
+  @IsOptional()
+
   @IsNotEmpty({ message: 'password không được để trống' })
   password: string;
 
@@ -136,12 +139,14 @@ export class UpdateUserInput {
   @IsString({ message: 'address phải là chuỗi' })
   address?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsString({ message: 'gender phải là chuỗi' })
   @IsNotEmpty({ message: 'gender không được để trống' })
   gender: string;
 
   @Field(() => GraphQLDate, { nullable: true })
+  @IsOptional()
   @IsOptional({ message: 'date_of_birth là tùy chọn' })
   date_of_birth?: string;
 }
