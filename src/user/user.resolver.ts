@@ -31,12 +31,12 @@ export class UserResolver {
   }
 
   @Mutation(() => User, { description: 'Cập nhật thông tin người dùng' })
-  async updateUser(@Args('id') id: string, @Args('input') input: UpdateUserInput): Promise<User> {
+  async updateUser(@Args('id') id: string, @Args('input') input: UpdateUserInput): Promise<PrismaUser> {
     return this.userService.update(id, input);
   }
 
   @Mutation(() => User, { description: 'Xóa người dùng' })
-  async deleteUser(@Args('id') id: string): Promise<User> {
+  async deleteUser(@Args('id') id: string): Promise<PrismaUser> {
     return this.userService.delete(id);
   }
 
