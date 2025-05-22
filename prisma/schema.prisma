@@ -10,8 +10,8 @@ datasource db {
 model User {
   id            String  @id @default(uuid())
   email         String  @unique
-  password_hash String
-  role          String?
+  password      String
+  role          Role
 
   full_name     String
   phone         String?
@@ -22,7 +22,12 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime?
 }
-
+enum Role {
+  USER
+  ADMIN
+  DOCTOR
+  GUEST
+}
 model Medication {
   id                 Int      @id @default(autoincrement())
   acronym            String   @unique

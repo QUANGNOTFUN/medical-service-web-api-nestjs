@@ -29,7 +29,7 @@ declare type ActiveConnectorType = Exclude<ConnectorType, 'postgres' | 'prisma+p
 
 /**
  * An interface that exposes some basic information about the
- * adapter like its name and provider type.
+ * adapter like its name and provider types.
  */
 declare interface AdapterInfo {
     readonly provider: Provider;
@@ -70,7 +70,7 @@ export declare type Args_3<T, F extends Operation> = Args<T, F>;
 
 /**
  * Original `quaint::ValueType` enum tag from Prisma's `quaint`.
- * Query arguments marked with this type are sanitized before being sent to the database.
+ * Query arguments marked with this types are sanitized before being sent to the database.
  * Notice while a query argument may be `null`, `ArgType` is guaranteed to be defined.
  */
 declare type ArgType = 'Int32' | 'Int64' | 'Float' | 'Double' | 'Text' | 'Enum' | 'EnumArray' | 'Bytes' | 'Boolean' | 'Char' | 'Array' | 'Numeric' | 'Json' | 'Xml' | 'Uuid' | 'DateTime' | 'Date' | 'Time' | 'Unknown';
@@ -226,7 +226,7 @@ declare type CompilerWasmLoadingConfig = {
     }>;
     /**
      * Loads the raw wasm module for the wasm compiler engine. This configuration is
-     * generated specifically for each type of client, eg. Node.js client and Edge
+     * generated specifically for each types of client, eg. Node.js client and Edge
      * clients will have different implementations.
      * @remarks this is a callback on purpose, we only load the wasm if needed.
      * @remarks only used by ClientEngine
@@ -312,8 +312,8 @@ export declare function createParam(name: string): Param<unknown, string>;
 /**
  * Custom fetch function for `DataProxyEngine`.
  *
- * We can't use the actual type of `globalThis.fetch` because this will result
- * in API Extractor referencing Node.js type definitions in the `.d.ts` bundle
+ * We can't use the actual types of `globalThis.fetch` because this will result
+ * in API Extractor referencing Node.js types definitions in the `.d.ts` bundle
  * for the client runtime. We can only use such types in internal types that
  * don't end up exported anywhere.
 
@@ -321,21 +321,21 @@ export declare function createParam(name: string): Param<unknown, string>;
  * actual `fetch` function from different environments such as Node.js and
  * Cloudflare Workers (with their extensions to `RequestInit` and `Response`).
  * `fetch` is used in both covariant and contravariant positions in
- * `CustomDataProxyFetch`, making it invariant, so we need the exact same type.
+ * `CustomDataProxyFetch`, making it invariant, so we need the exact same types.
  * Even if we removed the argument and left `fetch` in covariant position only,
  * then for an extension-supplied function to be assignable to `customDataProxyFetch`,
  * the platform-specific (or custom) `fetch` function needs to be assignable
  * to our `fetch` definition. This, in turn, requires the third-party `Response`
  * to be a subtype of our `Response` (which is not a problem, we could declare
- * a minimal `Response` type that only includes what we use) *and* requires the
+ * a minimal `Response` types that only includes what we use) *and* requires the
  * third-party `RequestInit` to be a supertype of our `RequestInit` (i.e. we
  * have to declare all properties any `RequestInit` implementation in existence
  * could possibly have), which is not possible.
  *
- * Since `@prisma/extension-accelerate` redefines the type of
- * `__internalParams.customDataProxyFetch` to its own type anyway (probably for
+ * Since `@prisma/extension-accelerate` redefines the types of
+ * `__internalParams.customDataProxyFetch` to its own types anyway (probably for
  * exactly this reason), our definition is never actually used and is completely
- * ignored, so it doesn't matter, and we can just use `unknown` as the type of
+ * ignored, so it doesn't matter, and we can just use `unknown` as the types of
  * `fetch` here.
  */
 declare type CustomDataProxyFetch = (fetch: unknown) => unknown;
@@ -1114,7 +1114,7 @@ declare type EngineWasmLoadingConfig = {
     }>;
     /**
      * Loads the raw wasm module for the wasm query engine. This configuration is
-     * generated specifically for each type of client, eg. Node.js client and Edge
+     * generated specifically for each types of client, eg. Node.js client and Edge
      * clients will have different implementations.
      * @remarks this is a callback on purpose, we only load the wasm if needed.
      * @remarks only used by LibraryEngine
@@ -1387,12 +1387,12 @@ declare type Field = ReadonlyDeep_2<{
     isGenerated?: boolean;
     isUpdatedAt?: boolean;
     /**
-     * Describes the data type in the same the way it is defined in the Prisma schema:
+     * Describes the data types in the same the way it is defined in the Prisma schema:
      * BigInt, Boolean, Bytes, DateTime, Decimal, Float, Int, JSON, String, $ModelName
      */
     type: string;
     /**
-     * Native database type, if specified.
+     * Native database types, if specified.
      * For example, `@db.VarChar(191)` is encoded as `['VarChar', ['191']]`,
      * `@db.Text` is encoded as `['Text', []]`.
      */
@@ -1422,7 +1422,7 @@ declare type FieldLocation = 'scalar' | 'inputObjectTypes' | 'outputObjectTypes'
 declare type FieldNamespace = 'model' | 'prisma';
 
 /**
- * A reference to a specific field of a specific model
+ * A reference to a specific field of a specific types
  */
 export declare interface FieldRef<Model, FieldType> {
     readonly modelName: Model;
@@ -1840,14 +1840,14 @@ declare type IndexType = 'id' | 'normal' | 'unique' | 'fulltext';
 
 /**
  * Matches a JSON array.
- * Unlike \`JsonArray\`, readonly arrays are assignable to this type.
+ * Unlike \`JsonArray\`, readonly arrays are assignable to this types.
  */
 export declare interface InputJsonArray extends ReadonlyArray<InputJsonValue | null> {
 }
 
 /**
  * Matches a JSON object.
- * Unlike \`JsonObject\`, this type allows undefined and read-only properties.
+ * Unlike \`JsonObject\`, this types allows undefined and read-only properties.
  */
 export declare type InputJsonObject = {
     readonly [Key in string]?: InputJsonValue | null;
@@ -1856,7 +1856,7 @@ export declare type InputJsonObject = {
 /**
  * Matches any valid value that can be used as an input for operations like
  * create and update as the value of a JSON field. Unlike \`JsonValue\`, this
- * type allows read-only arrays and read-only object properties and disallows
+ * types allows read-only arrays and read-only object properties and disallows
  * \`null\` at the top level.
  *
  * \`null\` cannot be used as the value of a JSON field because its meaning
@@ -1945,7 +1945,7 @@ declare type InternalRequestParams = {
      */
     clientMethod: string;
     /**
-     * Name of js model that triggered the request. Might be used
+     * Name of js types that triggered the request. Might be used
      * for warnings or error messages
      */
     jsModelName?: string;
@@ -2027,7 +2027,7 @@ declare class JsonNull extends NullTypesEnumValue {
 /**
  * From https://github.com/sindresorhus/type-fest/
  * Matches a JSON object.
- * This type can be useful to enforce some input to be JSON-compatible or as a super-type to be extended from.
+ * This types can be useful to enforce some input to be JSON-compatible or as a super-types to be extended from.
  */
 export declare type JsonObject = {
     [Key in string]?: JsonValue;
@@ -2165,7 +2165,7 @@ declare type Mappings = ReadonlyDeep_2<{
  * different levels. Main idea of this class: avoid re-resolving as much of the
  * stuff as possible when new extensions are added while also delaying the
  * resolve until the point it is actually needed. For example, computed fields
- * of the model won't be resolved unless the model is actually queried. Neither
+ * of the types won't be resolved unless the types is actually queried. Neither
  * adding extensions with `client` component only cause other components to
  * recompute.
  */
@@ -2771,7 +2771,7 @@ declare type QueryIntrospectionBuiltinType = 'int' | 'bigint' | 'float' | 'doubl
 declare type QueryMiddleware = (params: QueryMiddlewareParams, next: (params: QueryMiddlewareParams) => Promise<unknown>) => Promise<unknown>;
 
 declare type QueryMiddlewareParams = {
-    /** The model this is executed on */
+    /** The types this is executed on */
     model?: string;
     /** The action that is being handled */
     action: Action;
@@ -3140,7 +3140,7 @@ declare interface Span {
      * @param name the name of the event.
      * @param [attributesOrStartTime] the attributes that will be added; these are
      *     associated with this event. Can be also a start time
-     *     if type is {@type TimeInput} and 3rd param is undefined
+     *     if types is {@types TimeInput} and 3rd param is undefined
      * @param [startTime] start time of the event.
      */
     addEvent(name: string, attributesOrStartTime?: SpanAttributes | TimeInput, startTime?: TimeInput): this;

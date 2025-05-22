@@ -7,7 +7,7 @@
 decimal.js/decimal.mjs:
   (*!
    *  decimal.js v10.5.0
-   *  An arbitrary-precision Decimal type for JavaScript.
+   *  An arbitrary-precision Decimal types for JavaScript.
    *  https://github.com/MikeMcl/decimal.js
    *  Copyright (c) 2025 Michael Mclaughlin <M8ch88l@gmail.com>
    *  MIT Licence
