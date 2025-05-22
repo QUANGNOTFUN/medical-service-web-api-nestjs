@@ -5,12 +5,14 @@ import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { compare, hash } from 'bcrypt';
 import { LoginResponse } from './models/auth.model';
 import { PrismaService } from '../prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async register(userData: RegisterDto): Promise<User> {
@@ -45,7 +47,6 @@ export class AuthService {
     }
 
     //step2: check password
-
     const verify = await compare(userData.password, user.password);
 
     if (!verify) {
@@ -57,18 +58,18 @@ export class AuthService {
 
     //step3: generate accessToken and refreshToken
     const payload = {
-      id: user.id,
-      name: user.full_name,
+      sub: user.id,
       email: user.email,
+      role: user.role,
     };
 
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: process.env.ACCESS_TOKEN_KEY,
-      expiresIn: 60,
+      secret: this.configService.get<string>('JWT_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_EXPIRES_IN') || '1d',
     });
 
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: process.env.ACCESS_TOKEN_KEY,
+      secret: this.configService.get<string>('JWT_SECRET'),
       expiresIn: '7d',
     });
 

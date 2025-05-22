@@ -5,17 +5,23 @@ import {
   HttpStatus,
   Injectable,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { User } from '@prisma/client'; // Giả sử bạn dùng Prisma
+import { ConfigService } from '@nestjs/config';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  private readonly logger = new Logger(AuthGuard.name);
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -30,22 +36,19 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      // Xác minh token với kiểu payload rõ ràng
-      const payload = await this.jwtService.verifyAsync<{ id: string }>(token, {
-        secret: process.env.ACCESS_TOKEN_KEY ?? 'default-secret', // Cung cấp giá trị mặc định
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
+        secret: this.configService.get<string>('JWT_SECRET'),
       });
 
-      // Kiểm tra payload.id
-      if (!payload.id) {
+      if (!payload.sub) {
         throw new UnauthorizedException('Token không hợp lệ: thiếu id');
       }
 
-      // Giả sử findById là hàm đúng (thay vì findOne)
-      req.user_data = await this.userService.findById(payload.id);
+      req.user_data = await this.userService.findById(payload.sub);
 
       return true;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      this.logger.error(`Lỗi xác thực token: ${error instanceof Error ? error.message : 'Unknown error'}`);
       throw new HttpException(
         'Token không hợp lệ hoặc đã hết hạn',
         HttpStatus.UNAUTHORIZED,

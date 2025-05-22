@@ -1,7 +1,7 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Min, MinLength } from 'class-validator';
-import { Role } from '@prisma/client';
+import { Role } from '../../role/role.enum';
 @ObjectType()
 export class User {
   @Field(() => ID, { description: 'Unique identifier for the user' })
@@ -28,8 +28,8 @@ export class User {
   @Field(() => GraphQLDate, { nullable: true, description: 'Date of birth of the user' })
   date_of_birth?: Date | null;
 
-  @Field(() => Role, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
-  role: Role;
+  @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
+  role: string;
 
   @Field(() => GraphQLDate, { description: 'Creation date of the user record' })
   created_at: Date;
@@ -117,10 +117,10 @@ export class CreateUserInput {
   @IsNotEmpty({ message: 'gender không được để trống' })
   gender: string;
 
-  @Field(() => Role, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
+  @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
   @IsString({ message: 'role phải là chuỗi' })
   @IsNotEmpty({ message: 'role không được để trống' })
-  role: Role;
+  role: string;
 
   @Field(() => GraphQLDate, { nullable: true })
   @IsOptional({ message: 'date_of_birth là tùy chọn' })

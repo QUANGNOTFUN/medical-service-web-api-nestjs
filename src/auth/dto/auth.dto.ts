@@ -1,7 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql"
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
-import { Role } from '@prisma/client';
 import { GraphQLDate } from 'graphql-scalars';
+import { Role } from '../../role/role.enum';
 
 @InputType()
 export class RegisterDto {
@@ -36,10 +36,10 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'gender không được để trống' })
   gender: string;
 
-  @Field(() => Role, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
+  @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
   @IsString({ message: 'role phải là chuỗi' })
   @IsNotEmpty({ message: 'role không được để trống' })
-  role: Role;
+  role: string;
 
   @Field(() => GraphQLDate, { nullable: true })
   @IsOptional({ message: 'date_of_birth là tùy chọn' })

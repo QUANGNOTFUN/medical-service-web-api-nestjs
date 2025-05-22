@@ -9,16 +9,6 @@ input CreateMedicationInput {
   price: Float!
 }
 
-input CreateUserInput {
-  address: String
-  date_of_birth: Date
-  email: String!
-  full_name: String!
-  gender: String!
-  password: String!
-  phone: String
-}
-
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
@@ -33,6 +23,16 @@ input GetUserByIdInput {
   id: ID!
 }
 
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  accessToken: String
+  refreshToken: String
+}
+
 type Medication {
   acronym: String!
   available_quantity: Int!
@@ -45,13 +45,12 @@ type Medication {
 
 type Mutation {
   createMedication(input: CreateMedicationInput!): Medication!
-
-  """Tạo người dùng mới"""
-  createUser(input: CreateUserInput!): User!
   deleteMedication(id: Int!): Medication!
 
   """Xóa người dùng"""
   deleteUser(id: String!): User!
+  login(userData: LoginDto!): LoginResponse!
+  register(userData: RegisterDto!): User!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
 
   """Cập nhật thông tin người dùng"""
@@ -66,10 +65,26 @@ input PaginationInput {
 type Query {
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
 
+  """Lấy thông tin người dùng theo email"""
+  getUserByEmail(email: String!): User!
+
   """Lấy thông tin người dùng theo ID"""
   getUserById(input: GetUserByIdInput!): User!
   medication(input: GetMedicationByIdInput!): Medication!
   medications: [Medication!]!
+}
+
+input RegisterDto {
+  address: String
+  date_of_birth: Date
+  email: String!
+  full_name: String!
+  gender: String!
+  password: String!
+  phone: String
+
+  """Role of the user"""
+  role: String = "USER"
 }
 
 input UpdateMedicationInput {
@@ -108,9 +123,13 @@ type User {
 
   """Unique identifier for the user"""
   id: ID!
+  password: String!
 
   """Phone number of the user"""
   phone: String
+
+  """Role of the user"""
+  role: String
 
   """Last update date of the user record"""
   updated_at: Date
