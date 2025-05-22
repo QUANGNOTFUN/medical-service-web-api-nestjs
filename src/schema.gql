@@ -3,19 +3,10 @@
 # ------------------------------------------------------
 
 input CreateMedicationInput {
+  acronym: String!
   available_quantity: Float!
   name: String!
   price: Float!
-}
-
-input CreateUserInput {
-  address: String
-  date_of_birth: Date
-  email: String!
-  full_name: String!
-  gender: String!
-  password: String!
-  phone: String
 }
 
 """
@@ -32,7 +23,18 @@ input GetUserByIdInput {
   id: ID!
 }
 
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  accessToken: String
+  refreshToken: String
+}
+
 type Medication {
+  acronym: String!
   available_quantity: Int!
   created_at: Date!
   id: Int!
@@ -43,11 +45,16 @@ type Medication {
 
 type Mutation {
   createMedication(input: CreateMedicationInput!): Medication!
-
-  """Tạo người dùng mới"""
-  createUser(input: CreateUserInput!): User!
   deleteMedication(id: Int!): Medication!
+
+  """Xóa người dùng"""
+  deleteUser(id: String!): User!
+  login(userData: LoginDto!): LoginResponse!
+  register(userData: RegisterDto!): User!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
+
+  """Cập nhật thông tin người dùng"""
+  updateUser(id: String!, input: UpdateUserInput!): User!
 }
 
 input PaginationInput {
@@ -58,16 +65,43 @@ input PaginationInput {
 type Query {
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
 
+  """Lấy thông tin người dùng theo email"""
+  getUserByEmail(email: String!): User!
+
   """Lấy thông tin người dùng theo ID"""
   getUserById(input: GetUserByIdInput!): User!
   medication(input: GetMedicationByIdInput!): Medication!
   medications: [Medication!]!
 }
 
+input RegisterDto {
+  address: String
+  date_of_birth: Date
+  email: String!
+  full_name: String!
+  gender: String!
+  password: String!
+  phone: String
+
+  """Role of the user"""
+  role: String = "USER"
+}
+
 input UpdateMedicationInput {
+  acronym: String
   available_quantity: Int
   name: String
   price: Int
+}
+
+input UpdateUserInput {
+  address: String
+  date_of_birth: Date
+  email: String
+  full_name: String
+  gender: String
+  password: String
+  phone: String
 }
 
 type User {
@@ -89,9 +123,13 @@ type User {
 
   """Unique identifier for the user"""
   id: ID!
+  password: String!
 
   """Phone number of the user"""
   phone: String
+
+  """Role of the user"""
+  role: String
 
   """Last update date of the user record"""
   updated_at: Date

@@ -9,6 +9,9 @@ export class Medication {
   id: number;
 
   @Field()
+  acronym: string;
+
+  @Field()
   name: string;
 
   @Field(() => Float)
@@ -35,6 +38,9 @@ export class GetMedicationByIdInput {
 @InputType()
 export class CreateMedicationInput {
   @Field()
+  acronym: string;
+
+  @Field()
   name: string;
 
   @Field()
@@ -46,6 +52,9 @@ export class CreateMedicationInput {
 
 @InputType()
 export class UpdateMedicationInput {
+  @Field({nullable: true})
+  acronym?: string;
+
   @Field({nullable: true})
   name?: string;
 

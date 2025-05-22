@@ -6,9 +6,14 @@ import {ApolloDriver, ApolloDriverConfig} from '@nestjs/apollo';
 import { UserModule } from './user/user.module';
 import { APP_PIPE } from '@nestjs/core';
 import { MedicationsModule } from './medications/medications.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       graphiql: true,
@@ -17,6 +22,7 @@ import { MedicationsModule } from './medications/medications.module';
     }),
     UserModule,
     MedicationsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
