@@ -9,6 +9,9 @@ import {
 } from './types/user.type';
 import { User as PrismaUser } from '@prisma/client';
 import { Query } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../auth/auth.guard';
+import { CurrentUser } from '../auth/decorators/auth.decorator';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -24,8 +27,10 @@ export class UserResolver {
     return this.userService.findByEmail(email);
   }
 
+  @UseGuards(AuthGuard)
   @Query(() => UserPaginationResponse, { name: 'getAllUsers' })
-  async getAllUsers(@Args('pagination', { type: () => PaginationInput, nullable: true }) pagination: PaginationInput,): Promise<UserPaginationResponse> {
+  async getAllUsers(@CurrentUser() user: User, @Args('pagination', { type: () => PaginationInput, nullable: true }) pagination: PaginationInput,): Promise<UserPaginationResponse> {
+    console.log("current user=> ", user)
     return this.userService.getAllUsers(pagination);
   }
 
