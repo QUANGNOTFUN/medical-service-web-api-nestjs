@@ -37,14 +37,14 @@ export class AuthGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
-        secret: this.configService.get<string>('JWT_SECRET'),
+        secret: this.configService.get<string>('ACCESS_TOKEN_KEY'),
       });
 
-      if (!payload.sub) {
+      if (!payload.email) {
         throw new UnauthorizedException('Token không hợp lệ: thiếu id');
       }
 
-      req.user_data = await this.userService.findById(payload.sub);
+      req.user_data = await this.userService.findByEmail(payload.email);
 
       return true;
     } catch (error) {
@@ -65,8 +65,8 @@ export class AuthGuard implements CanActivate {
     }
 
     const [type, token] = authHeader.split(' ') as [
-      string | undefined,
-      string | undefined,
+        string | undefined,
+        string | undefined,
     ];
     return type === 'Bearer' && token ? token : undefined;
   }

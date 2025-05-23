@@ -8,11 +8,13 @@ import { APP_PIPE } from '@nestjs/core';
 import { MedicationsModule } from './medications/medications.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { JwtStrategy } from './auth/strategies/jwt.strategy';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env', // Ensure .env file is loaded
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -27,6 +29,7 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [AppController],
   providers: [
     AppService,
+    JwtStrategy,
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
