@@ -1,25 +1,20 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { User, User as PrismaUser } from '@prisma/client';
-import { CreateUserInput, PaginationInput, UpdateUserInput, UserPaginationResponse } from './model/user.model'; // <- đây là model thực tế trong DB
-import * as bcrypt from 'bcrypt';
+import { User as PrismaUser } from '@prisma/client';
+import {  PaginationInput, UpdateUserInput, UserPaginationResponse } from './types/user.type'; // <- đây là types thực tế trong DB
 
 @Injectable()
 export class UserService {
-  private readonly logger: Logger = new Logger(UserService.name);
-
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(input: CreateUserInput): Promise<User> {
-    const { password, ...rest } = input;
-    const password_hash: string = await bcrypt.hash(password, 10);
-
-    return this.prisma.user.create({
-      data: {
-        ...rest,
-        password_hash,
-      },
+  async findByEmail(email: string): Promise<PrismaUser> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
     });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
   async findById(id: string): Promise<PrismaUser> {

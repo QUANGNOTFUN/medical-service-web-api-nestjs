@@ -1,7 +1,7 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Min, MinLength } from 'class-validator';
-
+import { Role } from '../../role/role.enum';
 @ObjectType()
 export class User {
   @Field(() => ID, { description: 'Unique identifier for the user' })
@@ -12,6 +12,9 @@ export class User {
 
   @Field(() => String)
   email: string;
+
+  @Field(() => String)
+  password: string;
 
   @Field(() => String, { nullable: true, description: 'Phone number of the user' })
   phone?: string | null;
@@ -24,6 +27,9 @@ export class User {
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Date of birth of the user' })
   date_of_birth?: Date | null;
+
+  @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
+  role: string;
 
   @Field(() => GraphQLDate, { description: 'Creation date of the user record' })
   created_at: Date;
@@ -60,6 +66,14 @@ export class PaginationInput {
   @Min(1, { message: 'limit phải >= 1' })
   @IsOptional()
   limit?: number = 10;
+}
+
+@InputType()
+export class GetUsersEmailInput {
+  @Field(() => String, { nullable: true })
+  @IsEmail({}, { message: 'email không đúng định dạng' })
+  @IsNotEmpty({ message: 'email không được để trống' })
+  email: string;
 }
 
 @InputType()
@@ -102,6 +116,11 @@ export class CreateUserInput {
   @IsString({ message: 'gender phải là chuỗi' })
   @IsNotEmpty({ message: 'gender không được để trống' })
   gender: string;
+
+  @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
+  @IsString({ message: 'role phải là chuỗi' })
+  @IsNotEmpty({ message: 'role không được để trống' })
+  role: string;
 
   @Field(() => GraphQLDate, { nullable: true })
   @IsOptional({ message: 'date_of_birth là tùy chọn' })

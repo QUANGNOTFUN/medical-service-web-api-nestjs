@@ -150,7 +150,7 @@ export class PrismaClient<
   }>>
 
       /**
-   * `prisma.account`: Exposes CRUD operations for the **Account** model.
+   * `prisma.account`: Exposes CRUD operations for the **Account** types.
     * Example usage:
     * ```ts
     * // Fetch zero or more Accounts
@@ -160,7 +160,7 @@ export class PrismaClient<
   get account(): Prisma.AccountDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.user`: Exposes CRUD operations for the **User** model.
+   * `prisma.user`: Exposes CRUD operations for the **User** types.
     * Example usage:
     * ```ts
     * // Fetch zero or more Users
@@ -322,12 +322,12 @@ export namespace Prisma {
   }
 
   /**
-   * Get the type of the value, that the Promise holds.
+   * Get the types of the value, that the Promise holds.
    */
   export type PromiseType<T extends PromiseLike<any>> = T extends PromiseLike<infer U> ? U : T;
 
   /**
-   * Get the return type of a function which returns a Promise.
+   * Get the return types of a function which returns a Promise.
    */
   export type PromiseReturnType<T extends (...args: any) => $Utils.JsPromise<any>> = PromiseType<ReturnType<T>>
 
@@ -385,7 +385,7 @@ export namespace Prisma {
   type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 
   /**
-   * XOR is needed to have a real mutually exclusive union type
+   * XOR is needed to have a real mutually exclusive union types
    * https://stackoverflow.com/questions/42123407/does-typescript-support-mutually-exclusive-types
    */
   type XOR<T, U> =
@@ -490,7 +490,7 @@ export namespace Prisma {
   // cause typescript not to expand types and preserve names
   type NoExpand<T> = T extends unknown ? T : never;
 
-  // this type assumes the passed object is entirely optional
+  // this types assumes the passed object is entirely optional
   type AtLeast<O extends object, K extends string> = NoExpand<
     O extends unknown
     ? | (K extends keyof O ? { [P in K]: O[P] } & O : O)
@@ -848,7 +848,7 @@ export namespace Prisma {
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
     /**
-     * Global configuration for omitting model fields by default.
+     * Global configuration for omitting types fields by default.
      * 
      * @example
      * ```
@@ -931,7 +931,7 @@ export namespace Prisma {
   }
 
   /**
-   * The `T` type makes sure, that the `return proceed` is not forgotten in the middleware implementation
+   * The `T` types makes sure, that the `return proceed` is not forgotten in the middleware implementation
    */
   export type Middleware<T = any> = (
     params: MiddlewareParams,
@@ -1494,7 +1494,7 @@ export namespace Prisma {
         }[OrderFields]
     >(args: SubsetIntersection<T, AccountGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAccountGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the Account model
+   * Fields of the Account types
    */
   readonly fields: AccountFieldRefs;
   }
@@ -1533,7 +1533,7 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the Account model
+   * Fields of the Account types
    */
   interface AccountFieldRefs {
     readonly id: FieldRef<"Account", 'String'>
@@ -2519,7 +2519,7 @@ export namespace Prisma {
         }[OrderFields]
     >(args: SubsetIntersection<T, UserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the User model
+   * Fields of the User types
    */
   readonly fields: UserFieldRefs;
   }
@@ -2558,7 +2558,7 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the User model
+   * Fields of the User types
    */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'Int'>
@@ -2994,42 +2994,42 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'String'
+   * Reference to a field of types 'String'
    */
   export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
     
 
 
   /**
-   * Reference to a field of type 'String[]'
+   * Reference to a field of types 'String[]'
    */
   export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
     
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of types 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 
   /**
-   * Reference to a field of type 'Int[]'
+   * Reference to a field of types 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
   /**
-   * Reference to a field of type 'Float'
+   * Reference to a field of types 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
   /**
-   * Reference to a field of type 'Float[]'
+   * Reference to a field of types 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
