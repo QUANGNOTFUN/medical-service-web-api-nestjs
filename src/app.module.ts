@@ -6,6 +6,7 @@ import {ApolloDriver, ApolloDriverConfig} from '@nestjs/apollo';
 import { UserModule } from './user/user.module';
 import { APP_PIPE } from '@nestjs/core';
 import { MedicationsModule } from './medications/medications.module';
+import { DoctorsModule } from './doctors/doctors.module';
 
 @Module({
   imports: [
@@ -14,9 +15,11 @@ import { MedicationsModule } from './medications/medications.module';
       graphiql: true,
       autoSchemaFile: 'src/schema.gql',
       sortSchema: true,
+      playground: true, // Bật GraphQL Playground để debug
     }),
     UserModule,
     MedicationsModule,
+    DoctorsModule,
   ],
   controllers: [AppController],
   providers: [

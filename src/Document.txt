@@ -1,0 +1,10 @@
+Cập nhật prisma sau khi chỉnh sửa
+
+npx prisma generate
+npx prisma migrate dev --name add_user_table
+
+Đồng bộ không cần cập nhật
+
+npx prisma db push
+
+

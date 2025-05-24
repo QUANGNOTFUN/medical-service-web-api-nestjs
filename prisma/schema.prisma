@@ -32,3 +32,14 @@ model Medication {
   created_at         DateTime @default(now())
   updated_at         DateTime @default(now())
 }
+
+model Doctors {
+  id                 String   @id @default(uuid())
+  user_id            String   @unique
+  qualifications     String?
+  work_seniority     Int?
+  specialty          String?
+  hospital           String?
+  created_at         DateTime @default(now())
+  updated_at         DateTime?
+}
