@@ -6,7 +6,7 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "role" "Role" NOT NULL,
+    "role" TEXT NOT NULL,
     "full_name" TEXT NOT NULL,
     "phone" TEXT,
     "address" TEXT,
@@ -31,6 +31,20 @@ CREATE TABLE "Medication" (
     CONSTRAINT "Medication_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Doctors" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "qualifications" TEXT,
+    "work_seniority" INTEGER,
+    "specialty" TEXT,
+    "hospital" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+
+    CONSTRAINT "Doctors_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -39,3 +53,6 @@ CREATE UNIQUE INDEX "Medication_acronym_key" ON "Medication"("acronym");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Medication_name_key" ON "Medication"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Doctors_user_id_key" ON "Doctors"("user_id");
