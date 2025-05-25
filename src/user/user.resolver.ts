@@ -12,13 +12,16 @@ import { Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { CurrentUser } from '../auth/decorators/auth.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => User, { description: 'Lấy thông tin người dùng theo ID' })
-  async getUserById(@Args('input') input: GetUserByIdInput): Promise<PrismaUser> {
+  async getUserById(
+    @Args('input') input: GetUserByIdInput,
+  ): Promise<PrismaUser> {
     return this.userService.findById(input.id);
   }
 
@@ -27,15 +30,23 @@ export class UserResolver {
     return this.userService.findByEmail(email);
   }
 
+  @Roles('ADMIN', 'DOCTOR')
   @UseGuards(AuthGuard)
   @Query(() => UserPaginationResponse, { name: 'getAllUsers' })
-  async getAllUsers(@CurrentUser() user: User, @Args('pagination', { type: () => PaginationInput, nullable: true }) pagination: PaginationInput,): Promise<UserPaginationResponse> {
-    console.log("current user=> ", user)
+  async getAllUsers(
+    @CurrentUser() user: User,
+    @Args('pagination', { type: () => PaginationInput, nullable: true })
+    pagination: PaginationInput,
+  ): Promise<UserPaginationResponse> {
+    console.log('current user=> ', user);
     return this.userService.getAllUsers(pagination);
   }
 
   @Mutation(() => User, { description: 'Cập nhật thông tin người dùng' })
-  async updateUser(@Args('id') id: string, @Args('input') input: UpdateUserInput): Promise<PrismaUser> {
+  async updateUser(
+    @Args('id') id: string,
+    @Args('input') input: UpdateUserInput,
+  ): Promise<PrismaUser> {
     return this.userService.update(id, input);
   }
 
@@ -43,5 +54,4 @@ export class UserResolver {
   async deleteUser(@Args('id') id: string): Promise<PrismaUser> {
     return this.userService.delete(id);
   }
-
 }
