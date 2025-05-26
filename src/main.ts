@@ -6,9 +6,14 @@ import { GraphQLExceptionFilter } from './common/filters/graphql-exception.filte
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
-    transform: true
+    transform: true,
   }));
   app.useGlobalFilters(new GraphQLExceptionFilter());
+  app.enableCors({
+    origin: "http://localhost:3001",
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true,
+  })
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

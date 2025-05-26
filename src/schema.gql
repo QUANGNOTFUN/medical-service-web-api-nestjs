@@ -72,6 +72,7 @@ type Query {
   getUserById(input: GetUserByIdInput!): User!
   medication(input: GetMedicationByIdInput!): Medication!
   medications: [Medication!]!
+  searchMedications(input: SearchMedicationsInput!): [Medication!]!
 }
 
 input RegisterDto {
@@ -85,6 +86,10 @@ input RegisterDto {
 
   """Role of the user"""
   role: String = "USER"
+}
+
+input SearchMedicationsInput {
+  keyword: String!
 }
 
 input UpdateMedicationInput {

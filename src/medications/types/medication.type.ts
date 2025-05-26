@@ -1,7 +1,7 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Decimal } from 'generated/prisma/runtime/library';
 import { GraphQLDate } from 'graphql-scalars';
-import { IsInt, Min } from 'class-validator';
+import { IsInt, IsString, Min, MinLength } from 'class-validator';
 
 @ObjectType()
 export class Medication {
@@ -25,6 +25,13 @@ export class Medication {
 
   @Field(() => GraphQLDate)
   updated_at: Date;
+}
+
+@InputType()
+export class SearchMedicationsInput {
+  @Field()
+  @IsString({ message: 'Từ khóa phải là chuỗi' })
+  keyword: string;
 }
 
 @InputType()
