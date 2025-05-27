@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateDoctorDto {
+  hospital: String
+  qualifications: String
+  specialty: String
+  user_id: String!
+  work_seniority: Int
+}
+
 input CreateMedicationInput {
   acronym: String!
   available_quantity: Float!
@@ -13,6 +21,20 @@ input CreateMedicationInput {
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
 scalar Date
+
+type Doctors {
+  """Creation date of the user record"""
+  created_at: Date!
+  hospital: String
+  id: String!
+  qualifications: String
+  specialty: String
+
+  """Last update date of the user record"""
+  updated_at: Date
+  user_id: String!
+  work_seniority: Int
+}
 
 input GetMedicationByIdInput {
   id: Float!
@@ -44,13 +66,16 @@ type Medication {
 }
 
 type Mutation {
+  createDoctor(doctorData: CreateDoctorDto!): Doctors!
   createMedication(input: CreateMedicationInput!): Medication!
+  deleteDoctor(id: String!): Doctors!
   deleteMedication(id: Int!): Medication!
 
   """Xóa người dùng"""
   deleteUser(id: String!): User!
   login(userData: LoginDto!): LoginResponse!
   register(userData: RegisterDto!): User!
+  updateDoctor(doctorData: CreateDoctorDto!, id: String!): Doctors!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
 
   """Cập nhật thông tin người dùng"""
@@ -63,6 +88,8 @@ input PaginationInput {
 }
 
 type Query {
+  doctor(id: String!): Doctors
+  doctors: [Doctors!]!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
 
   """Lấy thông tin người dùng theo email"""
