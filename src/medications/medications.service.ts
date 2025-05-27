@@ -12,6 +12,36 @@ export class MedicationsService {
 
   constructor(private readonly prisma: PrismaService) {}
 
+
+  async searchMedications(keyword: string) {
+    try {
+      const medications = await this.prisma.medication.findMany({
+        where: {
+          name: {
+            contains: keyword,
+            mode: 'insensitive',
+          },
+          acronym: {
+            contains: keyword,
+            mode: 'insensitive'
+          },
+        },
+      });
+      if (!medications.length) {
+        throw new NotFoundException('Không tìm thấy thuốc nào.');
+      }
+      return medications;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(
+        `Lỗi khi tìm kiếm thuốc với từ khóa ${keyword}: ${errorMessage}`,
+        errorStack,
+      );
+      throw error;
+    }
+  }
+
   async getMedications(): Promise<Medication[]> {
     return this.prisma.medication.findMany();
   }
@@ -22,7 +52,7 @@ export class MedicationsService {
         where: { id: id },
       });
       if (!medication) {
-        throw new NotFoundException('Không tìm thấy thuốc này');
+        throw new NotFoundException('Không tìm thấy thuốc này.');
       }
       return medication;
     } catch (error) {
