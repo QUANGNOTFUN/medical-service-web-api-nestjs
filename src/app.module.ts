@@ -10,6 +10,7 @@ import { DoctorsModule } from './doctors/doctors.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
+import { DoctorSchedulesModule } from './doctor_schedules/doctor_schedules.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { JwtStrategy } from './auth/strategies/jwt.strategy';
     MedicationsModule,
     DoctorsModule,
     AuthModule,
+    DoctorSchedulesModule,
   ],
   controllers: [AppController],
   providers: [

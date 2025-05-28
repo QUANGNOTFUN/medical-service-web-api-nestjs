@@ -48,3 +48,12 @@ model Doctors {
   created_at         DateTime @default(now())
   updated_at         DateTime?
 }
+
+model DoctorSchedule{
+  id                 Int   @id @default(autoincrement())
+  doctor_id          Int?   @unique
+  start_time         DateTime?
+  end_time           DateTime?
+  is_available       Boolean?
+  created_at         DateTime @default(now())
+}
