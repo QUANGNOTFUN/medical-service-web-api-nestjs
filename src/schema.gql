@@ -2,6 +2,29 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Appointment {
+  appointment_date: Timestamp!
+  appointment_id: ID!
+  appointment_type: String!
+  created_at: Timestamp!
+  doctor_id: Int!
+  is_anonymous: Boolean!
+  patient_id: Int!
+  schedule_id: Int!
+  status: String!
+  updated_at: Timestamp
+}
+
+input CreateAppointmentInput {
+  appointment_date: Timestamp!
+  appointment_type: String!
+  doctor_id: Int!
+  is_anonymous: Boolean! = false
+  patient_id: Int!
+  schedule_id: Int!
+  status: String!
+}
+
 input CreateDoctorDto {
   hospital: String
   qualifications: String
@@ -37,6 +60,10 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 """
 scalar Date
 
+input DeleteAppointmentInput {
+  appointment_id: Int!
+}
+
 input DeletePatientInput {
   patient_id: Int!
 }
@@ -69,6 +96,10 @@ type DoctorSchedule {
   id: Int!
   is_available: Boolean
   start_time: Date
+}
+
+input GetAppointmentByIdInput {
+  appointment_id: Int!
 }
 
 input GetMedicationByIdInput {
@@ -105,10 +136,12 @@ type Medication {
 }
 
 type Mutation {
+  createAppointment(input: CreateAppointmentInput!): Appointment!
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
   createMedication(input: CreateMedicationInput!): Medication!
   createPatient(input: CreatePatientInput!): Patient!
+  deleteAppointment(input: DeleteAppointmentInput!): Boolean!
   deleteDoctor(id: Float!): Doctor!
   deleteDoctorSchedule(id: Int!): DoctorSchedule!
   deleteMedication(id: Int!): Medication!
@@ -147,7 +180,9 @@ type Query {
   doctor(id: Float!): Doctor
   doctorSchedules: [DoctorSchedule!]!
   doctors: [Doctor!]!
+  findAllAppointments: [Appointment!]!
   findAllPatients: [Patient!]!
+  findOneAppointment(input: GetAppointmentByIdInput!): Appointment!
   findOnePatient(input: GetPatientByIdInput!): Patient!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
 

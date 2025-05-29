@@ -1,6 +1,6 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate, GraphQLTimestamp } from 'graphql-scalars';
-import { IsBoolean, IsDate, IsInt, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import { IsDate, IsInt, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 
 @ObjectType()
 export class Patient {

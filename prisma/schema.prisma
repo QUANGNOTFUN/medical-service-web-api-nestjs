@@ -93,17 +93,16 @@ model Appointment {
   patient_id        Int
   doctor_id         Int
   schedule_id       Int
-  appointment_type  AppointmentType
+  appointment_type  String     // ✅ đổi từ enum AppointmentType
   appointment_date  DateTime
-  status            AppointmentStatus @default(PENDING)
-  is_anonymous      Boolean           @default(false)
-  notes             String?           // Ghi chú thêm (tùy chọn)
-  created_at        DateTime          @default(now())
-  updated_at        DateTime?         @updatedAt
+  status            String     // ✅ đổi từ enum AppointmentStatus
+  is_anonymous      Boolean    @default(false)
+  notes             String?
+  created_at        DateTime   @default(now())
+  updated_at        DateTime?  @updatedAt
 
-  // Relations
-  patient           Patient  @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
-  doctor            Doctors   @relation(fields: [doctor_id], references: [id])
+  patient           Patient        @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  doctor            Doctors        @relation(fields: [doctor_id], references: [id])
   schedule          DoctorSchedule @relation(fields: [schedule_id], references: [id])
 
   @@index([doctor_id])
