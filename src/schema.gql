@@ -24,10 +24,22 @@ input CreateMedicationInput {
   price: Float!
 }
 
+input CreatePatientInput {
+  anonymous_id: String!
+  date_of_birth: Date!
+  gender: String!
+  hiv_diagnosis_date: Date!
+  user_id: String!
+}
+
 """
 A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
 """
 scalar Date
+
+input DeletePatientInput {
+  patient_id: Int!
+}
 
 type Doctor {
   """Creation date of the doctor record"""
@@ -63,6 +75,10 @@ input GetMedicationByIdInput {
   id: Float!
 }
 
+input GetPatientByIdInput {
+  patient_id: Int!
+}
+
 input GetUserByIdInput {
   """ID of the user to retrieve"""
   id: ID!
@@ -92,9 +108,11 @@ type Mutation {
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
   createMedication(input: CreateMedicationInput!): Medication!
+  createPatient(input: CreatePatientInput!): Patient!
   deleteDoctor(id: Float!): Doctor!
   deleteDoctorSchedule(id: Int!): DoctorSchedule!
   deleteMedication(id: Int!): Medication!
+  deletePatient(input: DeletePatientInput!): Boolean!
 
   """Xóa người dùng"""
   deleteUser(id: String!): User!
@@ -103,6 +121,7 @@ type Mutation {
   updateDoctor(doctorData: CreateDoctorDto!, id: Float!): Doctor!
   updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: Int!): DoctorSchedule!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
+  updatePatient(input: UpdatePatientInput!): Patient!
 
   """Cập nhật thông tin người dùng"""
   updateUser(id: String!, input: UpdateUserInput!): User!
@@ -113,10 +132,23 @@ input PaginationInput {
   page: Int! = 1
 }
 
+type Patient {
+  anonymous_id: String!
+  created_at: Timestamp!
+  date_of_birth: Date!
+  gender: String!
+  hiv_diagnosis_date: Date!
+  patient_id: ID!
+  updated_at: Timestamp
+  user_id: String!
+}
+
 type Query {
   doctor(id: Float!): Doctor
   doctorSchedules: [DoctorSchedule!]!
   doctors: [Doctor!]!
+  findAllPatients: [Patient!]!
+  findOnePatient(input: GetPatientByIdInput!): Patient!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
 
   """Lấy thông tin người dùng theo email"""
@@ -146,11 +178,24 @@ input SearchMedicationsInput {
   keyword: String!
 }
 
+"""
+The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+"""
+scalar Timestamp
+
 input UpdateMedicationInput {
   acronym: String
   available_quantity: Int
   name: String
   price: Int
+}
+
+input UpdatePatientInput {
+  anonymous_id: String
+  date_of_birth: Date
+  gender: String
+  hiv_diagnosis_date: Date
+  patient_id: Int!
 }
 
 input UpdateUserInput {

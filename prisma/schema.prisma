@@ -23,6 +23,8 @@ model User {
   updated_at DateTime?
 
   doctor Doctors?
+
+  Patient Patient[]
 }
 
 enum Role {
@@ -56,6 +58,7 @@ model Doctors {
   schedule       DoctorSchedule?
 
   @@map("doctors")
+  Appointment Appointment[]
 }
 
 model DoctorSchedule {
@@ -66,5 +69,56 @@ model DoctorSchedule {
   end_time     DateTime?
   is_available Boolean?
   created_at   DateTime  @default(now())
+
+  Appointment Appointment[]
 }
 
+model Patient {
+  patient_id          Int           @id @default(autoincrement())
+  user_id             String
+  anonymous_id        String        @unique
+  date_of_birth       DateTime
+  gender              String
+  hiv_diagnosis_date  DateTime
+  created_at          DateTime      @default(now())
+  updated_at          DateTime?     @updatedAt
+
+  // Relations
+  user                User          @relation(fields: [user_id], references: [id])
+  appointments        Appointment[]
+}
+
+model Appointment {
+  appointment_id    Int       @id @default(autoincrement())
+  patient_id        Int
+  doctor_id         Int
+  schedule_id       Int
+  appointment_type  AppointmentType
+  appointment_date  DateTime
+  status            AppointmentStatus @default(PENDING)
+  is_anonymous      Boolean           @default(false)
+  notes             String?           // Ghi chú thêm (tùy chọn)
+  created_at        DateTime          @default(now())
+  updated_at        DateTime?         @updatedAt
+
+  // Relations
+  patient           Patient  @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  doctor            Doctors   @relation(fields: [doctor_id], references: [id])
+  schedule          DoctorSchedule @relation(fields: [schedule_id], references: [id])
+
+  @@index([doctor_id])
+  @@index([appointment_date])
+}
+
+enum AppointmentType {
+  CONSULTATION
+  TREATMENT
+  FOLLOW_UP
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
