@@ -11,10 +11,10 @@ input CreateDoctorDto {
 }
 
 input CreateDoctorDto_Schedules {
-  doctor_id: Int
-  end_time: DateTime
+  doctor_id: Int!
+  end_time: Date
   is_available: Boolean
-  start_time: DateTime
+  start_time: Date
 }
 
 input CreateMedicationInput {
@@ -29,33 +29,34 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 """
 scalar Date
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type DoctorSchedule {
-  """Creation date of the user record"""
-  created_at: Date!
-  doctor_id: Int
-  end_time: Date
-  id: Int
-  is_available: Boolean
-  start_time: Date
-}
-
-type Doctors {
-  """Creation date of the user record"""
+type Doctor {
+  """Creation date of the doctor record"""
   created_at: Date!
   hospital: String
   id: String!
   qualifications: String
+
+  """Doctor's schedule (if any)"""
+  schedule: DoctorSchedule
   specialty: String
 
-  """Last update date of the user record"""
+  """Last update date of the doctor record"""
   updated_at: Date
+
+  """Related user information"""
+  user: User!
   user_id: String!
   work_seniority: Int
+}
+
+type DoctorSchedule {
+  """Creation date of the user record"""
+  created_at: Date!
+  doctor_id: Int!
+  end_time: Date
+  id: Int!
+  is_available: Boolean
+  start_time: Date
 }
 
 input GetMedicationByIdInput {
@@ -88,10 +89,10 @@ type Medication {
 }
 
 type Mutation {
-  createDoctor(doctorData: CreateDoctorDto!): Doctors!
+  createDoctor(doctorData: CreateDoctorDto!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
   createMedication(input: CreateMedicationInput!): Medication!
-  deleteDoctor(id: String!): Doctors!
+  deleteDoctor(id: Float!): Doctor!
   deleteDoctorSchedule(id: Int!): DoctorSchedule!
   deleteMedication(id: Int!): Medication!
 
@@ -99,7 +100,7 @@ type Mutation {
   deleteUser(id: String!): User!
   login(userData: LoginDto!): LoginResponse!
   register(userData: RegisterDto!): User!
-  updateDoctor(doctorData: CreateDoctorDto!, id: String!): Doctors!
+  updateDoctor(doctorData: CreateDoctorDto!, id: Float!): Doctor!
   updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: Int!): DoctorSchedule!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
 
@@ -113,9 +114,9 @@ input PaginationInput {
 }
 
 type Query {
-  doctor(id: String!): Doctors
+  doctor(id: Float!): Doctor
   doctorSchedules: [DoctorSchedule!]!
-  doctors: [Doctors!]!
+  doctors: [Doctor!]!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
 
   """Lấy thông tin người dùng theo email"""

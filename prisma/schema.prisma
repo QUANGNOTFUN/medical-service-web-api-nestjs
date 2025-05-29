@@ -8,10 +8,10 @@ datasource db {
 }
 
 model User {
-  id            String  @id @default(uuid())
-  email         String  @unique
-  password      String
-  role          String
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+  role     String
 
   full_name     String
   phone         String?
@@ -21,13 +21,17 @@ model User {
 
   created_at DateTime  @default(now())
   updated_at DateTime?
+
+  doctor Doctors?
 }
+
 enum Role {
   USER
   ADMIN
   DOCTOR
   GUEST
 }
+
 model Medication {
   id                 Int      @id @default(autoincrement())
   acronym            String   @unique
@@ -39,21 +43,28 @@ model Medication {
 }
 
 model Doctors {
-  id                 String   @id @default(uuid())
-  user_id            String   @unique
-  qualifications     String?
-  work_seniority     Int?
-  specialty          String?
-  hospital           String?
-  created_at         DateTime @default(now())
-  updated_at         DateTime?
+  id             Int             @id @default(autoincrement())
+  user_id        String          @unique
+  user           User            @relation(fields: [user_id], references: [id])
+  qualifications String?
+  work_seniority Int?
+  specialty      String?
+  hospital       String?
+  created_at     DateTime        @default(now())
+  updated_at     DateTime?
+
+  schedule       DoctorSchedule?
+
+  @@map("doctors")
 }
 
-model DoctorSchedule{
-  id                 Int   @id @default(autoincrement())
-  doctor_id          Int?   @unique
-  start_time         DateTime?
-  end_time           DateTime?
-  is_available       Boolean?
-  created_at         DateTime @default(now())
+model DoctorSchedule {
+  id           Int       @id @default(autoincrement())
+  doctor_id    Int       @unique
+  doctor       Doctors  @relation(fields: [doctor_id], references: [id])
+  start_time   DateTime?
+  end_time     DateTime?
+  is_available Boolean?
+  created_at   DateTime  @default(now())
 }
+
