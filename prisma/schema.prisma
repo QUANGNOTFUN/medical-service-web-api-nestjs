@@ -45,9 +45,7 @@ model Medication {
 }
 
 model Doctors {
-  id             Int             @id @default(autoincrement())
-  user_id        String          @unique
-  user           User            @relation(fields: [user_id], references: [id])
+  id             String             @id
   qualifications String?
   work_seniority Int?
   specialty      String?
@@ -57,6 +55,7 @@ model Doctors {
 
   schedule       DoctorSchedule?
 
+  user                User          @relation(fields: [id], references: [id])
   @@map("doctors")
   Appointment Appointment[]
   ExaminationreportType ExaminationReport[]
@@ -64,7 +63,7 @@ model Doctors {
 
 model DoctorSchedule {
   id           Int       @id @default(autoincrement())
-  doctor_id    Int       @unique
+  doctor_id    String       @unique
   doctor       Doctors  @relation(fields: [doctor_id], references: [id])
   start_time   DateTime?
   end_time     DateTime?
@@ -75,8 +74,7 @@ model DoctorSchedule {
 }
 
 model Patient {
-  patient_id          Int           @id @default(autoincrement())
-  user_id             String
+  patient_id          String           @id
   anonymous_id        String        @unique
   date_of_birth       DateTime
   gender              String
@@ -85,14 +83,14 @@ model Patient {
   updated_at          DateTime?     @updatedAt
 
   // Relations
-  user                User          @relation(fields: [user_id], references: [id])
+  user                User          @relation(fields: [patient_id], references: [id])
   appointments        Appointment[]
 }
 
 model Appointment {
   appointment_id    Int       @id @default(autoincrement())
-  patient_id        Int
-  doctor_id         Int
+  patient_id        String
+  doctor_id         String
   schedule_id       Int
   appointment_type  String     // ✅ đổi từ enum AppointmentType
   appointment_date  DateTime
@@ -142,7 +140,7 @@ model TreatmentPlan {
 model ExaminationReport {
   id               Int       @id @default(autoincrement())
   name             String    @db.VarChar(50)
-  doctor_id        Int
+  doctor_id        String
   risk_assessment  String
   is_HIV           Boolean
   HIV_test_file    String

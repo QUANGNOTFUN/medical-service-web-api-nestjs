@@ -6,10 +6,7 @@ import { DoctorSchedule } from '../../doctor_schedules/model/doctor_schedules.mo
 @ObjectType()
 export class Doctor {
   @Field(() => String)
-  id: number;
-
-  @Field(() => String)
-  user_id: string;
+  id: string;
 
   @Field(() => String, { nullable: true })
   qualifications: string | null;

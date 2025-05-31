@@ -219,7 +219,6 @@ type Patient {
   hiv_diagnosis_date: Date!
   patient_id: ID!
   updated_at: Timestamp
-  user_id: String!
 }
 
 type Query {

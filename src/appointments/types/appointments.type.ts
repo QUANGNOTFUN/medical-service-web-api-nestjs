@@ -7,11 +7,11 @@ export class Appointment {
   @Field(() => ID)
   appointment_id: number;
 
-  @Field(() => Int)
-  patient_id: number;
+  @Field(() => String)
+  patient_id: string;
 
-  @Field(() => Int)
-  doctor_id: number;
+  @Field(() => String)
+  doctor_id: string;
 
   @Field(() => Int)
   schedule_id: number;
@@ -37,15 +37,15 @@ export class Appointment {
 
 @InputType()
 export class CreateAppointmentInput {
-  @Field(() => Int)
-  @IsInt()
+  @Field(() => String)
+  @IsString()
   @IsNotEmpty()
-  patient_id: number;
+  patient_id: string;
 
-  @Field(() => Int)
-  @IsInt()
+  @Field(() => String)
+  @IsString()
   @IsNotEmpty()
-  doctor_id: number;
+  doctor_id: string;
 
   @Field(() => Int)
   @IsInt()

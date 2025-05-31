@@ -19,7 +19,7 @@ export class PatientService {
     });
   }
 
-  async findOne(id: number): Promise<PrismaPatient> {
+  async findOne(id: string): Promise<PrismaPatient> {
     const patient = await this.prisma.patient.findUnique({
       where: { patient_id: id },
     });
@@ -29,7 +29,7 @@ export class PatientService {
     return patient;
   }
 
-  async update(id: number, input: UpdatePatientInput): Promise<PrismaPatient> {
+  async update(id: string, input: UpdatePatientInput): Promise<PrismaPatient> {
     await this.findOne(id); // ensure exists
     return this.prisma.patient.update({
       where: { patient_id: id },
@@ -37,7 +37,7 @@ export class PatientService {
     });
   }
 
-  async remove(id: number): Promise<PrismaPatient> {
+  async remove(id: string): Promise<PrismaPatient> {
     await this.findOne(id); // ensure exists
     return this.prisma.patient.delete({
       where: { patient_id: id },
