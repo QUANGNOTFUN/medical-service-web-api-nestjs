@@ -52,7 +52,7 @@ input CreateExaminationReportInput {
 
 input CreateMedicationInput {
   acronym: String!
-  available_quantity: Float!
+  available_quantity: Int!
   name: String!
   price: Float!
 }
@@ -296,7 +296,7 @@ input UpdateMedicationInput {
   acronym: String
   available_quantity: Int
   name: String
-  price: Int
+  price: Float
 }
 
 input UpdatePatientInput {
