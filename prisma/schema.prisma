@@ -59,6 +59,7 @@ model Doctors {
 
   @@map("doctors")
   Appointment Appointment[]
+  ExaminationreportType ExaminationReport[]
 }
 
 model DoctorSchedule {
@@ -107,6 +108,7 @@ model Appointment {
 
   @@index([doctor_id])
   @@index([appointment_date])
+  TreatmentPlan TreatmentPlan[]
 }
 
 enum AppointmentType {
@@ -120,4 +122,67 @@ enum AppointmentStatus {
   CONFIRMED
   COMPLETED
   CANCELLED
+}
+
+model TreatmentPlan {
+  id                     Int                   @id @default(autoincrement())
+  name                   String                // Ghi tên giai đoạn đang điều trị
+  hiv_diagnosis_date     DateTime?             // Ngày phát hiện nhiễm HIV (nullable)
+  start_date             DateTime              // Ngày bắt đầu điều trị
+  end_date               DateTime?             // Ngày kết thúc điều trị
+  notes                  String?               // Ghi chú thêm
+  created_at             DateTime              @default(now())
+  updated_at             DateTime?             @updatedAt
+
+  // Quan hệ
+  examinations           ExaminationReport[]   // Danh sách các kết quả khám
+  follow_up_appointments Appointment[]         // Danh sách các cuộc hẹn tái khám
+}
+
+model ExaminationReport {
+  id               Int       @id @default(autoincrement())
+  name             String    @db.VarChar(50)
+  doctor_id        Int
+  risk_assessment  String
+  is_HIV           Boolean
+  HIV_test_file    String
+  regimen_id       Int
+  created_at       DateTime  @default(now())
+  updated_at       DateTime? @updatedAt
+
+  // Quan hệ
+  doctor           Doctors   @relation(fields: [doctor_id], references: [id])
+  regimen          Regimen   @relation(fields: [regimen_id], references: [id])
+  treatment_plan   TreatmentPlan? @relation(fields: [treatment_plan_id], references: [id])
+  treatment_plan_id Int?
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Regimen {
+  id              Int       @id @default(autoincrement())
+  care_stage      String
+  regimen_type    String
+  medication_list String[]
+  user_guide      String
+  is_default      Boolean
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now())
+
+  examination_reports ExaminationReport[]
+}
+
+enum CareStage {
+  PrEP
+  PEP
+  ARV
+}
+
+enum RegimenType {
+  STANDARD
+  CUSTOM
 }

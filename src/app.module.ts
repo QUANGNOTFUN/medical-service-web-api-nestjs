@@ -13,6 +13,9 @@ import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { DoctorSchedulesModule } from './doctor_schedules/doctor_schedules.module';
 import { PatientsModule } from './patients/patients.module';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { TreatmentPlanModule } from './treatment-plan/treatment-plan.module';
+import { ExaminationReportModule } from './examination-report/examination-report.module';
+import { RegimenModule } from './regimen/regimen.module';
 
 @Module({
   imports: [
@@ -34,6 +37,9 @@ import { AppointmentsModule } from './appointments/appointments.module';
     DoctorSchedulesModule,
     PatientsModule,
     AppointmentsModule,
+    TreatmentPlanModule,
+    ExaminationReportModule,
+    RegimenModule,
   ],
   controllers: [AppController],
   providers: [
