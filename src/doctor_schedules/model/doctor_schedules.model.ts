@@ -3,11 +3,11 @@ import { GraphQLDate } from 'graphql-scalars';
 
 @ObjectType()
 export class DoctorSchedule {
-  @Field(() => Int, { nullable: true })
-  id: number | null;
+  @Field(() => Int)
+  id: number;
 
-  @Field(() => Int, { nullable: true })
-  doctor_id: number | null;
+  @Field(() => Int)
+  doctor_id: number;
 
   @Field(() => GraphQLDate, { nullable: true })
   start_time: Date | null;

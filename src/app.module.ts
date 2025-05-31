@@ -11,6 +11,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { DoctorSchedulesModule } from './doctor_schedules/doctor_schedules.module';
+import { PatientsModule } from './patients/patients.module';
+import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { DoctorSchedulesModule } from './doctor_schedules/doctor_schedules.modul
     DoctorsModule,
     AuthModule,
     DoctorSchedulesModule,
+    PatientsModule,
+    AppointmentsModule,
   ],
   controllers: [AppController],
   providers: [
