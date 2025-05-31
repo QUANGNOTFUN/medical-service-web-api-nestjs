@@ -21,7 +21,7 @@ export class AuthService {
     });
     if (user) {
       throw new HttpException(
-        { message: 'This email has been used!' },
+        { message: 'email đã tồn tại!' },
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -41,7 +41,7 @@ export class AuthService {
 
     if (!user) {
       throw new HttpException(
-        { message: 'Account not found!' },
+        { message: 'Không tìm thấy email này!' },
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -51,7 +51,7 @@ export class AuthService {
 
     if (!verify) {
       throw new HttpException(
-        { message: 'Incorrect password!' },
+        { message: 'Mật khẩu không đúng!' },
         HttpStatus.UNAUTHORIZED,
       );
     }

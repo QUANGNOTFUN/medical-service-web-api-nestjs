@@ -2,11 +2,83 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Appointment {
+  appointment_date: Timestamp!
+  appointment_id: ID!
+  appointment_type: String!
+  created_at: Timestamp!
+  doctor_id: Int!
+  is_anonymous: Boolean!
+  patient_id: Int!
+  schedule_id: Int!
+  status: String!
+  updated_at: Timestamp
+}
+
+input CreateAppointmentInput {
+  appointment_date: Timestamp!
+  appointment_type: String!
+  doctor_id: Int!
+  is_anonymous: Boolean! = false
+  patient_id: Int!
+  schedule_id: Int!
+  status: String!
+}
+
+input CreateDoctorDto {
+  hospital: String
+  qualifications: String
+  specialty: String
+  user_id: String!
+  work_seniority: Int
+}
+
+input CreateDoctorDto_Schedules {
+  doctor_id: Int!
+  end_time: Date
+  is_available: Boolean
+  start_time: Date
+}
+
+input CreateExaminationReportInput {
+  HIV_test_file: String!
+  doctor_id: Int!
+  is_HIV: Boolean!
+  name: String!
+  regimen_id: Int!
+  risk_assessment: String!
+  treatment_plan_id: Int
+}
+
 input CreateMedicationInput {
   acronym: String!
-  available_quantity: Float!
+  available_quantity: Int!
   name: String!
   price: Float!
+}
+
+input CreatePatientInput {
+  anonymous_id: String!
+  date_of_birth: Date!
+  gender: String!
+  hiv_diagnosis_date: Date!
+  user_id: String!
+}
+
+input CreateRegimenInput {
+  care_stage: String!
+  is_default: Boolean!
+  medication_list: [String!]!
+  regimen_type: String!
+  user_guide: String!
+}
+
+input CreateTreatmentPlanInput {
+  end_date: Timestamp
+  hiv_diagnosis_date: Timestamp
+  name: String!
+  notes: String
+  start_date: Timestamp!
 }
 
 """
@@ -14,8 +86,67 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 """
 scalar Date
 
+input DeleteAppointmentInput {
+  appointment_id: Int!
+}
+
+input DeletePatientInput {
+  patient_id: Int!
+}
+
+type Doctor {
+  """Creation date of the doctor record"""
+  created_at: Date!
+  hospital: String
+  id: String!
+  qualifications: String
+
+  """Doctor's schedule (if any)"""
+  schedule: DoctorSchedule
+  specialty: String
+
+  """Last update date of the doctor record"""
+  updated_at: Date
+
+  """Related user information"""
+  user: User!
+  user_id: String!
+  work_seniority: Int
+}
+
+type DoctorSchedule {
+  """Creation date of the user record"""
+  created_at: Date!
+  doctor_id: Int!
+  end_time: Date
+  id: Int!
+  is_available: Boolean
+  start_time: Date
+}
+
+type ExaminationReport {
+  HIV_test_file: String!
+  created_at: Timestamp!
+  doctor_id: Int!
+  id: ID!
+  is_HIV: Boolean!
+  name: String!
+  regimen_id: Int!
+  risk_assessment: String!
+  treatment_plan_id: Int
+  updated_at: Timestamp
+}
+
+input GetAppointmentByIdInput {
+  appointment_id: Int!
+}
+
 input GetMedicationByIdInput {
   id: Float!
+}
+
+input GetPatientByIdInput {
+  patient_id: Int!
 }
 
 input GetUserByIdInput {
@@ -44,14 +175,32 @@ type Medication {
 }
 
 type Mutation {
+  createAppointment(input: CreateAppointmentInput!): Appointment!
+  createDoctor(doctorData: CreateDoctorDto!): Doctor!
+  createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
+  createExaminationReport(input: CreateExaminationReportInput!): ExaminationReport!
   createMedication(input: CreateMedicationInput!): Medication!
+  createPatient(input: CreatePatientInput!): Patient!
+  createRegimen(input: CreateRegimenInput!): Regimen!
+  createTreatmentPlan(input: CreateTreatmentPlanInput!): TreatmentPlan!
+  deleteAppointment(input: DeleteAppointmentInput!): Boolean!
+  deleteDoctor(id: Float!): Doctor!
+  deleteDoctorSchedule(id: Int!): DoctorSchedule!
+  deleteExaminationReport(id: Int!): ExaminationReport!
   deleteMedication(id: Int!): Medication!
+  deletePatient(input: DeletePatientInput!): Boolean!
+  deleteRegimen(id: Int!): Regimen!
+  deleteTreatmentPlan(id: Int!): TreatmentPlan!
 
   """Xóa người dùng"""
   deleteUser(id: String!): User!
   login(userData: LoginDto!): LoginResponse!
   register(userData: RegisterDto!): User!
+  updateDoctor(doctorData: CreateDoctorDto!, id: Float!): Doctor!
+  updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: Int!): DoctorSchedule!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
+  updatePatient(input: UpdatePatientInput!): Patient!
+  updateTreatmentPlan(input: UpdateTreatmentPlanInput!): TreatmentPlan!
 
   """Cập nhật thông tin người dùng"""
   updateUser(id: String!, input: UpdateUserInput!): User!
@@ -62,7 +211,31 @@ input PaginationInput {
   page: Int! = 1
 }
 
+type Patient {
+  anonymous_id: String!
+  created_at: Timestamp!
+  date_of_birth: Date!
+  gender: String!
+  hiv_diagnosis_date: Date!
+  patient_id: ID!
+  updated_at: Timestamp
+  user_id: String!
+}
+
 type Query {
+  doctor(id: Float!): Doctor
+  doctorSchedules: [DoctorSchedule!]!
+  doctors: [Doctor!]!
+  findAllAppointments: [Appointment!]!
+  findAllExaminationReports: [ExaminationReport!]!
+  findAllPatients: [Patient!]!
+  findAllRegimens: [Regimen!]!
+  findAllTreatmentPlans: [TreatmentPlan!]!
+  findExaminationReport(id: Int!): ExaminationReport!
+  findOneAppointment(input: GetAppointmentByIdInput!): Appointment!
+  findOnePatient(input: GetPatientByIdInput!): Patient!
+  findRegimen(id: Int!): Regimen!
+  findTreatmentPlan(id: Int!): TreatmentPlan!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
 
   """Lấy thông tin người dùng theo email"""
@@ -72,6 +245,18 @@ type Query {
   getUserById(input: GetUserByIdInput!): User!
   medication(input: GetMedicationByIdInput!): Medication!
   medications: [Medication!]!
+  searchMedications(input: SearchMedicationsInput!): [Medication!]!
+}
+
+type Regimen {
+  care_stage: String!
+  created_at: Timestamp!
+  id: ID!
+  is_default: Boolean!
+  medication_list: [String!]!
+  regimen_type: String!
+  updated_at: Timestamp!
+  user_guide: String!
 }
 
 input RegisterDto {
@@ -87,11 +272,48 @@ input RegisterDto {
   role: String = "USER"
 }
 
+input SearchMedicationsInput {
+  keyword: String!
+}
+
+"""
+The javascript `Date` as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+"""
+scalar Timestamp
+
+type TreatmentPlan {
+  created_at: Timestamp!
+  end_date: Timestamp
+  hiv_diagnosis_date: Timestamp
+  id: ID!
+  name: String!
+  notes: String
+  start_date: Timestamp!
+  updated_at: Timestamp
+}
+
 input UpdateMedicationInput {
   acronym: String
   available_quantity: Int
   name: String
-  price: Int
+  price: Float
+}
+
+input UpdatePatientInput {
+  anonymous_id: String
+  date_of_birth: Date
+  gender: String
+  hiv_diagnosis_date: Date
+  patient_id: Int!
+}
+
+input UpdateTreatmentPlanInput {
+  end_date: Timestamp
+  hiv_diagnosis_date: Timestamp
+  id: Int!
+  name: String
+  notes: String
+  start_date: Timestamp
 }
 
 input UpdateUserInput {

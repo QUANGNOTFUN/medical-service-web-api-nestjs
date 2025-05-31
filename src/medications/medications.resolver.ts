@@ -3,7 +3,7 @@ import { MedicationsService } from './medications.service';
 import {
   CreateMedicationInput,
   GetMedicationByIdInput,
-  Medication, UpdateMedicationInput,
+  Medication, SearchMedicationsInput, UpdateMedicationInput,
 } from './types/medication.type';
 import { NotFoundException } from '@nestjs/common';
 import { GraphQLError } from 'graphql/error';
@@ -11,6 +11,24 @@ import { GraphQLError } from 'graphql/error';
 @Resolver()
 export class MedicationsResolver {
   constructor(private readonly medicationsService: MedicationsService) {}
+
+  @Query(() => [Medication], { name: 'searchMedications'})
+  async searchMedications(@Args('input') input: SearchMedicationsInput) {
+    try {
+			const keyword = input?.keyword || "";
+			if (!keyword) return this.medicationsService.getMedications();
+
+			return this.medicationsService.searchMedications(input.keyword);
+		} catch (error: unknown) {
+			const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        throw new GraphQLError(errorMessage, {
+          extensions: {
+            code: error instanceof NotFoundException ? 'Không tìm thấy' : 'INTERNAL_SERVER_ERROR',
+            originalError: error,
+          },
+        })
+		}
+  }
 
   @Query(() => [Medication], {name: 'medications'})
   async getMedications(): Promise<Medication[]> {

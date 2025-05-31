@@ -1,7 +1,7 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Decimal } from 'generated/prisma/runtime/library';
 import { GraphQLDate } from 'graphql-scalars';
-import { IsInt, Min } from 'class-validator';
+import { IsInt, IsNumber, IsString, Min, MinLength } from 'class-validator';
 
 @ObjectType()
 export class Medication {
@@ -28,6 +28,13 @@ export class Medication {
 }
 
 @InputType()
+export class SearchMedicationsInput {
+  @Field()
+  @IsString({ message: 'Từ khóa phải là chuỗi' })
+  keyword: string;
+}
+
+@InputType()
 export class GetMedicationByIdInput {
   @Field()
   @IsInt({ message: 'ID phải là số nguyên' })
@@ -38,16 +45,24 @@ export class GetMedicationByIdInput {
 @InputType()
 export class CreateMedicationInput {
   @Field()
-  acronym: string;
+    @IsString({ message: 'Mã viết tắt phải là chuỗi' })
+    @MinLength(1, { message: 'Mã viết tắt không được để trống' })
+    acronym: string;
 
-  @Field()
-  name: string;
+    @Field()
+    @IsString({ message: 'Tên phải là chuỗi' })
+    @MinLength(1, { message: 'Tên không được để trống' })
+    name: string;
 
-  @Field()
-  price: number;
+    @Field(() => Float)
+    @IsNumber({}, { message: 'Giá phải là số' })
+    @Min(0, { message: 'Giá phải lớn hơn hoặc bằng 0' })
+    price: number;
 
-  @Field()
-  available_quantity: number;
+    @Field(() => Int) // Đổi sang Int vì số lượng thường là số nguyên
+    @IsInt({ message: 'Số lượng phải là số nguyên' })
+    @Min(0, { message: 'Số lượng phải lớn hơn hoặc bằng 0' })
+    available_quantity: number;
 }
 
 @InputType()
@@ -58,7 +73,7 @@ export class UpdateMedicationInput {
   @Field({nullable: true})
   name?: string;
 
-  @Field(() => Int, {nullable: true})
+  @Field(() => Float, {nullable: true})
   @IsInt({ message: 'Giá phải là số nguyên' })
   @Min(0, { message: 'Giá phải lớn hơn 0 hoặc bằng 0' })
   price?: number;
