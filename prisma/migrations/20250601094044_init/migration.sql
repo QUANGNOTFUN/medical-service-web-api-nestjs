@@ -47,9 +47,8 @@ CREATE TABLE "Medication" (
 );
 
 -- CreateTable
-CREATE TABLE "doctors" (
-    "id" SERIAL NOT NULL,
-    "user_id" TEXT NOT NULL,
+CREATE TABLE "Doctors" (
+    "id" TEXT NOT NULL,
     "qualifications" TEXT,
     "work_seniority" INTEGER,
     "specialty" TEXT,
@@ -57,13 +56,13 @@ CREATE TABLE "doctors" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
-    CONSTRAINT "doctors_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Doctors_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "DoctorSchedule" (
     "id" SERIAL NOT NULL,
-    "doctor_id" INTEGER NOT NULL,
+    "doctor_id" TEXT NOT NULL,
     "start_time" TIMESTAMP(3),
     "end_time" TIMESTAMP(3),
     "is_available" BOOLEAN,
@@ -89,7 +88,7 @@ CREATE TABLE "Patient" (
 CREATE TABLE "Appointment" (
     "appointment_id" SERIAL NOT NULL,
     "patient_id" TEXT NOT NULL,
-    "doctor_id" INTEGER NOT NULL,
+    "doctor_id" TEXT NOT NULL,
     "schedule_id" INTEGER NOT NULL,
     "appointment_type" TEXT NOT NULL,
     "appointment_date" TIMESTAMP(3) NOT NULL,
@@ -120,7 +119,7 @@ CREATE TABLE "TreatmentPlan" (
 CREATE TABLE "ExaminationReport" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(50) NOT NULL,
-    "doctor_id" INTEGER NOT NULL,
+    "doctor_id" TEXT NOT NULL,
     "risk_assessment" TEXT NOT NULL,
     "is_HIV" BOOLEAN NOT NULL,
     "HIV_test_file" TEXT NOT NULL,
@@ -164,9 +163,6 @@ CREATE UNIQUE INDEX "Medication_acronym_key" ON "Medication"("acronym");
 CREATE UNIQUE INDEX "Medication_name_key" ON "Medication"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "doctors_user_id_key" ON "doctors"("user_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "DoctorSchedule_doctor_id_key" ON "DoctorSchedule"("doctor_id");
 
 -- CreateIndex
@@ -182,10 +178,10 @@ CREATE INDEX "Appointment_appointment_date_idx" ON "Appointment"("appointment_da
 CREATE INDEX "_AppointmentToTreatmentPlan_B_index" ON "_AppointmentToTreatmentPlan"("B");
 
 -- AddForeignKey
-ALTER TABLE "doctors" ADD CONSTRAINT "doctors_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Doctors" ADD CONSTRAINT "Doctors_id_fkey" FOREIGN KEY ("id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "DoctorSchedule" ADD CONSTRAINT "DoctorSchedule_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "DoctorSchedule" ADD CONSTRAINT "DoctorSchedule_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "Doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Patient" ADD CONSTRAINT "Patient_patient_id_fkey" FOREIGN KEY ("patient_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -194,13 +190,13 @@ ALTER TABLE "Patient" ADD CONSTRAINT "Patient_patient_id_fkey" FOREIGN KEY ("pat
 ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_patient_id_fkey" FOREIGN KEY ("patient_id") REFERENCES "Patient"("patient_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "Doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_schedule_id_fkey" FOREIGN KEY ("schedule_id") REFERENCES "DoctorSchedule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ExaminationReport" ADD CONSTRAINT "ExaminationReport_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ExaminationReport" ADD CONSTRAINT "ExaminationReport_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "Doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ExaminationReport" ADD CONSTRAINT "ExaminationReport_regimen_id_fkey" FOREIGN KEY ("regimen_id") REFERENCES "Regimen"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

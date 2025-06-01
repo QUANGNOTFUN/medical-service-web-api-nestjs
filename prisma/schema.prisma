@@ -45,26 +45,26 @@ model Medication {
 }
 
 model Doctors {
-  id             String             @id
+  id             String    @id @default(uuid())
+  user           User      @relation(fields: [id], references: [id])
   qualifications String?
   work_seniority Int?
   specialty      String?
   hospital       String?
-  created_at     DateTime        @default(now())
+  created_at     DateTime  @default(now())
   updated_at     DateTime?
 
-  schedule       DoctorSchedule?
-
-  user                User          @relation(fields: [id], references: [id])
-  @@map("doctors")
-  Appointment Appointment[]
+  schedule              DoctorSchedule?
+  Appointment           Appointment[]
   ExaminationreportType ExaminationReport[]
+
+  @@map("Doctors")
 }
 
 model DoctorSchedule {
   id           Int       @id @default(autoincrement())
-  doctor_id    String       @unique
-  doctor       Doctors  @relation(fields: [doctor_id], references: [id])
+  doctor_id    String    @unique
+  doctor       Doctors   @relation(fields: [doctor_id], references: [id])
   start_time   DateTime?
   end_time     DateTime?
   is_available Boolean?
@@ -74,7 +74,7 @@ model DoctorSchedule {
 }
 
 model Patient {
-  patient_id          String           @id
+  patient_id          String        @id @default(uuid())
   anonymous_id        String        @unique
   date_of_birth       DateTime
   gender              String

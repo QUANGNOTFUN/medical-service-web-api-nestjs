@@ -37,6 +37,7 @@ export class Patient {
 
 @InputType()
 export class CreatePatientInput {
+
   @Field(() => String)
   @IsString({ message: 'anonymous_id phải là chuỗi' })
   @IsNotEmpty({ message: 'anonymous_id không được để trống' })
