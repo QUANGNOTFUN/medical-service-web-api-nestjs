@@ -58,7 +58,7 @@ model Doctors {
   Appointment           Appointment[]
   ExaminationreportType ExaminationReport[]
 
-  @@map("doctors")
+  @@map("Doctors")
 }
 
 model DoctorSchedule {
