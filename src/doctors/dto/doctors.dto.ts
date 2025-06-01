@@ -3,6 +3,10 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateDoctorDto {
+  @Field(() => String)
+  @IsString()
+  id: string;
+
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()

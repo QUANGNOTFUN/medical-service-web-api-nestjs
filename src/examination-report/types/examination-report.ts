@@ -10,8 +10,8 @@ export class ExaminationReport {
   @Field()
   name: string;
 
-  @Field(() => Int)
-  doctor_id: number;
+  @Field(() => String)
+  doctor_id: string;
 
   @Field()
   risk_assessment: string;
@@ -40,8 +40,8 @@ export class CreateExaminationReportInput {
   @Field()
   name: string;
 
-  @Field(() => Int)
-  doctor_id: number;
+  @Field(() => String)
+  doctor_id: string;
 
   @Field()
   risk_assessment: string;

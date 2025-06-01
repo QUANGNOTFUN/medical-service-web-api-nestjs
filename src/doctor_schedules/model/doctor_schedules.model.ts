@@ -6,8 +6,8 @@ export class DoctorSchedule {
   @Field(() => Int)
   id: number;
 
-  @Field(() => Int)
-  doctor_id: number;
+  @Field(() => String)
+  doctor_id: string;
 
   @Field(() => GraphQLDate, { nullable: true })
   start_time: Date | null;
