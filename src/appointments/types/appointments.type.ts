@@ -10,8 +10,8 @@ export class Appointment {
   @Field(() => Int)
   patient_id: number;
 
-  @Field(() => Int)
-  doctor_id: number;
+  @Field(() => String)
+  doctor_id: string;
 
   @Field(() => Int)
   schedule_id: number;
@@ -42,10 +42,10 @@ export class CreateAppointmentInput {
   @IsNotEmpty()
   patient_id: number;
 
-  @Field(() => Int)
+  @Field(() => String)
   @IsInt()
   @IsNotEmpty()
-  doctor_id: number;
+  doctor_id: string;
 
   @Field(() => Int)
   @IsInt()

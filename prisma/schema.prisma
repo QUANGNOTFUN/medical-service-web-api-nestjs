@@ -45,26 +45,26 @@ model Medication {
 }
 
 model Doctors {
-  id             Int             @id @default(autoincrement())
-  user_id        String          @unique
-  user           User            @relation(fields: [user_id], references: [id])
+  id             String    @id @default(uuid())
+  user           User      @relation(fields: [id], references: [id])
   qualifications String?
   work_seniority Int?
   specialty      String?
   hospital       String?
-  created_at     DateTime        @default(now())
+  created_at     DateTime  @default(now())
   updated_at     DateTime?
 
-  schedule       DoctorSchedule?
+  schedule              DoctorSchedule?
+  Appointment           Appointment[]
+  ExaminationreportType ExaminationReport[]
 
-  @@map("doctors")
-  Appointment Appointment[]
+  @@map("Doctors")
 }
 
 model DoctorSchedule {
   id           Int       @id @default(autoincrement())
-  doctor_id    Int       @unique
-  doctor       Doctors  @relation(fields: [doctor_id], references: [id])
+  doctor_id    String    @unique
+  doctor       Doctors   @relation(fields: [doctor_id], references: [id])
   start_time   DateTime?
   end_time     DateTime?
   is_available Boolean?
@@ -74,36 +74,37 @@ model DoctorSchedule {
 }
 
 model Patient {
-  patient_id          Int           @id @default(autoincrement())
-  user_id             String
-  anonymous_id        String        @unique
-  date_of_birth       DateTime
-  gender              String
-  hiv_diagnosis_date  DateTime
-  created_at          DateTime      @default(now())
-  updated_at          DateTime?     @updatedAt
+  patient_id         Int       @id @default(autoincrement())
+  user_id            String
+  anonymous_id       String    @unique
+  date_of_birth      DateTime
+  gender             String
+  hiv_diagnosis_date DateTime
+  created_at         DateTime  @default(now())
+  updated_at         DateTime? @updatedAt
 
   // Relations
-  user                User          @relation(fields: [user_id], references: [id])
-  appointments        Appointment[]
+  user         User          @relation(fields: [user_id], references: [id])
+  appointments Appointment[]
 }
 
 model Appointment {
-  appointment_id    Int       @id @default(autoincrement())
-  patient_id        Int
-  doctor_id         Int
-  schedule_id       Int
-  appointment_type  String     // ✅ đổi từ enum AppointmentType
-  appointment_date  DateTime
-  status            String     // ✅ đổi từ enum AppointmentStatus
-  is_anonymous      Boolean    @default(false)
-  notes             String?
-  created_at        DateTime   @default(now())
-  updated_at        DateTime?  @updatedAt
+  appointment_id   Int       @id @default(autoincrement())
+  patient_id       Int
+  doctor_id        String
+  schedule_id      Int
+  appointment_type String // ✅ đổi từ enum AppointmentType
+  appointment_date DateTime
+  status           String // ✅ đổi từ enum AppointmentStatus
+  is_anonymous     Boolean   @default(false)
+  notes            String?
+  created_at       DateTime  @default(now())
+  updated_at       DateTime? @updatedAt
 
-  patient           Patient        @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
-  doctor            Doctors        @relation(fields: [doctor_id], references: [id])
-  schedule          DoctorSchedule @relation(fields: [schedule_id], references: [id])
+  patient       Patient         @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  doctor        Doctors         @relation(fields: [doctor_id], references: [id])
+  schedule      DoctorSchedule  @relation(fields: [schedule_id], references: [id])
+  TreatmentPlan TreatmentPlan[]
 
   @@index([doctor_id])
   @@index([appointment_date])
@@ -120,4 +121,67 @@ enum AppointmentStatus {
   CONFIRMED
   COMPLETED
   CANCELLED
+}
+
+model TreatmentPlan {
+  id                 Int       @id @default(autoincrement())
+  name               String // Ghi tên giai đoạn đang điều trị
+  hiv_diagnosis_date DateTime? // Ngày phát hiện nhiễm HIV (nullable)
+  start_date         DateTime // Ngày bắt đầu điều trị
+  end_date           DateTime? // Ngày kết thúc điều trị
+  notes              String? // Ghi chú thêm
+  created_at         DateTime  @default(now())
+  updated_at         DateTime? @updatedAt
+
+  // Quan hệ
+  examinations           ExaminationReport[] // Danh sách các kết quả khám
+  follow_up_appointments Appointment[] // Danh sách các cuộc hẹn tái khám
+}
+
+model ExaminationReport {
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar(50)
+  doctor_id       String
+  risk_assessment String
+  is_HIV          Boolean
+  HIV_test_file   String
+  regimen_id      Int
+  created_at      DateTime  @default(now())
+  updated_at      DateTime? @updatedAt
+
+  // Quan hệ
+  doctor            Doctors        @relation(fields: [doctor_id], references: [id])
+  regimen           Regimen        @relation(fields: [regimen_id], references: [id])
+  treatment_plan    TreatmentPlan? @relation(fields: [treatment_plan_id], references: [id])
+  treatment_plan_id Int?
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Regimen {
+  id              Int      @id @default(autoincrement())
+  care_stage      String
+  regimen_type    String
+  medication_list String[]
+  user_guide      String
+  is_default      Boolean
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
+
+  examination_reports ExaminationReport[]
+}
+
+enum CareStage {
+  PrEP
+  PEP
+  ARV
+}
+
+enum RegimenType {
+  STANDARD
+  CUSTOM
 }

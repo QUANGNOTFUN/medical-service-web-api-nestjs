@@ -5,7 +5,7 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 export class CreateDoctorDto {
   @Field(() => String)
   @IsString()
-  user_id: string;
+  id: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
