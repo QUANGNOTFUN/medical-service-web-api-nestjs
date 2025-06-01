@@ -7,7 +7,7 @@ type Appointment {
   appointment_id: ID!
   appointment_type: String!
   created_at: Timestamp!
-  doctor_id: Int!
+  doctor_id: String!
   is_anonymous: Boolean!
   patient_id: Int!
   schedule_id: Int!
@@ -18,7 +18,7 @@ type Appointment {
 input CreateAppointmentInput {
   appointment_date: Timestamp!
   appointment_type: String!
-  doctor_id: Int!
+  doctor_id: String!
   is_anonymous: Boolean! = false
   patient_id: Int!
   schedule_id: Int!
@@ -27,14 +27,14 @@ input CreateAppointmentInput {
 
 input CreateDoctorDto {
   hospital: String
+  id: String!
   qualifications: String
   specialty: String
-  user_id: String!
   work_seniority: Int
 }
 
 input CreateDoctorDto_Schedules {
-  doctor_id: Int!
+  doctor_id: String!
   end_time: Date
   is_available: Boolean
   start_time: Date
@@ -42,7 +42,7 @@ input CreateDoctorDto_Schedules {
 
 input CreateExaminationReportInput {
   HIV_test_file: String!
-  doctor_id: Int!
+  doctor_id: String!
   is_HIV: Boolean!
   name: String!
   regimen_id: Int!
@@ -117,7 +117,7 @@ type Doctor {
 type DoctorSchedule {
   """Creation date of the user record"""
   created_at: Date!
-  doctor_id: Int!
+  doctor_id: String!
   end_time: Date
   id: Int!
   is_available: Boolean
@@ -127,7 +127,7 @@ type DoctorSchedule {
 type ExaminationReport {
   HIV_test_file: String!
   created_at: Timestamp!
-  doctor_id: Int!
+  doctor_id: String!
   id: ID!
   is_HIV: Boolean!
   name: String!
@@ -184,8 +184,8 @@ type Mutation {
   createRegimen(input: CreateRegimenInput!): Regimen!
   createTreatmentPlan(input: CreateTreatmentPlanInput!): TreatmentPlan!
   deleteAppointment(input: DeleteAppointmentInput!): Boolean!
-  deleteDoctor(id: Float!): Doctor!
-  deleteDoctorSchedule(id: Int!): DoctorSchedule!
+  deleteDoctor(id: String!): Doctor!
+  deleteDoctorSchedule(id: String!): DoctorSchedule!
   deleteExaminationReport(id: Int!): ExaminationReport!
   deleteMedication(id: Int!): Medication!
   deletePatient(input: DeletePatientInput!): Boolean!
@@ -196,8 +196,8 @@ type Mutation {
   deleteUser(id: String!): User!
   login(userData: LoginDto!): LoginResponse!
   register(userData: RegisterDto!): User!
-  updateDoctor(doctorData: CreateDoctorDto!, id: Float!): Doctor!
-  updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: Int!): DoctorSchedule!
+  updateDoctor(doctorData: CreateDoctorDto!, id: String!): Doctor!
+  updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: String!): DoctorSchedule!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
   updatePatient(input: UpdatePatientInput!): Patient!
   updateTreatmentPlan(input: UpdateTreatmentPlanInput!): TreatmentPlan!
@@ -223,7 +223,7 @@ type Patient {
 }
 
 type Query {
-  doctor(id: Float!): Doctor
+  doctor(id: String!): Doctor
   doctorSchedules: [DoctorSchedule!]!
   doctors: [Doctor!]!
   findAllAppointments: [Appointment!]!

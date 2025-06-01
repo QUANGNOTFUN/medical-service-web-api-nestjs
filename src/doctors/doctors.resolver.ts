@@ -15,7 +15,7 @@ export class DoctorsResolver {
   }
 
   @Query(() => DoctorsGraphQL, { nullable: true })
-  async doctor(@Args('id') id: number): Promise<DoctorWithRelations> {
+  async doctor(@Args('id') id: string): Promise<DoctorWithRelations> {
     return this.doctorsService.findOne(id);
   }
 
@@ -25,12 +25,12 @@ export class DoctorsResolver {
   }
 
   @Mutation(() => DoctorsGraphQL)
-  async deleteDoctor(@Args('id') id: number): Promise<DoctorWithRelations> {
+  async deleteDoctor(@Args('id') id: string): Promise<DoctorWithRelations> {
     return this.doctorsService.delete(id);
   }
 
   @Mutation(() => DoctorsGraphQL)
-  async updateDoctor(@Args('id') id: number, @Args('doctorData') doctorData: CreateDoctorDto): Promise<DoctorWithRelations> {
+  async updateDoctor(@Args('id') id: string, @Args('doctorData') doctorData: CreateDoctorDto): Promise<DoctorWithRelations> {
     return this.doctorsService.update(id, doctorData);
   }
 }

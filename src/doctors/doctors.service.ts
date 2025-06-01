@@ -26,7 +26,7 @@ export class DoctorsService {
     });
   }
 
-  async findOne(id: number): Promise<DoctorWithRelations> {
+  async findOne(id: string): Promise<DoctorWithRelations> {
     const doctor = await this.prisma.doctors.findUnique({
       where: { id },
       include: {
@@ -42,7 +42,7 @@ export class DoctorsService {
     return doctor;
   }
 
-  async delete(id: number): Promise<DoctorWithRelations> {
+  async delete(id: string): Promise<DoctorWithRelations> {
     return this.prisma.doctors.delete({
       where: { id },
       include: {
@@ -53,7 +53,7 @@ export class DoctorsService {
   }
 
   async update(
-    id: number,
+    id: string,
     data: CreateDoctorDto,
   ): Promise<DoctorWithRelations> {
     return this.prisma.doctors.update({
