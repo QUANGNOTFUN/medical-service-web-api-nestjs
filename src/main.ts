@@ -10,7 +10,7 @@ async function bootstrap() {
   }));
   app.useGlobalFilters(new GraphQLExceptionFilter());
   app.enableCors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3001",
     methods: ['GET', 'POST', 'OPTIONS'],
     credentials: true,
   })
