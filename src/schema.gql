@@ -9,7 +9,7 @@ type Appointment {
   created_at: Timestamp!
   doctor_id: String!
   is_anonymous: Boolean!
-  patient_id: Int!
+  patient_id: String!
   schedule_id: Int!
   status: String!
   updated_at: Timestamp
@@ -20,7 +20,7 @@ input CreateAppointmentInput {
   appointment_type: String!
   doctor_id: String!
   is_anonymous: Boolean! = false
-  patient_id: Int!
+  patient_id: String!
   schedule_id: Int!
   status: String!
 }
@@ -62,7 +62,6 @@ input CreatePatientInput {
   date_of_birth: Date!
   gender: String!
   hiv_diagnosis_date: Date!
-  user_id: String!
 }
 
 input CreateRegimenInput {
@@ -91,7 +90,7 @@ input DeleteAppointmentInput {
 }
 
 input DeletePatientInput {
-  patient_id: Int!
+  patient_id: String!
 }
 
 type Doctor {
@@ -110,7 +109,6 @@ type Doctor {
 
   """Related user information"""
   user: User!
-  user_id: String!
   work_seniority: Int
 }
 
@@ -146,7 +144,7 @@ input GetMedicationByIdInput {
 }
 
 input GetPatientByIdInput {
-  patient_id: Int!
+  patient_id: String!
 }
 
 input GetUserByIdInput {
@@ -219,7 +217,6 @@ type Patient {
   hiv_diagnosis_date: Date!
   patient_id: ID!
   updated_at: Timestamp
-  user_id: String!
 }
 
 type Query {
@@ -304,7 +301,7 @@ input UpdatePatientInput {
   date_of_birth: Date
   gender: String
   hiv_diagnosis_date: Date
-  patient_id: Int!
+  patient_id: String!
 }
 
 input UpdateTreatmentPlanInput {
