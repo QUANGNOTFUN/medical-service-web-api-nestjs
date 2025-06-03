@@ -8,9 +8,6 @@ export class Doctor {
   @Field(() => String)
   id: string;
 
-  @Field(() => String)
-  user_id: string;
-
   @Field(() => String, { nullable: true })
   qualifications: string | null;
 

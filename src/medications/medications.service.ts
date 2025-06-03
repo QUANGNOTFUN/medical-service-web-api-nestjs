@@ -43,7 +43,11 @@ export class MedicationsService {
   }
 
   async getMedications(): Promise<Medication[]> {
-    return this.prisma.medication.findMany();
+    return this.prisma.medication.findMany({
+			orderBy: {
+				created_at: 'asc',
+			},
+		});
   }
 
   async getMedicationById(id: number): Promise<Medication> {
@@ -85,13 +89,19 @@ export class MedicationsService {
 
   async updateMedication(id: number, input: UpdateMedicationInput) {
     try {
-      return await this.prisma.medication.update({
-        where: { id: id },
-        data: {
-          ...input,
-          updated_at: new Date(),
-        },
-      });
+      // filter null/undefined
+          const data = Object.entries(input).reduce((acc, [key, value]) => {
+            if (value !== null && value !== undefined) {
+              acc[key] = value;
+            }
+            return acc;
+          }, {} as any);
+          data.updated_at = new Date();
+
+          return await this.prisma.medication.update({
+            where: { id },
+            data,
+          });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {
@@ -109,9 +119,27 @@ export class MedicationsService {
 
   async removeMedication(id: number) {
     try {
-      return await this.prisma.medication.delete({
-        where: { id: id },
+      const deleted = await this.prisma.medication.delete({
+        where: { id },
       });
+
+      // Kiểm tra số bản ghi còn lại
+      const count = await this.prisma.medication.count();
+
+      if (count === 0) {
+        // Nếu bảng rỗng, reset sequence
+        await this.prisma.$executeRaw`
+          SELECT setval(pg_get_serial_sequence('"Medication"', 'id'), 1, false);
+        `;
+      } else {
+        // Đặt sequence về max(id) + 1
+        await this.prisma.$executeRaw`
+          SELECT setval(pg_get_serial_sequence('"Medication"', 'id'),
+                        (SELECT MAX(id) FROM "Medication") + 1, false);
+        `;
+      }
+
+      return deleted;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {

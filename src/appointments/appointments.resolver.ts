@@ -23,7 +23,8 @@ export class AppointmentResolver {
   }
 
   @Mutation(() => Boolean)
-  deleteAppointment(@Args('input') input: DeleteAppointmentInput) {
-    return this.appointmentService.remove(input.appointment_id).then(() => true);
+  async deleteAppointment(@Args('input') input: DeleteAppointmentInput) {
+    await this.appointmentService.remove(input.appointment_id);
+    return true;
   }
 }

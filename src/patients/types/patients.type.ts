@@ -1,15 +1,11 @@
-import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate, GraphQLTimestamp } from 'graphql-scalars';
-import { IsDate, IsInt, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 
 @ObjectType()
 export class Patient {
   @Field(() => ID)
-  patient_id: number;
-
-  @Field(() => String)
-  @IsString({ message: 'user_id phải là chuỗi' })
-  user_id: string;
+  patient_id: string;
 
   @Field(() => String)
   @IsString({ message: 'anonymous_id phải là chuỗi' })
@@ -41,10 +37,6 @@ export class Patient {
 
 @InputType()
 export class CreatePatientInput {
-  @Field(() => String)
-  @IsString({ message: 'user_id phải là số nguyên' })
-  @IsNotEmpty({ message: 'user_id không được để trống' })
-  user_id: string;
 
   @Field(() => String)
   @IsString({ message: 'anonymous_id phải là chuỗi' })
@@ -70,10 +62,10 @@ export class CreatePatientInput {
 
 @InputType()
 export class UpdatePatientInput {
-  @Field(() => Int)
-  @IsInt({ message: 'patient_id phải là số nguyên' })
+  @Field(() => String)
+  @IsString({ message: 'patient_id phải là số chuoi' })
   @IsNotEmpty({ message: 'patient_id không được để trống' })
-  patient_id: number;
+  patient_id: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -99,16 +91,16 @@ export class UpdatePatientInput {
 
 @InputType()
 export class GetPatientByIdInput {
-  @Field(() => Int)
-  @IsInt({ message: 'patient_id phải là số nguyên' })
+  @Field(() => String)
+  @IsString({ message: 'patient_id phải là chuôi' })
   @IsNotEmpty({ message: 'patient_id không được để trống' })
-  patient_id: number;
+  patient_id: string;
 }
 
 @InputType()
 export class DeletePatientInput {
-  @Field(() => Int)
-  @IsInt({ message: 'patient_id phải là số nguyên' })
+  @Field(() => String)
+  @IsString({ message: 'patient_id phải là chuôĩ' })
   @IsNotEmpty({ message: 'patient_id không được để trống' })
-  patient_id: number;
+  patient_id: string;
 }
