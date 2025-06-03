@@ -177,6 +177,7 @@ type Medication {
 type Mutation {
   createAppointment(input: CreateAppointmentInput!): Appointment!
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
+  createDoctorAndUser(input: RegisterDoctorInput!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
   createExaminationReport(input: CreateExaminationReportInput!): ExaminationReport!
   createMedication(input: CreateMedicationInput!): Medication!
@@ -196,7 +197,7 @@ type Mutation {
   deleteUser(id: String!): User!
   login(userData: LoginDto!): LoginResponse!
   register(userData: RegisterDto!): User!
-  updateDoctor(doctorData: CreateDoctorDto!, id: String!): Doctor!
+  updateDoctor(doctorData: UpdateDoctorInput!, id: String!): Doctor!
   updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: String!): DoctorSchedule!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
   updatePatient(input: UpdatePatientInput!): Patient!
@@ -259,6 +260,18 @@ type Regimen {
   user_guide: String!
 }
 
+input RegisterDoctorInput {
+  email: String!
+  full_name: String!
+  gender: String!
+  hospital: String
+  password: String!
+  qualifications: String
+  role: String!
+  specialty: String
+  work_seniority: Float
+}
+
 input RegisterDto {
   address: String
   date_of_birth: Date
@@ -290,6 +303,16 @@ type TreatmentPlan {
   notes: String
   start_date: Timestamp!
   updated_at: Timestamp
+}
+
+input UpdateDoctorInput {
+  email: String
+  full_name: String
+  gender: String
+  hospital: String
+  qualifications: String
+  specialty: String
+  work_seniority: Float
 }
 
 input UpdateMedicationInput {
