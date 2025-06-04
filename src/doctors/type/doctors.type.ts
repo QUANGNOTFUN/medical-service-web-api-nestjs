@@ -4,3 +4,4 @@ export type DoctorWithRelations = Doctors & {
   user: User;
   schedule: DoctorSchedule | null;
 };
+

@@ -13,6 +13,7 @@ async function bootstrap() {
     origin: "http://localhost:3001",
     methods: ['GET', 'POST', 'OPTIONS'],
     credentials: true,
+
   })
   await app.listen(process.env.PORT ?? 3001);
 }
