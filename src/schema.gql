@@ -204,6 +204,14 @@ type Mutation {
   updateUser(id: String!, input: UpdateUserInput!): User!
 }
 
+type PaginatedMedications {
+  items: [Medication!]!
+  page: Int!
+  pageSize: Int!
+  total: Int!
+  totalPages: Int!
+}
+
 input PaginationInput {
   limit: Int! = 10
   page: Int! = 1
@@ -241,7 +249,7 @@ type Query {
   """Lấy thông tin người dùng theo ID"""
   getUserById(input: GetUserByIdInput!): User!
   medication(input: GetMedicationByIdInput!): Medication!
-  medications: [Medication!]!
+  medications(input: PaginationInput): PaginatedMedications!
   searchMedications(input: SearchMedicationsInput!): [Medication!]!
 }
 

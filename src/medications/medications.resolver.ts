@@ -3,10 +3,11 @@ import { MedicationsService } from './medications.service';
 import {
   CreateMedicationInput,
   GetMedicationByIdInput,
-  Medication, SearchMedicationsInput, UpdateMedicationInput,
+  Medication, PaginatedMedications, SearchMedicationsInput, UpdateMedicationInput,
 } from './types/medication.type';
 import { NotFoundException } from '@nestjs/common';
 import { GraphQLError } from 'graphql/error';
+import { PaginationInput } from '../user/types/user.type';
 
 @Resolver()
 export class MedicationsResolver {
@@ -30,9 +31,21 @@ export class MedicationsResolver {
 		}
   }
 
-  @Query(() => [Medication], {name: 'medications'})
-  async getMedications(): Promise<Medication[]> {
-    return this.medicationsService.getMedications();
+  @Query(() => PaginatedMedications, {name: 'medications'})
+  async getMedications(
+    @Args('input', { nullable: true }) input: PaginationInput = { page: 1, limit: 10 }
+  ) {
+    try {
+      return this.medicationsService.getMedications(input.page, input.limit);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      throw new GraphQLError(errorMessage, {
+        extensions: {
+          code: error instanceof NotFoundException ? 'Không tìm thấy' : 'INTERNAL_SERVER_ERROR',
+          originalError: error,
+        },
+      })
+    }
   }
 
   @Query(() => Medication, {name: 'medication'})
