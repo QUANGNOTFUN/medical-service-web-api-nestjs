@@ -25,6 +25,8 @@ model User {
   doctor Doctors?
 
   Patient Patient[]
+
+  Document Document[]
 }
 
 enum Role {
@@ -59,6 +61,7 @@ model Doctors {
   ExaminationreportType ExaminationReport[]
 
   @@map("Doctors")
+  BlogPost BlogPost[]
 }
 
 model DoctorSchedule {
@@ -85,6 +88,8 @@ model Patient {
   // Relations
   user                User          @relation(fields: [patient_id], references: [id])
   appointments        Appointment[]
+
+  Reminder Reminder[]
 }
 
 model Appointment {
@@ -183,4 +188,49 @@ enum CareStage {
 enum RegimenType {
   STANDARD
   CUSTOM
+}
+
+model Reminder {
+  reminder_id    Int      @id @default(autoincrement())
+  patient_id     String   @default(uuid())
+  reminder_type  String
+  reminder_time  DateTime
+  message        String?
+  status         String   @default("pending")
+  created_at     DateTime @default(now())
+
+  patient        Patient  @relation(fields: [patient_id], references: [patient_id])
+
+}
+
+model BlogPost {
+  post_id      Int      @id @default(autoincrement())
+  title        String
+  content      String
+  author_id    String
+  category     String
+  published_at DateTime?
+  created_at   DateTime @default(now())
+  updated_at   DateTime?
+
+  author       Doctors   @relation(fields: [author_id], references: [id])
+}
+
+model Document {
+  document_id Int      @id @default(autoincrement())
+  title       String
+  file_url    String
+  category    String
+  uploaded_by User     @relation(fields: [uploaded_by_id], references: [id])
+  uploaded_by_id String
+  created_at   DateTime @default(now())
+  updated_at   DateTime?
+}
+
+model DashboardReport {
+  report_id   Int      @id @default(autoincrement())
+  report_type String
+  generated_at DateTime
+  data         Json
+  created_at   DateTime @default(now())
 }

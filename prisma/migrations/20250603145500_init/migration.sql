@@ -146,6 +146,57 @@ CREATE TABLE "Regimen" (
 );
 
 -- CreateTable
+CREATE TABLE "Reminder" (
+    "reminder_id" SERIAL NOT NULL,
+    "patient_id" TEXT NOT NULL,
+    "reminder_type" TEXT NOT NULL,
+    "reminder_time" TIMESTAMP(3) NOT NULL,
+    "message" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Reminder_pkey" PRIMARY KEY ("reminder_id")
+);
+
+-- CreateTable
+CREATE TABLE "BlogPost" (
+    "post_id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "author_id" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "published_at" TIMESTAMP(3),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+
+    CONSTRAINT "BlogPost_pkey" PRIMARY KEY ("post_id")
+);
+
+-- CreateTable
+CREATE TABLE "Document" (
+    "document_id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "file_url" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "uploaded_by_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+
+    CONSTRAINT "Document_pkey" PRIMARY KEY ("document_id")
+);
+
+-- CreateTable
+CREATE TABLE "DashboardReport" (
+    "report_id" SERIAL NOT NULL,
+    "report_type" TEXT NOT NULL,
+    "generated_at" TIMESTAMP(3) NOT NULL,
+    "data" JSONB NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "DashboardReport_pkey" PRIMARY KEY ("report_id")
+);
+
+-- CreateTable
 CREATE TABLE "_AppointmentToTreatmentPlan" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
@@ -203,6 +254,15 @@ ALTER TABLE "ExaminationReport" ADD CONSTRAINT "ExaminationReport_regimen_id_fke
 
 -- AddForeignKey
 ALTER TABLE "ExaminationReport" ADD CONSTRAINT "ExaminationReport_treatment_plan_id_fkey" FOREIGN KEY ("treatment_plan_id") REFERENCES "TreatmentPlan"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reminder" ADD CONSTRAINT "Reminder_patient_id_fkey" FOREIGN KEY ("patient_id") REFERENCES "Patient"("patient_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BlogPost" ADD CONSTRAINT "BlogPost_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "Doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Document" ADD CONSTRAINT "Document_uploaded_by_id_fkey" FOREIGN KEY ("uploaded_by_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_AppointmentToTreatmentPlan" ADD CONSTRAINT "_AppointmentToTreatmentPlan_A_fkey" FOREIGN KEY ("A") REFERENCES "Appointment"("appointment_id") ON DELETE CASCADE ON UPDATE CASCADE;
