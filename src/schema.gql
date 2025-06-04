@@ -177,6 +177,7 @@ type Medication {
 type Mutation {
   createAppointment(input: CreateAppointmentInput!): Appointment!
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
+  createDoctorAndUser(input: RegisterDoctorInput!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
   createExaminationReport(input: CreateExaminationReportInput!): ExaminationReport!
   createMedication(input: CreateMedicationInput!): Medication!
@@ -196,7 +197,7 @@ type Mutation {
   deleteUser(id: String!): User!
   login(userData: LoginDto!): LoginResponse!
   register(userData: RegisterDto!): User!
-  updateDoctor(doctorData: CreateDoctorDto!, id: String!): Doctor!
+  updateDoctor(doctorData: UpdateDoctorInput!, id: String!): Doctor!
   updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: String!): DoctorSchedule!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
   updatePatient(input: UpdatePatientInput!): Patient!
@@ -204,6 +205,14 @@ type Mutation {
 
   """Cập nhật thông tin người dùng"""
   updateUser(id: String!, input: UpdateUserInput!): User!
+}
+
+type PaginatedMedications {
+  items: [Medication!]!
+  page: Int!
+  pageSize: Int!
+  total: Int!
+  totalPages: Int!
 }
 
 input PaginationInput {
@@ -242,7 +251,7 @@ type Query {
   """Lấy thông tin người dùng theo ID"""
   getUserById(input: GetUserByIdInput!): User!
   medication(input: GetMedicationByIdInput!): Medication!
-  medications: [Medication!]!
+  medications(input: PaginationInput): PaginatedMedications!
   searchMedications(input: SearchMedicationsInput!): [Medication!]!
 }
 
@@ -255,6 +264,18 @@ type Regimen {
   regimen_type: String!
   updated_at: Timestamp!
   user_guide: String!
+}
+
+input RegisterDoctorInput {
+  email: String!
+  full_name: String!
+  gender: String!
+  hospital: String
+  password: String!
+  qualifications: String
+  role: String!
+  specialty: String
+  work_seniority: Float
 }
 
 input RegisterDto {
@@ -287,6 +308,16 @@ type TreatmentPlan {
   notes: String
   start_date: Timestamp!
   updated_at: Timestamp
+}
+
+input UpdateDoctorInput {
+  email: String
+  full_name: String
+  gender: String
+  hospital: String
+  qualifications: String
+  specialty: String
+  work_seniority: Float
 }
 
 input UpdateMedicationInput {

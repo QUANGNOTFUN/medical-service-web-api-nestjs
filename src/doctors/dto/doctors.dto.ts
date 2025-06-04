@@ -34,3 +34,30 @@ export class CreateDoctorDto {
   @IsString()
   hospital?: string;
 }
+
+@InputType()
+export class RegisterDoctorInput {
+  @Field() full_name: string;
+  @Field() email: string;
+  @Field() password: string;
+  @Field() gender: string;
+  @Field() role: string;
+
+  // thêm các trường doctor
+  @Field({ nullable: true }) qualifications?: string;
+  @Field({ nullable: true }) work_seniority?: number;
+  @Field({ nullable: true }) specialty?: string;
+  @Field({ nullable: true }) hospital?: string;
+}
+
+@InputType()
+export class UpdateDoctorInput {
+  @Field({ nullable: true }) full_name: string;
+  @Field({ nullable: true }) email: string;
+  @Field({ nullable: true }) gender: string;
+  // thêm các trường doctor
+  @Field({ nullable: true }) qualifications?: string;
+  @Field({ nullable: true }) work_seniority?: number;
+  @Field({ nullable: true }) specialty?: string;
+  @Field({ nullable: true }) hospital?: string;
+}

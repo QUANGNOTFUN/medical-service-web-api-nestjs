@@ -2,6 +2,7 @@ import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Decimal } from 'generated/prisma/runtime/library';
 import { GraphQLDate } from 'graphql-scalars';
 import { IsInt, IsNumber, IsString, Min, MinLength } from 'class-validator';
+import { PaginatedResponse } from '../../common/types/pagination';
 
 @ObjectType()
 export class Medication {
@@ -25,6 +26,12 @@ export class Medication {
 
   @Field(() => GraphQLDate)
   updated_at: Date;
+}
+
+@ObjectType()
+export class PaginatedMedications extends PaginatedResponse<Medication> {
+  @Field(() => [Medication])
+  declare items: Medication[];
 }
 
 @InputType()

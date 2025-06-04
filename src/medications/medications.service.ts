@@ -2,16 +2,16 @@ import { Injectable, NotFoundException, Logger, ConflictException } from '@nestj
 import { PrismaService } from '../prisma/prisma.service';
 import { Medication, Prisma } from '@prisma/client';
 import {
-  CreateMedicationInput,
+  CreateMedicationInput, PaginatedMedications,
   UpdateMedicationInput,
 } from './types/medication.type';
+import { undefined } from 'zod';
 
 @Injectable()
 export class MedicationsService {
   private readonly logger = new Logger(MedicationsService.name);
 
   constructor(private readonly prisma: PrismaService) {}
-
 
   async searchMedications(keyword: string) {
     try {
@@ -23,7 +23,7 @@ export class MedicationsService {
           },
           acronym: {
             contains: keyword,
-            mode: 'insensitive'
+            mode: 'insensitive',
           },
         },
       });
@@ -32,7 +32,8 @@ export class MedicationsService {
       }
       return medications;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
       const errorStack = error instanceof Error ? error.stack : undefined;
       this.logger.error(
         `Lỗi khi tìm kiếm thuốc với từ khóa ${keyword}: ${errorMessage}`,
@@ -42,12 +43,39 @@ export class MedicationsService {
     }
   }
 
-  async getMedications(): Promise<Medication[]> {
-    return this.prisma.medication.findMany({
-			orderBy: {
-				created_at: 'asc',
-			},
-		});
+  async getMedications(
+    page: number = 1,
+    pageSize: number = 10,
+  ): Promise<PaginatedMedications> {
+    try {
+      const skip = (page - 1) * pageSize;
+      const [medications, total] = await Promise.all([
+        this.prisma.medication.findMany({
+          skip,
+          take: pageSize,
+          orderBy: {
+            created_at: 'asc',
+          },
+        }),
+        this.prisma.medication.count(),
+      ]);
+      return {
+        items: medications,
+        total,
+        page,
+        pageSize,
+        totalPages: Math.ceil(total / pageSize),
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(
+        `Lỗi khi lấy danh sách thuốc: ${errorMessage}`,
+        errorStack,
+      );
+      throw error;
+    }
   }
 
   async getMedicationById(id: number): Promise<Medication> {
@@ -90,18 +118,18 @@ export class MedicationsService {
   async updateMedication(id: number, input: UpdateMedicationInput) {
     try {
       // filter null/undefined
-          const data = Object.entries(input).reduce((acc, [key, value]) => {
-            if (value !== null && value !== undefined) {
-              acc[key] = value;
-            }
-            return acc;
-          }, {} as any);
-          data.updated_at = new Date();
+      const data = Object.entries(input).reduce((acc, [key, value]) => {
+        if (value !== null && value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as any);
+      data.updated_at = new Date();
 
-          return await this.prisma.medication.update({
-            where: { id },
-            data,
-          });
+      return await this.prisma.medication.update({
+        where: { id },
+        data,
+      });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') {

@@ -46,8 +46,8 @@ model Medication {
 }
 
 model Doctors {
-  id             String    @id @default(uuid())
-  user           User      @relation(fields: [id], references: [id])
+  id             String    @id
+  user           User      @relation(fields: [id], references: [id], onDelete: Cascade)
   qualifications String?
   work_seniority Int?
   gender        String @default("OTHER")
