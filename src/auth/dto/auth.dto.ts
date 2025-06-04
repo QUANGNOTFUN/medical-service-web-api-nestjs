@@ -5,6 +5,7 @@ import { Role } from '../../role/role.enum';
 
 @InputType()
 export class RegisterDto {
+
   @Field(() => String)
   @IsString({ message: 'full_name phải là chuỗi' })
   @IsNotEmpty({ message: 'full_name không được để trống' })
@@ -30,11 +31,6 @@ export class RegisterDto {
   @IsOptional()
   @IsString({ message: 'address phải là chuỗi' })
   address?: string;
-
-  @Field(() => String)
-  @IsString({ message: 'gender phải là chuỗi' })
-  @IsNotEmpty({ message: 'gender không được để trống' })
-  gender: string;
 
   @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
   @IsString({ message: 'role phải là chuỗi' })

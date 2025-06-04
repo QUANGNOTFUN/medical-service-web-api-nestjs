@@ -2,6 +2,7 @@ import { Field, ObjectType, Int } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
 import { User } from '../../user/types/user.type';
 import { DoctorSchedule } from '../../doctor_schedules/model/doctor_schedules.model';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 @ObjectType()
 export class Doctor {
@@ -10,6 +11,12 @@ export class Doctor {
 
   @Field(() => String, { nullable: true })
   qualifications: string | null;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString({ message: 'gender phải là chuỗi' })
+  @IsNotEmpty({ message: 'gender không được để trống' })
+  gender: string;
 
   @Field(() => Int, { nullable: true })
   work_seniority: number | null;

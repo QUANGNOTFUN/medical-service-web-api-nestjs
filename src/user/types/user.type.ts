@@ -2,6 +2,7 @@ import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Min, MinLength } from 'class-validator';
 import { Role } from '../../role/role.enum';
+
 @ObjectType()
 export class User {
   @Field(() => ID, { description: 'Unique identifier for the user' })
@@ -21,9 +22,6 @@ export class User {
 
   @Field(() => String, { nullable: true, description: 'Address of the user' })
   address?: string | null;
-
-  @Field(() => String, { nullable: true, description: 'Gender of the user' })
-  gender?: string | null;
 
   @Field(() => GraphQLDate, { nullable: true, description: 'Date of birth of the user' })
   date_of_birth?: Date | null;
@@ -112,11 +110,6 @@ export class CreateUserInput {
   @IsString({ message: 'address phải là chuỗi' })
   address?: string;
 
-  @Field(() => String)
-  @IsString({ message: 'gender phải là chuỗi' })
-  @IsNotEmpty({ message: 'gender không được để trống' })
-  gender: string;
-
   @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
   @IsString({ message: 'role phải là chuỗi' })
   @IsNotEmpty({ message: 'role không được để trống' })
@@ -149,7 +142,6 @@ export class UpdateUserInput {
   @Field(() => String, { nullable: true })
   @IsString({ message: 'password phải là chuỗi' })
   @IsOptional()
-
   @IsNotEmpty({ message: 'password không được để trống' })
   password: string;
 
@@ -157,12 +149,6 @@ export class UpdateUserInput {
   @IsOptional()
   @IsString({ message: 'address phải là chuỗi' })
   address?: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString({ message: 'gender phải là chuỗi' })
-  @IsNotEmpty({ message: 'gender không được để trống' })
-  gender: string;
 
   @Field(() => GraphQLDate, { nullable: true })
   @IsOptional()

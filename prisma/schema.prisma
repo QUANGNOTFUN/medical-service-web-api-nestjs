@@ -16,7 +16,6 @@ model User {
   full_name     String
   phone         String?
   address       String?
-  gender        String?
   date_of_birth DateTime?
 
   created_at DateTime  @default(now())
@@ -51,6 +50,7 @@ model Doctors {
   user           User      @relation(fields: [id], references: [id])
   qualifications String?
   work_seniority Int?
+  gender        String @default("OTHER")
   specialty      String?
   hospital       String?
   created_at     DateTime  @default(now())
@@ -78,10 +78,9 @@ model DoctorSchedule {
 
 model Patient {
   patient_id          String        @id @default(uuid())
-  anonymous_id        String        @unique
-  date_of_birth       DateTime
-  gender              String
-  hiv_diagnosis_date  DateTime
+  date_of_birth       DateTime?
+  gender              String  @default("OTHER")
+  hiv_diagnosis_date  DateTime?
   created_at          DateTime      @default(now())
   updated_at          DateTime?     @updatedAt
 

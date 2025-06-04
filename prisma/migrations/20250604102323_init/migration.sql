@@ -25,7 +25,6 @@ CREATE TABLE "User" (
     "full_name" TEXT NOT NULL,
     "phone" TEXT,
     "address" TEXT,
-    "gender" TEXT,
     "date_of_birth" TIMESTAMP(3),
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
@@ -51,6 +50,7 @@ CREATE TABLE "Doctors" (
     "id" TEXT NOT NULL,
     "qualifications" TEXT,
     "work_seniority" INTEGER,
+    "gender" TEXT NOT NULL,
     "specialty" TEXT,
     "hospital" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -74,8 +74,7 @@ CREATE TABLE "DoctorSchedule" (
 -- CreateTable
 CREATE TABLE "Patient" (
     "patient_id" TEXT NOT NULL,
-    "anonymous_id" TEXT NOT NULL,
-    "date_of_birth" TIMESTAMP(3) NOT NULL,
+    "date_of_birth" TIMESTAMP(3),
     "gender" TEXT NOT NULL,
     "hiv_diagnosis_date" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -215,9 +214,6 @@ CREATE UNIQUE INDEX "Medication_name_key" ON "Medication"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "DoctorSchedule_doctor_id_key" ON "DoctorSchedule"("doctor_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Patient_anonymous_id_key" ON "Patient"("anonymous_id");
 
 -- CreateIndex
 CREATE INDEX "Appointment_doctor_id_idx" ON "Appointment"("doctor_id");

@@ -1,4 +1,4 @@
-import { IsString, IsInt, Min, IsOptional } from 'class-validator';
+import { IsString, IsInt, Min, IsOptional, IsNotEmpty } from 'class-validator';
 import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
@@ -17,6 +17,12 @@ export class CreateDoctorDto {
   @IsInt()
   @Min(0)
   work_seniority?: number;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString({ message: 'gender phải là chuỗi' })
+  @IsNotEmpty({ message: 'gender không được để trống' })
+  gender: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()

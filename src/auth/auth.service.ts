@@ -6,6 +6,7 @@ import { compare, hash } from 'bcrypt';
 import { LoginResponse } from './models/auth.model';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
+import { PatientService } from '../patients/patients.service';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
     private prismaService: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) {}
+) {}
 
   async register(userData: RegisterDto): Promise<User> {
     const user = await this.prismaService.user.findUnique({
@@ -26,6 +27,7 @@ export class AuthService {
       );
     }
     const hashPass = await hash(userData.password, 10);
+
     return this.prismaService.user.create({
       data: { ...userData, password: hashPass },
     });

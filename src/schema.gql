@@ -26,6 +26,7 @@ input CreateAppointmentInput {
 }
 
 input CreateDoctorDto {
+  gender: String
   hospital: String
   id: String!
   qualifications: String
@@ -58,10 +59,10 @@ input CreateMedicationInput {
 }
 
 input CreatePatientInput {
-  anonymous_id: String!
-  date_of_birth: Date!
+  date_of_birth: Date
   gender: String!
   hiv_diagnosis_date: Date!
+  patient_id: ID!
 }
 
 input CreateRegimenInput {
@@ -96,6 +97,7 @@ input DeletePatientInput {
 type Doctor {
   """Creation date of the doctor record"""
   created_at: Date!
+  gender: String
   hospital: String
   id: String!
   qualifications: String
@@ -210,9 +212,8 @@ input PaginationInput {
 }
 
 type Patient {
-  anonymous_id: String!
   created_at: Timestamp!
-  date_of_birth: Date!
+  date_of_birth: Date
   gender: String!
   hiv_diagnosis_date: Date!
   patient_id: ID!
@@ -261,7 +262,6 @@ input RegisterDto {
   date_of_birth: Date
   email: String!
   full_name: String!
-  gender: String!
   password: String!
   phone: String
 
@@ -297,7 +297,6 @@ input UpdateMedicationInput {
 }
 
 input UpdatePatientInput {
-  anonymous_id: String
   date_of_birth: Date
   gender: String
   hiv_diagnosis_date: Date
@@ -318,7 +317,6 @@ input UpdateUserInput {
   date_of_birth: Date
   email: String
   full_name: String
-  gender: String
   password: String
   phone: String
 }
@@ -336,9 +334,6 @@ type User {
 
   """Full name of the user"""
   full_name: String!
-
-  """Gender of the user"""
-  gender: String
 
   """Unique identifier for the user"""
   id: ID!
