@@ -24,6 +24,7 @@ export class Doctor {
   @Field(() => String, { nullable: true })
   specialty: string | null;
 
+
   @Field(() => String, { nullable: true })
   hospital: string | null;
 

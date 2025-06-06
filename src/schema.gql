@@ -270,12 +270,8 @@ input RegisterDoctorInput {
   email: String!
   full_name: String!
   gender: String!
-  hospital: String
   password: String!
-  qualifications: String
   role: String!
-  specialty: String
-  work_seniority: Float
 }
 
 input RegisterDto {

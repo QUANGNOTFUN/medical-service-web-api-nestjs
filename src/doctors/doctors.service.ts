@@ -25,25 +25,21 @@ export class DoctorsService {
           password: input.password,
           role: 'DOCTOR',
           full_name: input.full_name,
-          gender: input.gender,
         },
       });
 
-      // 2. Tạo doctor, dùng chính id của user
-      const doctor = await tx.doctors.create({
-        data: {
-          id: user.id, // dùng id của user làm id doctor
-          qualifications: input.qualifications,
-          work_seniority: input.work_seniority,
+      await new Promise((res) => setTimeout(res, 100)); // chờ trigger tạo doctor
 
-          specialty: input.specialty,
-          hospital: input.hospital,
+      const doctor = await tx.doctors.findUniqueOrThrow({
+        where: {
+          id: user.id, // Vì doctor.id = user.id
         },
         include: {
           user: true,
           schedule: true,
         },
       });
+
       return doctor;
     });
   }
@@ -93,13 +89,13 @@ export class DoctorsService {
       data: {
         qualifications: data.qualifications,
         work_seniority: data.work_seniority,
+        gender: data.gender,
         specialty: data.specialty,
         hospital: data.hospital,
         user: {
           update: {
             full_name: data.full_name,
             email: data.email,
-            gender: data.gender,
           },
         },
       },

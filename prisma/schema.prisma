@@ -50,7 +50,7 @@ model Doctors {
   user           User      @relation(fields: [id], references: [id], onDelete: Cascade)
   qualifications String?
   work_seniority Int?
-  gender        String @default("OTHER")
+  gender         String?   @default("OTHER")
   specialty      String?
   hospital       String?
   created_at     DateTime  @default(now())
@@ -59,9 +59,9 @@ model Doctors {
   schedule              DoctorSchedule?
   Appointment           Appointment[]
   ExaminationreportType ExaminationReport[]
+  BlogPost              BlogPost[]
 
   @@map("Doctors")
-  BlogPost BlogPost[]
 }
 
 model DoctorSchedule {
@@ -77,40 +77,40 @@ model DoctorSchedule {
 }
 
 model Patient {
-  patient_id          String        @id @default(uuid())
-  date_of_birth       DateTime?
-  gender              String  @default("OTHER")
-  hiv_diagnosis_date  DateTime?
-  created_at          DateTime      @default(now())
-  updated_at          DateTime?     @updatedAt
+  patient_id         String    @id @default(uuid())
+  date_of_birth      DateTime?
+  gender             String    @default("OTHER")
+  hiv_diagnosis_date DateTime?
+  created_at         DateTime  @default(now())
+  updated_at         DateTime? @updatedAt
 
   // Relations
-  user                User          @relation(fields: [patient_id], references: [id])
-  appointments        Appointment[]
+  user         User          @relation(fields: [patient_id], references: [id])
+  appointments Appointment[]
 
   Reminder Reminder[]
 }
 
 model Appointment {
-  appointment_id    Int       @id @default(autoincrement())
-  patient_id        String
-  doctor_id         String
-  schedule_id       Int
-  appointment_type  String     // ✅ đổi từ enum AppointmentType
-  appointment_date  DateTime
-  status            String     // ✅ đổi từ enum AppointmentStatus
-  is_anonymous      Boolean    @default(false)
-  notes             String?
-  created_at        DateTime   @default(now())
-  updated_at        DateTime?  @updatedAt
+  appointment_id   Int       @id @default(autoincrement())
+  patient_id       String
+  doctor_id        String
+  schedule_id      Int
+  appointment_type String // ✅ đổi từ enum AppointmentType
+  appointment_date DateTime
+  status           String // ✅ đổi từ enum AppointmentStatus
+  is_anonymous     Boolean   @default(false)
+  notes            String?
+  created_at       DateTime  @default(now())
+  updated_at       DateTime? @updatedAt
 
-  patient           Patient        @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
-  doctor            Doctors        @relation(fields: [doctor_id], references: [id])
-  schedule          DoctorSchedule @relation(fields: [schedule_id], references: [id])
+  patient       Patient         @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  doctor        Doctors         @relation(fields: [doctor_id], references: [id])
+  schedule      DoctorSchedule  @relation(fields: [schedule_id], references: [id])
+  TreatmentPlan TreatmentPlan[]
 
   @@index([doctor_id])
   @@index([appointment_date])
-  TreatmentPlan TreatmentPlan[]
 }
 
 enum AppointmentType {
@@ -127,35 +127,35 @@ enum AppointmentStatus {
 }
 
 model TreatmentPlan {
-  id                     Int                   @id @default(autoincrement())
-  name                   String                // Ghi tên giai đoạn đang điều trị
-  hiv_diagnosis_date     DateTime?             // Ngày phát hiện nhiễm HIV (nullable)
-  start_date             DateTime              // Ngày bắt đầu điều trị
-  end_date               DateTime?             // Ngày kết thúc điều trị
-  notes                  String?               // Ghi chú thêm
-  created_at             DateTime              @default(now())
-  updated_at             DateTime?             @updatedAt
+  id                 Int       @id @default(autoincrement())
+  name               String // Ghi tên giai đoạn đang điều trị
+  hiv_diagnosis_date DateTime? // Ngày phát hiện nhiễm HIV (nullable)
+  start_date         DateTime // Ngày bắt đầu điều trị
+  end_date           DateTime? // Ngày kết thúc điều trị
+  notes              String? // Ghi chú thêm
+  created_at         DateTime  @default(now())
+  updated_at         DateTime? @updatedAt
 
   // Quan hệ
-  examinations           ExaminationReport[]   // Danh sách các kết quả khám
-  follow_up_appointments Appointment[]         // Danh sách các cuộc hẹn tái khám
+  examinations           ExaminationReport[] // Danh sách các kết quả khám
+  follow_up_appointments Appointment[] // Danh sách các cuộc hẹn tái khám
 }
 
 model ExaminationReport {
-  id               Int       @id @default(autoincrement())
-  name             String    @db.VarChar(50)
-  doctor_id        String
-  risk_assessment  String
-  is_HIV           Boolean
-  HIV_test_file    String
-  regimen_id       Int
-  created_at       DateTime  @default(now())
-  updated_at       DateTime? @updatedAt
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar(50)
+  doctor_id       String
+  risk_assessment String
+  is_HIV          Boolean
+  HIV_test_file   String
+  regimen_id      Int
+  created_at      DateTime  @default(now())
+  updated_at      DateTime? @updatedAt
 
   // Quan hệ
-  doctor           Doctors   @relation(fields: [doctor_id], references: [id])
-  regimen          Regimen   @relation(fields: [regimen_id], references: [id])
-  treatment_plan   TreatmentPlan? @relation(fields: [treatment_plan_id], references: [id])
+  doctor            Doctors        @relation(fields: [doctor_id], references: [id])
+  regimen           Regimen        @relation(fields: [regimen_id], references: [id])
+  treatment_plan    TreatmentPlan? @relation(fields: [treatment_plan_id], references: [id])
   treatment_plan_id Int?
 }
 
@@ -166,14 +166,14 @@ enum RiskLevel {
 }
 
 model Regimen {
-  id              Int       @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   care_stage      String
   regimen_type    String
   medication_list String[]
   user_guide      String
   is_default      Boolean
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @default(now())
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
 
   examination_reports ExaminationReport[]
 }
@@ -190,45 +190,44 @@ enum RegimenType {
 }
 
 model Reminder {
-  reminder_id    Int      @id @default(autoincrement())
-  patient_id     String   @default(uuid())
-  reminder_type  String
-  reminder_time  DateTime
-  message        String?
-  status         String   @default("pending")
-  created_at     DateTime @default(now())
+  reminder_id   Int      @id @default(autoincrement())
+  patient_id    String   @default(uuid())
+  reminder_type String
+  reminder_time DateTime
+  message       String?
+  status        String   @default("pending")
+  created_at    DateTime @default(now())
 
-  patient        Patient  @relation(fields: [patient_id], references: [patient_id])
-
+  patient Patient @relation(fields: [patient_id], references: [patient_id])
 }
 
 model BlogPost {
-  post_id      Int      @id @default(autoincrement())
+  post_id      Int       @id @default(autoincrement())
   title        String
   content      String
   author_id    String
   category     String
   published_at DateTime?
-  created_at   DateTime @default(now())
+  created_at   DateTime  @default(now())
   updated_at   DateTime?
 
-  author       Doctors   @relation(fields: [author_id], references: [id])
+  author Doctors @relation(fields: [author_id], references: [id])
 }
 
 model Document {
-  document_id Int      @id @default(autoincrement())
-  title       String
-  file_url    String
-  category    String
-  uploaded_by User     @relation(fields: [uploaded_by_id], references: [id])
+  document_id    Int       @id @default(autoincrement())
+  title          String
+  file_url       String
+  category       String
+  uploaded_by    User      @relation(fields: [uploaded_by_id], references: [id])
   uploaded_by_id String
-  created_at   DateTime @default(now())
-  updated_at   DateTime?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime?
 }
 
 model DashboardReport {
-  report_id   Int      @id @default(autoincrement())
-  report_type String
+  report_id    Int      @id @default(autoincrement())
+  report_type  String
   generated_at DateTime
   data         Json
   created_at   DateTime @default(now())
