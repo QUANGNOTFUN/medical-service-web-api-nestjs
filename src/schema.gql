@@ -276,6 +276,9 @@ input RegisterDoctorInput {
 
 input RegisterDto {
   address: String
+
+  """Avatar"""
+  avatar: String
   date_of_birth: Date
   email: String!
   full_name: String!
@@ -341,6 +344,9 @@ input UpdateTreatmentPlanInput {
 
 input UpdateUserInput {
   address: String
+
+  """Avatar"""
+  avatar: String
   date_of_birth: Date
   email: String
   full_name: String
@@ -351,6 +357,9 @@ input UpdateUserInput {
 type User {
   """Address of the user"""
   address: String
+
+  """Avatar"""
+  avatar: String
 
   """Creation date of the user record"""
   created_at: Date!

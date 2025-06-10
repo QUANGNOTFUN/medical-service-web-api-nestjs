@@ -23,6 +23,9 @@ export class User {
   @Field(() => String, { nullable: true, description: 'Address of the user' })
   address?: string | null;
 
+  @Field(() => String, { nullable: true, description: 'Avatar' })
+  avatar?: string | null;
+
   @Field(() => GraphQLDate, { nullable: true, description: 'Date of birth of the user' })
   date_of_birth?: Date | null;
 
@@ -110,6 +113,11 @@ export class CreateUserInput {
   @IsString({ message: 'address phải là chuỗi' })
   address?: string;
 
+  @Field(() => String, { nullable: true, description: 'Avatar' })
+  @IsOptional()
+  @IsString()
+  avatar?: string | null;
+
   @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
   @IsString({ message: 'role phải là chuỗi' })
   @IsNotEmpty({ message: 'role không được để trống' })
@@ -149,6 +157,11 @@ export class UpdateUserInput {
   @IsOptional()
   @IsString({ message: 'address phải là chuỗi' })
   address?: string;
+
+  @Field(() => String, { nullable: true, description: 'Avatar' })
+  @IsOptional()
+  @IsString()
+  avatar?: string;
 
   @Field(() => GraphQLDate, { nullable: true })
   @IsOptional()
