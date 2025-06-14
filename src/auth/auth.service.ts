@@ -6,7 +6,6 @@ import { compare, hash } from 'bcrypt';
 import { LoginResponse } from './models/auth.model';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
-import { PatientService } from '../patients/patients.service';
 
 @Injectable()
 export class AuthService {

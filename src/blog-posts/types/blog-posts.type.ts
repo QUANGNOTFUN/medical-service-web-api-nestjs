@@ -34,9 +34,6 @@ export class CreateBlogPostInput {
   content: string;
 
   @Field()
-  created_at: Date;
-
-  @Field()
   category: string;
 
   @Field()
