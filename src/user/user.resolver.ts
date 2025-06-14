@@ -38,7 +38,6 @@ export class UserResolver {
     @Args('pagination', { type: () => PaginationInput, nullable: true })
     pagination: PaginationInput,
   ): Promise<UserPaginationResponse> {
-    console.log('current user=> ', user);
     return this.userService.getAllUsers(pagination);
   }
 

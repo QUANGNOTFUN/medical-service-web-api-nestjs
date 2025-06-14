@@ -32,6 +32,11 @@ export class RegisterDto {
   @IsString({ message: 'address phải là chuỗi' })
   address?: string;
 
+  @Field(() => String, { nullable: true, description: 'Avatar' })
+  @IsOptional()
+  @IsString()
+  avatar?: string | null;
+
   @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
   @IsString({ message: 'role phải là chuỗi' })
   @IsNotEmpty({ message: 'role không được để trống' })
