@@ -15,6 +15,17 @@ type Appointment {
   updated_at: Timestamp
 }
 
+type BlogPost {
+  author_id: String!
+  category: String!
+  content: String!
+  created_at: DateTime!
+  id: ID!
+  publish_at: DateTime
+  title: String!
+  updated_at: DateTime
+}
+
 input CreateAppointmentInput {
   appointment_date: Timestamp!
   appointment_type: String!
@@ -23,6 +34,13 @@ input CreateAppointmentInput {
   patient_id: String!
   schedule_id: Int!
   status: String!
+}
+
+input CreateBlogPostInput {
+  author_id: String!
+  category: String!
+  content: String!
+  title: String!
 }
 
 input CreateDoctorDto {
@@ -86,6 +104,11 @@ A date string, such as 2007-12-03, compliant with the `full-date` format outline
 """
 scalar Date
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 input DeleteAppointmentInput {
   appointment_id: Int!
 }
@@ -141,6 +164,10 @@ input GetAppointmentByIdInput {
   appointment_id: Int!
 }
 
+input GetBlogPostByIdInput {
+  id: ID!
+}
+
 input GetMedicationByIdInput {
   id: Float!
 }
@@ -176,6 +203,7 @@ type Medication {
 
 type Mutation {
   createAppointment(input: CreateAppointmentInput!): Appointment!
+  createBlogPost(input: CreateBlogPostInput!): BlogPost!
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
   createDoctorAndUser(input: RegisterDoctorInput!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
@@ -185,6 +213,7 @@ type Mutation {
   createRegimen(input: CreateRegimenInput!): Regimen!
   createTreatmentPlan(input: CreateTreatmentPlanInput!): TreatmentPlan!
   deleteAppointment(input: DeleteAppointmentInput!): Boolean!
+  deleteBlogPost(id: Int!): Boolean!
   deleteDoctor(id: String!): Doctor!
   deleteDoctorSchedule(id: String!): DoctorSchedule!
   deleteExaminationReport(id: Int!): ExaminationReport!
@@ -197,6 +226,7 @@ type Mutation {
   deleteUser(id: String!): User!
   login(userData: LoginDto!): LoginResponse!
   register(userData: RegisterDto!): User!
+  updateBlogPost(id: Int!, input: UpdateBlogPostInput!): BlogPost!
   updateDoctor(doctorData: UpdateDoctorInput!, id: String!): Doctor!
   updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: String!): DoctorSchedule!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
@@ -207,12 +237,25 @@ type Mutation {
   updateUser(id: String!, input: UpdateUserInput!): User!
 }
 
+type PaginatedBlogPosts {
+  items: [BlogPost!]!
+  page: Int!
+  pageSize: Int!
+  total: Int!
+  totalPages: Int!
+}
+
 type PaginatedMedications {
   items: [Medication!]!
   page: Int!
   pageSize: Int!
   total: Int!
   totalPages: Int!
+}
+
+input PaginationBlogInput {
+  page: Int!
+  pageSize: Int!
 }
 
 input PaginationInput {
@@ -240,6 +283,7 @@ type Query {
   findAllTreatmentPlans: [TreatmentPlan!]!
   findExaminationReport(id: Int!): ExaminationReport!
   findOneAppointment(input: GetAppointmentByIdInput!): Appointment!
+  findOneBlogPost(input: GetBlogPostByIdInput!): BlogPost!
   findOnePatient(input: GetPatientByIdInput!): Patient!
   findRegimen(id: Int!): Regimen!
   findTreatmentPlan(id: Int!): TreatmentPlan!
@@ -252,6 +296,7 @@ type Query {
   getUserById(input: GetUserByIdInput!): User!
   medication(input: GetMedicationByIdInput!): Medication!
   medications(input: PaginationInput): PaginatedMedications!
+  posts(input: PaginationBlogInput!): PaginatedBlogPosts!
   searchMedications(input: SearchMedicationsInput!): [Medication!]!
 }
 
@@ -307,6 +352,13 @@ type TreatmentPlan {
   notes: String
   start_date: Timestamp!
   updated_at: Timestamp
+}
+
+input UpdateBlogPostInput {
+  category: String!
+  content: String
+  title: String
+  updated_at: DateTime
 }
 
 input UpdateDoctorInput {

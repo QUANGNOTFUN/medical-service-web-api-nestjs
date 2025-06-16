@@ -16,6 +16,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
 import { TreatmentPlanModule } from './treatment-plan/treatment-plan.module';
 import { ExaminationReportModule } from './examination-report/examination-report.module';
 import { RegimenModule } from './regimen/regimen.module';
+import { BlogPostsModule } from './blog-posts/blog-posts.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { RegimenModule } from './regimen/regimen.module';
     DoctorsModule,
     AuthModule,
     DoctorSchedulesModule,
+    BlogPostsModule,
     PatientsModule,
     AppointmentsModule,
     TreatmentPlanModule,
