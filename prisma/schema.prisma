@@ -8,32 +8,20 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  password String
-  role     String
-
+  id            String     @id @default(uuid())
+  email         String     @unique
+  password      String
+  role          String
   full_name     String
   phone         String?
   address       String?
   date_of_birth DateTime?
+  created_at    DateTime   @default(now())
+  updated_at    DateTime?
   avatar        String?
-
-  created_at DateTime  @default(now())
-  updated_at DateTime?
-
-  doctor Doctors?
-
-  Patient Patient[]
-
-  Document Document[]
-}
-
-enum Role {
-  USER
-  ADMIN
-  DOCTOR
-  GUEST
+  doctor        Doctors?
+  Document      Document[]
+  Patient       Patient?
 }
 
 model Medication {
@@ -70,128 +58,88 @@ model Doctors {
 }
 
 model DoctorSchedule {
-  id           Int       @id @default(autoincrement())
-  doctor_id    String    @unique
-  doctor       Doctors   @relation(fields: [doctor_id], references: [id])
+  id           Int           @id @default(autoincrement())
+  doctor_id    String        @unique
   start_time   DateTime?
   end_time     DateTime?
   is_available Boolean?
-  created_at   DateTime  @default(now())
-
-  Appointment Appointment[]
+  created_at   DateTime      @default(now())
+  Appointment  Appointment[]
+  doctor       Doctors       @relation(fields: [doctor_id], references: [id])
 }
 
 model Patient {
-  patient_id         String    @id @default(uuid())
+  patient_id         String        @id @default(uuid())
   date_of_birth      DateTime?
-  gender             String    @default("OTHER")
+  gender             String        @default("OTHER")
   hiv_diagnosis_date DateTime?
-  created_at         DateTime  @default(now())
-  updated_at         DateTime? @updatedAt
-
-  // Relations
-  user         User          @relation(fields: [patient_id], references: [id])
-  appointments Appointment[]
-
-  Reminder Reminder[]
+  created_at         DateTime      @default(now())
+  updated_at         DateTime?     @updatedAt
+  appointments       Appointment[]
+  user               User          @relation(fields: [patient_id], references: [id])
+  Reminder           Reminder[]
 }
 
 model Appointment {
-  appointment_id   Int       @id @default(autoincrement())
+  appointment_id   Int             @id @default(autoincrement())
   patient_id       String
   doctor_id        String
   schedule_id      Int
-  appointment_type String // ✅ đổi từ enum AppointmentType
+  appointment_type String
   appointment_date DateTime
-  status           String // ✅ đổi từ enum AppointmentStatus
-  is_anonymous     Boolean   @default(false)
+  status           String
+  is_anonymous     Boolean         @default(false)
   notes            String?
-  created_at       DateTime  @default(now())
-  updated_at       DateTime? @updatedAt
-
-  patient       Patient         @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
-  doctor        Doctors         @relation(fields: [doctor_id], references: [id])
-  schedule      DoctorSchedule  @relation(fields: [schedule_id], references: [id])
-  TreatmentPlan TreatmentPlan[]
+  created_at       DateTime        @default(now())
+  updated_at       DateTime?       @updatedAt
+  doctor           Doctors         @relation(fields: [doctor_id], references: [id])
+  patient          Patient         @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  schedule         DoctorSchedule  @relation(fields: [schedule_id], references: [id])
+  TreatmentPlan    TreatmentPlan[] @relation("AppointmentToTreatmentPlan")
 
   @@index([doctor_id])
   @@index([appointment_date])
 }
 
-enum AppointmentType {
-  CONSULTATION
-  TREATMENT
-  FOLLOW_UP
-}
-
-enum AppointmentStatus {
-  PENDING
-  CONFIRMED
-  COMPLETED
-  CANCELLED
-}
-
 model TreatmentPlan {
-  id                 Int       @id @default(autoincrement())
-  name               String // Ghi tên giai đoạn đang điều trị
-  hiv_diagnosis_date DateTime? // Ngày phát hiện nhiễm HIV (nullable)
-  start_date         DateTime // Ngày bắt đầu điều trị
-  end_date           DateTime? // Ngày kết thúc điều trị
-  notes              String? // Ghi chú thêm
-  created_at         DateTime  @default(now())
-  updated_at         DateTime? @updatedAt
-
-  // Quan hệ
-  examinations           ExaminationReport[] // Danh sách các kết quả khám
-  follow_up_appointments Appointment[] // Danh sách các cuộc hẹn tái khám
+  id                     Int                 @id @default(autoincrement())
+  name                   String
+  hiv_diagnosis_date     DateTime?
+  start_date             DateTime
+  end_date               DateTime?
+  notes                  String?
+  created_at             DateTime            @default(now())
+  updated_at             DateTime?           @updatedAt
+  examinations           ExaminationReport[]
+  follow_up_appointments Appointment[]       @relation("AppointmentToTreatmentPlan")
 }
 
 model ExaminationReport {
-  id              Int       @id @default(autoincrement())
-  name            String    @db.VarChar(50)
-  doctor_id       String
-  risk_assessment String
-  is_HIV          Boolean
-  HIV_test_file   String
-  regimen_id      Int
-  created_at      DateTime  @default(now())
-  updated_at      DateTime? @updatedAt
-
-  // Quan hệ
+  id                Int            @id @default(autoincrement())
+  name              String         @db.VarChar(50)
+  doctor_id         String
+  risk_assessment   String
+  is_HIV            Boolean
+  HIV_test_file     String
+  regimen_id        Int
+  created_at        DateTime       @default(now())
+  updated_at        DateTime?      @updatedAt
+  treatment_plan_id Int?
   doctor            Doctors        @relation(fields: [doctor_id], references: [id])
   regimen           Regimen        @relation(fields: [regimen_id], references: [id])
   treatment_plan    TreatmentPlan? @relation(fields: [treatment_plan_id], references: [id])
-  treatment_plan_id Int?
-}
-
-enum RiskLevel {
-  LOW
-  MEDIUM
-  HIGH
 }
 
 model Regimen {
-  id              Int      @id @default(autoincrement())
-  care_stage      String
-  regimen_type    String
-  medication_list String[]
-  user_guide      String
-  is_default      Boolean
-  created_at      DateTime @default(now())
-  updated_at      DateTime @default(now())
-
+  id                  Int                 @id @default(autoincrement())
+  care_stage          String
+  regimen_type        String
+  medication_list     String[]
+  user_guide          String
+  is_default          Boolean
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @default(now())
   examination_reports ExaminationReport[]
-}
-
-enum CareStage {
-  PrEP
-  PEP
-  ARV
-}
-
-enum RegimenType {
-  STANDARD
-  CUSTOM
 }
 
 model Reminder {
@@ -202,12 +150,11 @@ model Reminder {
   message       String?
   status        String   @default("pending")
   created_at    DateTime @default(now())
-
-  patient Patient @relation(fields: [patient_id], references: [patient_id])
+  patient       Patient  @relation(fields: [patient_id], references: [patient_id])
 }
 
 model BlogPost {
-  post_id      Int       @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   title        String
   content      String
   author_id    String
@@ -224,10 +171,10 @@ model Document {
   title          String
   file_url       String
   category       String
-  uploaded_by    User      @relation(fields: [uploaded_by_id], references: [id])
   uploaded_by_id String
   created_at     DateTime  @default(now())
   updated_at     DateTime?
+  uploaded_by    User      @relation(fields: [uploaded_by_id], references: [id])
 }
 
 model DashboardReport {
@@ -236,4 +183,41 @@ model DashboardReport {
   generated_at DateTime
   data         Json
   created_at   DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+  DOCTOR
+  GUEST
+}
+
+enum AppointmentType {
+  CONSULTATION
+  TREATMENT
+  FOLLOW_UP
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum CareStage {
+  PrEP
+  PEP
+  ARV
+}
+
+enum RegimenType {
+  STANDARD
+  CUSTOM
 }
