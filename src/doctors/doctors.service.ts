@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateDoctorDto, RegisterDoctorInput, UpdateDoctorInput } from './dto/doctors.dto';
+import { CreateDoctorDto, UpdateDoctorInput } from './dto/doctors.dto';
 import { DoctorWithRelations } from './type/doctors.type';
 
 @Injectable()
@@ -12,44 +12,16 @@ export class DoctorsService {
       data: dataDoctor,
       include: {
         user: true,
-        schedule: true,
+        schedules: true,
       },
     });
   }
-
-  async createDoctorAndUser(input: RegisterDoctorInput): Promise<DoctorWithRelations> {
-    return this.prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
-        data: {
-          email: input.email,
-          password: input.password,
-          role: 'DOCTOR',
-          full_name: input.full_name,
-        },
-      });
-
-      await new Promise((res) => setTimeout(res, 100)); // chờ trigger tạo doctor
-
-      const doctor = await tx.doctors.findUniqueOrThrow({
-        where: {
-          id: user.id, // Vì doctor.id = user.id
-        },
-        include: {
-          user: true,
-          schedule: true,
-        },
-      });
-
-      return doctor;
-    });
-  }
-
 
   async findAll(): Promise<DoctorWithRelations[]> {
     return this.prisma.doctors.findMany({
       include: {
         user: true,
-        schedule: true,
+        schedules: true,
       },
     });
   }
@@ -59,7 +31,7 @@ export class DoctorsService {
       where: { id },
       include: {
         user: true,
-        schedule: true,
+        schedules: true,
       },
     });
 
@@ -75,7 +47,7 @@ export class DoctorsService {
       where: { id },
       include: {
         user: true,
-        schedule: true,
+        schedules: true,
       },
     });
   }
@@ -99,7 +71,7 @@ export class DoctorsService {
           },
         },
       },
-      include: { user: true, schedule: true },
+      include: { user: true, schedules: true },
     });
 
   }

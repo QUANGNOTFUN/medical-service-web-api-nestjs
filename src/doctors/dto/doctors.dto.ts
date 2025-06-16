@@ -1,5 +1,7 @@
-import { IsString, IsInt, Min, IsOptional, IsNotEmpty } from 'class-validator';
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { IsString, IsInt, Min, IsOptional, IsNotEmpty, IsNumber } from 'class-validator';
+import { Field, InputType, Int, Float } from '@nestjs/graphql';
+import { DoctorSchedule } from '../../doctor_schedules/model/doctor_schedules.model';
+import { User } from '../../user/types/user.type';
 
 @InputType()
 export class CreateDoctorDto {
@@ -7,16 +9,45 @@ export class CreateDoctorDto {
   @IsString()
   id: string;
 
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  qualifications: string;
+
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  specialty: string;
+
+  @Field(() => Int)
+  @IsInt()
+  @Min(0)
+  work_seniority: number;
+
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  hospital: string;
+
+  @Field(() => Float, { defaultValue: 0 })
+  @IsNumber()
+  @IsOptional()
+  default_fee?: number;
+
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()
-  qualifications?: string;
+  titles?: string;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsInt()
-  @Min(0)
-  work_seniority?: number;
+  @IsString()
+  positions?: string;
+
+  @Field(() => Float, { defaultValue: 0 })
+  @IsNumber()
+  @IsOptional()
+  rating?: number;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -24,15 +55,6 @@ export class CreateDoctorDto {
   @IsNotEmpty({ message: 'gender không được để trống' })
   gender: string;
 
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
-  specialty?: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
-  hospital?: string;
 }
 
 @InputType()
@@ -49,9 +71,12 @@ export class UpdateDoctorInput {
   @Field({ nullable: true }) full_name: string;
   @Field({ nullable: true }) email: string;
   @Field({ nullable: true }) gender: string;
-  // thêm các trường doctor
   @Field({ nullable: true }) qualifications?: string;
   @Field({ nullable: true }) work_seniority?: number;
   @Field({ nullable: true }) specialty?: string;
   @Field({ nullable: true }) hospital?: string;
+  @Field({ nullable: true }) default_fee?: number;
+  @Field({ nullable: true }) titles?: string;
+  @Field({ nullable: true }) positions?: string;
+  @Field({ nullable: true }) rating?: number;
 }

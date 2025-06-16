@@ -47,22 +47,26 @@ model Medication {
 }
 
 model Doctors {
-  id             String    @id
-  user           User      @relation(fields: [id], references: [id], onDelete: Cascade)
-  qualifications String?
-  work_seniority Int?
-  gender         String?   @default("OTHER")
-  specialty      String?
-  hospital       String?
-  created_at     DateTime  @default(now())
-  updated_at     DateTime?
+  id                       String    @id @default(uuid())
+  user                     User      @relation(fields: [id], references: [id], onDelete: Cascade)
+  qualifications           String
+  specialty                String
+  work_seniority           Int
+  hospital                 String
+  default_fee              Float     @default(0)
+  titles                   String?
+  positions                String?
+  rating                   Float     @default(0)
+  rating_details           Json?
+  profile_views            Int       @default(0)
+  gender                   String?   @default("OTHER") // Giữ lại nếu bạn cố ý thêm
+  created_at               DateTime  @default(now())
+  updated_at               DateTime? @updatedAt
+  appointments             Appointment[]
+  examinationReports       ExaminationReport[] // Sửa tên cho rõ ràng
+  blogPosts                BlogPost[]
 
-  schedule              DoctorSchedule?
-  Appointment           Appointment[]
-  ExaminationreportType ExaminationReport[]
-  BlogPost              BlogPost[]
-
-  @@map("Doctors")
+  schedules               DoctorSchedule[]
 }
 
 model DoctorSchedule {
