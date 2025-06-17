@@ -8,7 +8,7 @@ export class DoctorScheduleService {
   constructor(private prisma: PrismaService) {}
 
   async create(dataSchedule: CreateDoctorDto_Schedules): Promise<DoctorSchedule> {
-    return await this.prisma.doctorSchedule.create({ data: dataSchedule });
+    return this.prisma.doctorSchedule.create({ data: dataSchedule });
   }
 
   async findAll(): Promise<DoctorSchedule[]> {

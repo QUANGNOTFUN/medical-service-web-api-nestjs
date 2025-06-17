@@ -1,8 +1,8 @@
 // doctors.resolver.ts
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { DoctorsService } from './doctors.service';
-import { Doctor, Doctor as DoctorsGraphQL } from './model/doctors.model';
-import { CreateDoctorDto, RegisterDoctorInput, UpdateDoctorInput } from './dto/doctors.dto';
+import { Doctor as DoctorsGraphQL } from './model/doctors.model';
+import { CreateDoctorDto, UpdateDoctorInput } from './dto/doctors.dto';
 import { DoctorWithRelations } from './type/doctors.type';
 import { AuthService } from '../auth/auth.service';
 
@@ -27,12 +27,6 @@ export class DoctorsResolver {
   async createDoctor(@Args('doctorData') doctorData: CreateDoctorDto): Promise<DoctorWithRelations> {
     return this.doctorsService.create(doctorData);
   }
-
-  @Mutation(() => Doctor)
-  async createDoctorAndUser(@Args('input') input: RegisterDoctorInput): Promise<DoctorWithRelations> {
-    return this.doctorsService.createDoctorAndUser(input);
-  }
-
 
   @Mutation(() => DoctorsGraphQL)
   async deleteDoctor(@Args('id') id: string): Promise<DoctorWithRelations> {

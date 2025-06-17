@@ -45,12 +45,16 @@ input CreateBlogPostInput {
 }
 
 input CreateDoctorDto {
+  default_fee: Float! = 0
   gender: String
-  hospital: String
+  hospital: String!
   id: String!
-  qualifications: String
-  specialty: String
-  work_seniority: Int
+  positions: String
+  qualifications: String!
+  rating: Float! = 0
+  specialty: String!
+  titles: String
+  work_seniority: Int!
 }
 
 input CreateDoctorDto_Schedules {
@@ -121,21 +125,25 @@ input DeletePatientInput {
 type Doctor {
   """Creation date of the doctor record"""
   created_at: Date!
+  default_fee: Float!
   gender: String
-  hospital: String
+  hospital: String!
   id: String!
-  qualifications: String
+  positions: String
+  qualifications: String!
+  rating: Float!
 
   """Doctor's schedule (if any)"""
-  schedule: DoctorSchedule
-  specialty: String
+  schedules: DoctorSchedule
+  specialty: String!
+  titles: String
 
   """Last update date of the doctor record"""
   updated_at: Date
 
   """Related user information"""
   user: User!
-  work_seniority: Int
+  work_seniority: Int!
 }
 
 type DoctorSchedule {
@@ -206,7 +214,6 @@ type Mutation {
   createAppointment(input: CreateAppointmentInput!): Appointment!
   createBlogPost(input: CreateBlogPostInput!): BlogPost!
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
-  createDoctorAndUser(input: RegisterDoctorInput!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
   createExaminationReport(input: CreateExaminationReportInput!): ExaminationReport!
   createMedication(input: CreateMedicationInput!): Medication!
@@ -328,14 +335,6 @@ type Regimen {
   user_guide: String!
 }
 
-input RegisterDoctorInput {
-  email: String!
-  full_name: String!
-  gender: String!
-  password: String!
-  role: String!
-}
-
 input RegisterDto {
   address: String
 
@@ -384,12 +383,16 @@ input UpdateBlogPostInput {
 }
 
 input UpdateDoctorInput {
+  default_fee: Float
   email: String
   full_name: String
   gender: String
   hospital: String
+  positions: String
   qualifications: String
+  rating: Float
   specialty: String
+  titles: String
   work_seniority: Float
 }
 
