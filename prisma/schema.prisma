@@ -76,21 +76,22 @@ model Patient {
 }
 
 model Appointment {
-  appointment_id   Int             @id @default(autoincrement())
+  appointment_id   Int       @id @default(autoincrement())
   patient_id       String
   doctor_id        String
   schedule_id      Int
   appointment_type String
   appointment_date DateTime
   status           String
-  is_anonymous     Boolean         @default(false)
+  is_anonymous     Boolean   @default(false)
   notes            String?
-  created_at       DateTime        @default(now())
-  updated_at       DateTime?       @updatedAt
-  doctor           Doctors         @relation(fields: [doctor_id], references: [id])
-  patient          Patient         @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
-  schedule         DoctorSchedule  @relation(fields: [schedule_id], references: [id])
-  TreatmentPlan    TreatmentPlan[] @relation("AppointmentToTreatmentPlan")
+  created_at       DateTime  @default(now())
+  updated_at       DateTime? @updatedAt
+
+  doctor        Doctors         @relation(fields: [doctor_id], references: [id])
+  patient       Patient         @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  schedule      DoctorSchedule  @relation(fields: [schedule_id], references: [id])
+  TreatmentPlan TreatmentPlan[] @relation("AppointmentToTreatmentPlan")
 
   @@index([doctor_id])
   @@index([appointment_date])

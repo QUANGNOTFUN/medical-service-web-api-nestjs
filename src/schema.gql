@@ -9,6 +9,7 @@ type Appointment {
   created_at: Timestamp!
   doctor_id: String!
   is_anonymous: Boolean!
+  notes: String
   patient_id: String!
   schedule_id: Int!
   status: String!
@@ -226,6 +227,7 @@ type Mutation {
   deleteUser(id: String!): User!
   login(userData: LoginDto!): LoginResponse!
   register(userData: RegisterDto!): User!
+  updateAppointment(input: UpdateAppointmentInput!): Boolean!
   updateBlogPost(id: Int!, input: UpdateBlogPostInput!): BlogPost!
   updateDoctor(doctorData: UpdateDoctorInput!, id: String!): Doctor!
   updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: String!): DoctorSchedule!
@@ -235,6 +237,14 @@ type Mutation {
 
   """Cập nhật thông tin người dùng"""
   updateUser(id: String!, input: UpdateUserInput!): User!
+}
+
+type PaginatedAppointment {
+  items: [Appointment!]!
+  page: Int!
+  pageSize: Int!
+  total: Int!
+  totalPages: Int!
 }
 
 type PaginatedBlogPosts {
@@ -251,6 +261,12 @@ type PaginatedMedications {
   pageSize: Int!
   total: Int!
   totalPages: Int!
+}
+
+input PaginationAppointmentInput {
+  doctor_id: String
+  page: Int!
+  pageSize: Int!
 }
 
 input PaginationBlogInput {
@@ -288,6 +304,7 @@ type Query {
   findRegimen(id: Int!): Regimen!
   findTreatmentPlan(id: Int!): TreatmentPlan!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
+  getAppointmentsByDoctor(input: PaginationAppointmentInput!): PaginatedAppointment!
 
   """Lấy thông tin người dùng theo email"""
   getUserByEmail(email: String!): User!
@@ -352,6 +369,11 @@ type TreatmentPlan {
   notes: String
   start_date: Timestamp!
   updated_at: Timestamp
+}
+
+input UpdateAppointmentInput {
+  appointment_id: Int!
+  status: String
 }
 
 input UpdateBlogPostInput {
