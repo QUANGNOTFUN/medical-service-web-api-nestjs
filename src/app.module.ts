@@ -17,12 +17,15 @@ import { TreatmentPlanModule } from './treatment-plan/treatment-plan.module';
 import { ExaminationReportModule } from './examination-report/examination-report.module';
 import { RegimenModule } from './regimen/regimen.module';
 import { BlogPostsModule } from './blog-posts/blog-posts.module';
+import { DateTimeScalar } from './common/scalars/date.scalar';
+import { AppointmentSlotsModule } from './appointment-slots/appointment-slots.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env', // Ensure .env file is loaded
+
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -30,6 +33,7 @@ import { BlogPostsModule } from './blog-posts/blog-posts.module';
       autoSchemaFile: 'src/schema.gql',
       sortSchema: true,
       playground: true, // Bật GraphQL Playground để debug
+      resolvers: { DateTime: DateTimeScalar }, // 👈 Đăng ký duy nhất tại đây
     }),
     UserModule,
     MedicationsModule,
@@ -42,6 +46,7 @@ import { BlogPostsModule } from './blog-posts/blog-posts.module';
     TreatmentPlanModule,
     ExaminationReportModule,
     RegimenModule,
+    AppointmentSlotsModule
   ],
   controllers: [AppController],
   providers: [
