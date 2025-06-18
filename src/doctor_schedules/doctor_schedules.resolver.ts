@@ -12,6 +12,20 @@ export class DoctorScheduleResolver {
     return this.doctorScheduleService.findAll();
   }
 
+  @Query(() => [DoctorSchedule])
+  async getDoctorSchedulesIdByDate(
+    @Args('doctor_id', { type: () => String }) doctor_id: string,
+    @Args('date', { type: () => String }) date: string,
+  ) {
+    return this.doctorScheduleService.findSchedulesByDoctorAndDate(doctor_id, date);
+  }
+
+  @Query(() => [String])
+  async getAvailableScheduleDates(
+    @Args('doctor_id', { type: () => String }) doctor_id: string,
+  ): Promise<string[]> {
+    return this.doctorScheduleService.getAvailableScheduleDates(doctor_id);
+  }
   @Mutation(() => DoctorSchedule)
   async createDoctorSchedule(
     @Args('doctorData') doctorData: CreateDoctorDto_Schedules,

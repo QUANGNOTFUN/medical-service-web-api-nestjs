@@ -14,7 +14,7 @@ export class Appointment {
   doctor_id: string;
 
   @Field(() => Int)
-  schedule_id: number;
+  slot_id: number;
 
   @Field(() => String)
   appointment_type: string;
@@ -27,6 +27,9 @@ export class Appointment {
 
   @Field(() => Boolean)
   is_anonymous: boolean;
+
+  @Field(() => String)
+  notes: string;
 
   @Field(() => GraphQLTimestamp)
   created_at: Date;
@@ -48,9 +51,8 @@ export class CreateAppointmentInput {
   doctor_id: string;
 
   @Field(() => Int)
-  @IsInt()
   @IsNotEmpty()
-  schedule_id: number;
+  slot_id: number;
 
   @Field(() => String)
   @IsString()
@@ -69,6 +71,10 @@ export class CreateAppointmentInput {
   @Field(() => Boolean, { defaultValue: false })
   @IsOptional()
   is_anonymous?: boolean;
+
+  @Field(() => String)
+  @IsOptional()
+  notes?: string;
 }
 
 @InputType()
@@ -90,11 +96,15 @@ export class UpdateAppointmentInput {
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()
-  status?: string;
+  status: string;
 
   @Field(() => Boolean, { nullable: true })
   @IsOptional()
   is_anonymous?: boolean;
+
+  @Field(() => String)
+  @IsOptional()
+  notes?: string;
 }
 
 @InputType()

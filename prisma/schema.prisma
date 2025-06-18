@@ -37,14 +37,14 @@ model Medication {
 model Doctors {
   id                       String    @id @default(uuid())
   user                     User      @relation(fields: [id], references: [id], onDelete: Cascade)
-  qualifications           String
-  specialty                String
-  work_seniority           Int
-  hospital                 String
-  default_fee              Float     @default(0)
+  qualifications           String?
+  specialty                String?
+  work_seniority           Int?
+  hospital                 String?
+  default_fee              Float?     @default(0)
   titles                   String?
   positions                String?
-  rating                   Float     @default(0)
+  rating                   Float?     @default(0)
   rating_details           Json?
   profile_views            Int       @default(0)
   gender                   String?   @default("OTHER") // Giữ lại nếu bạn cố ý thêm
@@ -59,13 +59,25 @@ model Doctors {
 
 model DoctorSchedule {
   id           Int           @id @default(autoincrement())
-  doctor_id    String        @unique
-  start_time   DateTime?
-  end_time     DateTime?
+  doctor_id    String
+  start_time   DateTime
+  end_time     DateTime
   is_available Boolean?
   created_at   DateTime      @default(now())
-  Appointment  Appointment[]
   doctor       Doctors       @relation(fields: [doctor_id], references: [id])
+  slots        AppointmentSlot[]
+}
+
+model AppointmentSlot {
+  id           Int           @id @default(autoincrement())
+  schedule_id  Int
+  start_time   DateTime
+  end_time     DateTime
+  max_patients Int           @default(6)
+  booked_count Int           @default(0)
+  created_at   DateTime      @default(now())
+  schedule     DoctorSchedule @relation(fields: [schedule_id], references: [id])
+  appointments Appointment[]
 }
 
 model Patient {
@@ -84,17 +96,17 @@ model Appointment {
   appointment_id   Int             @id @default(autoincrement())
   patient_id       String
   doctor_id        String
-  schedule_id      Int
+  slot_id          Int
   appointment_type String
   appointment_date DateTime
-  status           String
+  status            String         @default("PENDING")
   is_anonymous     Boolean         @default(false)
   notes            String?
   created_at       DateTime        @default(now())
   updated_at       DateTime?       @updatedAt
   doctor           Doctors         @relation(fields: [doctor_id], references: [id])
   patient          Patient         @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
-  schedule         DoctorSchedule  @relation(fields: [schedule_id], references: [id])
+  slot             AppointmentSlot @relation(fields: [slot_id], references: [id])
   TreatmentPlan    TreatmentPlan[] @relation("AppointmentToTreatmentPlan")
 
   @@index([doctor_id])
