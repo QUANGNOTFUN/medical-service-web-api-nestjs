@@ -1,31 +1,47 @@
-import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
+import {Field, ID, InputType, Int, ObjectType} from '@nestjs/graphql';
 import { GraphQLDate, GraphQLTimestamp } from 'graphql-scalars';
 import { IsDate, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 
 @ObjectType()
 export class Patient {
   @Field(() => ID)
-  patient_id: string;
+  id: string;
 
-  @Field(() => GraphQLDate,{nullable: true})
-  @IsDate({ message: 'date_of_birth phải là kiểu ngày' })
-  date_of_birth?: Date;
-
-  @Field(() => String)
-  @IsString({ message: 'gender phải là chuỗi' })
-  @IsNotEmpty({ message: 'gender không được để trống' })
-  @Matches(/^(male|female|other)$/i, { message: 'gender phải là male, female hoặc other' })
-  gender: string;
-
-  @Field(() => GraphQLDate)
-  @IsDate({ message: 'hiv_diagnosis_date phải là kiểu ngày' })
-  hiv_diagnosis_date?: Date;
+  @Field(() => Int)
+  plan_id: number;
 
   @Field(() => GraphQLTimestamp)
   created_at: Date;
 
   @Field(() => GraphQLTimestamp, { nullable: true })
   updated_at?: Date;
+}
+
+@InputType()
+export class PaginationPatientInput {
+  @Field(() => Int)
+  page: number;
+
+  @Field(() => Int)
+  pageSize: number;
+}
+
+@ObjectType()
+export class PaginationPatient {
+  @Field(() => [Patient])
+  patients: Patient[];
+
+  @Field(() => Int)
+  total: number;
+
+  @Field(() => Int)
+  page: number;
+
+  @Field(() => Int)
+  pageSize: number;
+
+  @Field(() => Int)
+  totalPage: number;
 }
 
 @InputType()

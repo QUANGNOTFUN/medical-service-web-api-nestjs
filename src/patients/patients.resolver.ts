@@ -21,6 +21,9 @@ export class PatientResolver {
     return this.patientService.findOne(input.patient_id);
   }
 
+  @Query(() => [Patient])
+  getAllPatients(@Args('input') input: GetPatientByIdInput) {}
+
   @Mutation(() => Patient)
   updatePatient(@Args('input') input: UpdatePatientInput) {
     return this.patientService.update(input.patient_id, input);

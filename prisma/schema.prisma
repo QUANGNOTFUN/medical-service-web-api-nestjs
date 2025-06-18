@@ -35,26 +35,26 @@ model Medication {
 }
 
 model Doctors {
-  id                       String    @id @default(uuid())
-  user                     User      @relation(fields: [id], references: [id], onDelete: Cascade)
-  qualifications           String
-  specialty                String
-  work_seniority           Int
-  hospital                 String
-  default_fee              Float     @default(0)
-  titles                   String?
-  positions                String?
-  rating                   Float     @default(0)
-  rating_details           Json?
-  profile_views            Int       @default(0)
-  gender                   String?   @default("OTHER") // Giữ lại nếu bạn cố ý thêm
-  created_at               DateTime  @default(now())
-  updated_at               DateTime? @updatedAt
-  appointments             Appointment[]
-  examinationReports       ExaminationReport[] // Sửa tên cho rõ ràng
-  blogPosts                BlogPost[]
+  id                 String              @id @default(uuid())
+  user               User                @relation(fields: [id], references: [id], onDelete: Cascade)
+  qualifications     String
+  specialty          String
+  work_seniority     Int
+  hospital           String
+  default_fee        Float               @default(0)
+  titles             String?
+  positions          String?
+  rating             Float               @default(0)
+  rating_details     Json?
+  profile_views      Int                 @default(0)
+  gender             String?             @default("OTHER") // Giữ lại nếu bạn cố ý thêm
+  created_at         DateTime            @default(now())
+  updated_at         DateTime?           @updatedAt
+  appointments       Appointment[]
+  examinationReports ExaminationReport[]
+  blogPosts          BlogPost[]
 
-  schedules               DoctorSchedule[]
+  schedules DoctorSchedule[]
 }
 
 model DoctorSchedule {
@@ -69,15 +69,16 @@ model DoctorSchedule {
 }
 
 model Patient {
-  patient_id         String        @id @default(uuid())
-  date_of_birth      DateTime?
-  gender             String        @default("OTHER")
-  hiv_diagnosis_date DateTime?
-  created_at         DateTime      @default(now())
-  updated_at         DateTime?     @updatedAt
-  appointments       Appointment[]
-  user               User          @relation(fields: [patient_id], references: [id])
-  Reminder           Reminder[]
+  id         String    @id @default(uuid()) @map("id")
+  plan_id    Int?
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  // Quan hệ
+  user         User           @relation(fields: [id], references: [id], onDelete: Cascade)
+  plan         TreatmentPlan? @relation(fields: [plan_id], references: [id])
+  appointments Appointment[]
+  reminders    Reminder[]
 }
 
 model Appointment {
@@ -94,7 +95,7 @@ model Appointment {
   updated_at       DateTime? @updatedAt
 
   doctor        Doctors         @relation(fields: [doctor_id], references: [id])
-  patient       Patient         @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+  patient       Patient         @relation(fields: [patient_id], references: [id], onDelete: Cascade)
   schedule      DoctorSchedule  @relation(fields: [schedule_id], references: [id])
   TreatmentPlan TreatmentPlan[] @relation("AppointmentToTreatmentPlan")
 
@@ -113,6 +114,7 @@ model TreatmentPlan {
   updated_at             DateTime?           @updatedAt
   examinations           ExaminationReport[]
   follow_up_appointments Appointment[]       @relation("AppointmentToTreatmentPlan")
+  Patient                Patient[]
 }
 
 model ExaminationReport {
@@ -151,7 +153,7 @@ model Reminder {
   message       String?
   status        String   @default("pending")
   created_at    DateTime @default(now())
-  patient       Patient  @relation(fields: [patient_id], references: [patient_id])
+  patient       Patient  @relation(fields: [patient_id], references: [id])
 }
 
 model BlogPost {
