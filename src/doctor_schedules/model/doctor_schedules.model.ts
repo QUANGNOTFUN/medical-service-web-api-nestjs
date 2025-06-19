@@ -1,6 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
-import { Doctor } from '../../doctors/model/doctors.model';
 
 @ObjectType()
 export class DoctorSchedule {
@@ -10,10 +9,10 @@ export class DoctorSchedule {
   @Field(() => String)
   doctor_id: string;
 
-  @Field(() => GraphQLDate)
+  @Field(() => GraphQLDate, { nullable: true })
   start_time: Date | null;
 
-  @Field(() => GraphQLDate)
+  @Field(() => GraphQLDate, { nullable: true })
   end_time: Date | null;
 
   @Field(() => Boolean, { nullable: true })
@@ -21,7 +20,4 @@ export class DoctorSchedule {
 
   @Field(() => GraphQLDate, { description: 'Creation date of the user record' })
   created_at: Date;
-
-  @Field(() => Doctor, { nullable: true })
-  doctor?: Doctor;
 }

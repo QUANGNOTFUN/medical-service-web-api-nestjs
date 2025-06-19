@@ -26,9 +26,9 @@ CREATE TABLE "User" (
     "phone" TEXT,
     "address" TEXT,
     "date_of_birth" TIMESTAMP(3),
+    "avatar" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
-    "avatar" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -47,7 +47,7 @@ CREATE TABLE "Medication" (
 );
 
 -- CreateTable
-CREATE TABLE "Doctors" (
+CREATE TABLE "doctors" (
     "id" TEXT NOT NULL,
     "qualifications" TEXT NOT NULL,
     "specialty" TEXT NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE "Doctors" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
-    CONSTRAINT "Doctors_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "doctors_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -166,7 +166,7 @@ CREATE TABLE "Reminder" (
 
 -- CreateTable
 CREATE TABLE "BlogPost" (
-    "id" SERIAL NOT NULL,
+    "post_id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "author_id" TEXT NOT NULL,
@@ -175,7 +175,7 @@ CREATE TABLE "BlogPost" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
 
-    CONSTRAINT "BlogPost_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "BlogPost_pkey" PRIMARY KEY ("post_id")
 );
 
 -- CreateTable
@@ -232,25 +232,25 @@ CREATE INDEX "Appointment_appointment_date_idx" ON "Appointment"("appointment_da
 CREATE INDEX "_AppointmentToTreatmentPlan_B_index" ON "_AppointmentToTreatmentPlan"("B");
 
 -- AddForeignKey
-ALTER TABLE "Doctors" ADD CONSTRAINT "Doctors_id_fkey" FOREIGN KEY ("id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "doctors" ADD CONSTRAINT "doctors_id_fkey" FOREIGN KEY ("id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "DoctorSchedule" ADD CONSTRAINT "DoctorSchedule_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "Doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "DoctorSchedule" ADD CONSTRAINT "DoctorSchedule_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Patient" ADD CONSTRAINT "Patient_patient_id_fkey" FOREIGN KEY ("patient_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "Doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_patient_id_fkey" FOREIGN KEY ("patient_id") REFERENCES "Patient"("patient_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_patient_id_fkey" FOREIGN KEY ("patient_id") REFERENCES "Patient"("patient_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Appointment" ADD CONSTRAINT "Appointment_schedule_id_fkey" FOREIGN KEY ("schedule_id") REFERENCES "DoctorSchedule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ExaminationReport" ADD CONSTRAINT "ExaminationReport_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "Doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ExaminationReport" ADD CONSTRAINT "ExaminationReport_doctor_id_fkey" FOREIGN KEY ("doctor_id") REFERENCES "doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ExaminationReport" ADD CONSTRAINT "ExaminationReport_regimen_id_fkey" FOREIGN KEY ("regimen_id") REFERENCES "Regimen"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -262,7 +262,7 @@ ALTER TABLE "ExaminationReport" ADD CONSTRAINT "ExaminationReport_treatment_plan
 ALTER TABLE "Reminder" ADD CONSTRAINT "Reminder_patient_id_fkey" FOREIGN KEY ("patient_id") REFERENCES "Patient"("patient_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "BlogPost" ADD CONSTRAINT "BlogPost_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "Doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "BlogPost" ADD CONSTRAINT "BlogPost_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Document" ADD CONSTRAINT "Document_uploaded_by_id_fkey" FOREIGN KEY ("uploaded_by_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

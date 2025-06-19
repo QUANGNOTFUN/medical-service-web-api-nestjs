@@ -14,7 +14,7 @@ export class Appointment {
   doctor_id: string;
 
   @Field(() => Int)
-  slot_id: number;
+  schedule_id: number;
 
   @Field(() => String)
   appointment_type: string;
@@ -28,14 +28,45 @@ export class Appointment {
   @Field(() => Boolean)
   is_anonymous: boolean;
 
-  @Field(() => String)
-  notes: string;
+  @Field(() => String,{nullable : true})
+  notes?: string;
 
   @Field(() => GraphQLTimestamp)
   created_at: Date;
 
   @Field(() => GraphQLTimestamp, { nullable: true })
   updated_at?: Date;
+}
+
+@InputType()
+export class PaginationAppointmentInput {
+  @Field(() => Int)
+  page: number;
+
+  @Field(() => Int)
+  pageSize: number;
+
+  @Field(() => String, { nullable: true })
+  doctor_id: string;
+}
+
+
+@ObjectType()
+export class PaginatedAppointment {
+  @Field(() => [Appointment])
+  items: Appointment[];
+
+  @Field(() => Int)
+  total: number;
+
+  @Field(() => Int)
+  page: number;
+
+  @Field(() => Int)
+  pageSize: number;
+
+  @Field(() => Int)
+  totalPages: number;
 }
 
 @InputType()
@@ -51,8 +82,9 @@ export class CreateAppointmentInput {
   doctor_id: string;
 
   @Field(() => Int)
+  @IsInt()
   @IsNotEmpty()
-  slot_id: number;
+  schedule_id: number;
 
   @Field(() => String)
   @IsString()
@@ -71,41 +103,20 @@ export class CreateAppointmentInput {
   @Field(() => Boolean, { defaultValue: false })
   @IsOptional()
   is_anonymous?: boolean;
-
-  @Field(() => String)
-  @IsOptional()
-  notes?: string;
 }
 
 @InputType()
 export class UpdateAppointmentInput {
   @Field(() => Int)
-  @IsInt()
-  @IsNotEmpty()
   appointment_id: number;
 
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
-  appointment_type?: string;
-
-  @Field(() => GraphQLTimestamp, { nullable: true })
-  @IsOptional()
-  appointment_date?: Date;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()
-  status: string;
-
-  @Field(() => Boolean, { nullable: true })
-  @IsOptional()
-  is_anonymous?: boolean;
-
-  @Field(() => String)
-  @IsOptional()
-  notes?: string;
+  status?: string;
 }
+
 
 @InputType()
 export class GetAppointmentByIdInput {

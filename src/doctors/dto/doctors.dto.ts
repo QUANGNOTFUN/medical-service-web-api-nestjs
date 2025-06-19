@@ -9,24 +9,24 @@ export class CreateDoctorDto {
   @IsString()
   id: string;
 
-  @Field(() => String,{nullable: true})
+  @Field(() => String)
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   qualifications: string;
 
   @Field(() => String)
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   specialty: string;
 
   @Field(() => Int)
   @IsInt()
   @Min(0)
-  @IsOptional()
   work_seniority: number;
 
   @Field(() => String)
   @IsString()
+  @IsNotEmpty()
   hospital: string;
 
   @Field(() => Float, { defaultValue: 0 })
