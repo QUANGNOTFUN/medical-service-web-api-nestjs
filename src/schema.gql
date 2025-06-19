@@ -11,7 +11,7 @@ type Appointment {
   is_anonymous: Boolean!
   notes: String
   patient_id: String!
-  schedule_id: Int!
+  slot_id: Int!
   status: String!
   updated_at: Timestamp
 }
@@ -33,7 +33,7 @@ input CreateAppointmentInput {
   doctor_id: String!
   is_anonymous: Boolean! = false
   patient_id: String!
-  schedule_id: Int!
+  slot_id: Int!
   status: String!
 }
 

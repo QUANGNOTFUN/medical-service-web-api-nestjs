@@ -11,3 +11,5 @@ npx prisma migrate deploy
 
 docker-compose up --build
 
+
+git reser --hard mã

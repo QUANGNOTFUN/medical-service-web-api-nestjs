@@ -33,23 +33,11 @@ export class AppointmentService {
     ]);
 
     return {
-      items: appointments.map((item) => ({
-        appointment_id: item.appointment_id,
-        patient_id: item.patient_id,
-        doctor_id: item.doctor_id,
-        schedule_id: item.schedule_id,
-        appointment_type: item.appointment_type,
-        appointment_date: item.appointment_date,
-        status: item.status,
-        is_anonymous: item.is_anonymous,
-        notes: item.notes ?? '',
-        created_at: item.created_at,
-        updated_at: item.updated_at ?? undefined,
-      })),
+      items: appointments,
       total,
       page,
       pageSize,
-      totalPages: Math.ceil(total / pageSize),
+      totalPages: Math.ceil(total / pageSize)
     };
   }
 

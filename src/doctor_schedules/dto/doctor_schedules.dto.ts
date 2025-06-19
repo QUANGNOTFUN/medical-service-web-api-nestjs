@@ -15,13 +15,13 @@ export class CreateDoctorDto_Schedules {
   @IsOptional()
   @Type(() => Date)
   @IsDate()
-  start_time?: Date;
+  start_time: string | Date;
 
   @Field(() => GraphQLDate, { nullable: true })
   @IsOptional()
   @Type(() => Date)
   @IsDate()
-  end_time?: Date;
+  end_time: string | Date;
 
   @Field(() => Boolean, { nullable: true })
   @IsOptional()
