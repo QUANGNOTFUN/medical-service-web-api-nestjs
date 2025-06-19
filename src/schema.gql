@@ -44,19 +44,6 @@ input CreateBlogPostInput {
   title: String!
 }
 
-input CreateDoctorDto {
-  default_fee: Float! = 0
-  gender: String
-  hospital: String!
-  id: String!
-  positions: String
-  qualifications: String!
-  rating: Float! = 0
-  specialty: String!
-  titles: String
-  work_seniority: Int!
-}
-
 input CreateDoctorDto_Schedules {
   doctor_id: String!
   end_time: Date
@@ -122,30 +109,6 @@ input DeletePatientInput {
   patient_id: String!
 }
 
-type Doctor {
-  """Creation date of the doctor record"""
-  created_at: Date!
-  default_fee: Float!
-  gender: String
-  hospital: String!
-  id: String!
-  positions: String
-  qualifications: String!
-  rating: Float!
-
-  """Doctor's schedule (if any)"""
-  schedules: DoctorSchedule
-  specialty: String!
-  titles: String
-
-  """Last update date of the doctor record"""
-  updated_at: Date
-
-  """Related user information"""
-  user: User!
-  work_seniority: Int!
-}
-
 type DoctorSchedule {
   """Creation date of the user record"""
   created_at: Date!
@@ -200,6 +163,12 @@ type LoginResponse {
   refreshToken: String
 }
 
+input MedicalExaminationInput {
+  regimen: CreateRegimenInput!
+  report: CreateExaminationReportInput!
+  treatmentPlan: CreateTreatmentPlanInput
+}
+
 type Medication {
   acronym: String!
   available_quantity: Int!
@@ -213,7 +182,6 @@ type Medication {
 type Mutation {
   createAppointment(input: CreateAppointmentInput!): Appointment!
   createBlogPost(input: CreateBlogPostInput!): BlogPost!
-  createDoctor(doctorData: CreateDoctorDto!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
   createExaminationReport(input: CreateExaminationReportInput!): ExaminationReport!
   createMedication(input: CreateMedicationInput!): Medication!
@@ -222,7 +190,6 @@ type Mutation {
   createTreatmentPlan(input: CreateTreatmentPlanInput!): TreatmentPlan!
   deleteAppointment(input: DeleteAppointmentInput!): Boolean!
   deleteBlogPost(id: Int!): Boolean!
-  deleteDoctor(id: String!): Doctor!
   deleteDoctorSchedule(id: String!): DoctorSchedule!
   deleteExaminationReport(id: Int!): ExaminationReport!
   deleteMedication(id: Int!): Medication!
@@ -233,10 +200,10 @@ type Mutation {
   """Xóa người dùng"""
   deleteUser(id: String!): User!
   login(userData: LoginDto!): LoginResponse!
+  makeMedicalExamination(input: MedicalExaminationInput!): Boolean!
   register(userData: RegisterDto!): User!
   updateAppointment(input: UpdateAppointmentInput!): Boolean!
   updateBlogPost(id: Int!, input: UpdateBlogPostInput!): BlogPost!
-  updateDoctor(doctorData: UpdateDoctorInput!, id: String!): Doctor!
   updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: String!): DoctorSchedule!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
   updatePatient(input: UpdatePatientInput!): Patient!
@@ -288,17 +255,13 @@ input PaginationInput {
 
 type Patient {
   created_at: Timestamp!
-  date_of_birth: Date
-  gender: String!
-  hiv_diagnosis_date: Date!
-  patient_id: ID!
+  id: ID!
+  plan_id: Int!
   updated_at: Timestamp
 }
 
 type Query {
-  doctor(id: String!): Doctor
   doctorSchedules: [DoctorSchedule!]!
-  doctors: [Doctor!]!
   findAllAppointments: [Appointment!]!
   findAllExaminationReports: [ExaminationReport!]!
   findAllPatients: [Patient!]!
@@ -310,6 +273,7 @@ type Query {
   findOnePatient(input: GetPatientByIdInput!): Patient!
   findRegimen(id: Int!): Regimen!
   findTreatmentPlan(id: Int!): TreatmentPlan!
+  getAllPatients(input: GetPatientByIdInput!): [Patient!]!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
   getAppointmentsByDoctor(input: PaginationAppointmentInput!): PaginatedAppointment!
 
@@ -380,20 +344,6 @@ input UpdateBlogPostInput {
   content: String
   title: String
   updated_at: DateTime
-}
-
-input UpdateDoctorInput {
-  default_fee: Float
-  email: String
-  full_name: String
-  gender: String
-  hospital: String
-  positions: String
-  qualifications: String
-  rating: Float
-  specialty: String
-  titles: String
-  work_seniority: Float
 }
 
 input UpdateMedicationInput {

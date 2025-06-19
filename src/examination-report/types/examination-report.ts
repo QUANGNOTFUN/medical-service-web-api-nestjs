@@ -1,6 +1,7 @@
-// --------------------- TYPES ---------------------
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLTimestamp } from 'graphql-scalars';
+import { CreateRegimenInput } from '../../regimen/types/regimen.type';
+import { CreateTreatmentPlanInput } from '../../treatment-plan/types/treatmentplan.type';
 
 @ObjectType()
 export class ExaminationReport {
@@ -57,4 +58,16 @@ export class CreateExaminationReportInput {
 
   @Field(() => Int, { nullable: true })
   treatment_plan_id?: number;
+}
+
+@InputType()
+export class MedicalExaminationInput {
+  @Field(() => CreateTreatmentPlanInput, { nullable: true })
+  treatmentPlan?: CreateTreatmentPlanInput;
+
+  @Field(() => CreateRegimenInput)
+  regimen: CreateRegimenInput;
+
+  @Field(() => CreateExaminationReportInput)
+  report: CreateExaminationReportInput;
 }

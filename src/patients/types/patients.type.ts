@@ -105,3 +105,5 @@ export class DeletePatientInput {
   @IsNotEmpty({ message: 'patient_id không được để trống' })
   patient_id: string;
 }
+
+

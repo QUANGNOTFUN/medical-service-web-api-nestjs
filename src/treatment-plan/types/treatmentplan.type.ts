@@ -1,6 +1,8 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLTimestamp } from 'graphql-scalars';
 import {IsOptional, IsString } from 'class-validator';
+import { CreateRegimenInput } from '../../regimen/types/regimen.type';
+import { CreateExaminationReportInput } from '../../examination-report/types/examination-report';
 
 @ObjectType()
 export class TreatmentPlan {
@@ -77,3 +79,4 @@ export class UpdateTreatmentPlanInput {
   @IsOptional()
   notes?: string;
 }
+

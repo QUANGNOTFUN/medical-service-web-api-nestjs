@@ -2,6 +2,8 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql';
 import { GraphQLTimestamp } from 'graphql-scalars';
 import { IsArray, IsBoolean, IsString } from 'class-validator';
+import { CreateExaminationReportInput } from '../../examination-report/types/examination-report';
+import { CreateTreatmentPlanInput } from '../../treatment-plan/types/treatmentplan.type';
 
 @ObjectType()
 export class Regimen {
@@ -51,4 +53,16 @@ export class CreateRegimenInput {
   @Field()
   @IsBoolean()
   is_default: boolean;
+}
+
+@InputType()
+export class MedicalExaminationInput {
+  @Field(() => CreateTreatmentPlanInput, { nullable: true })
+  treatmentPlan?: CreateTreatmentPlanInput;
+
+  @Field(() => CreateRegimenInput)
+  regimen: CreateRegimenInput;
+
+  @Field(() => CreateExaminationReportInput)
+  report: CreateExaminationReportInput;
 }
