@@ -35,59 +35,78 @@ model Medication {
 }
 
 model Doctors {
-  id                 String              @id @default(uuid())
-  qualifications     String?
-  work_seniority     Int?
-  gender             String?             @default("OTHER")
-  specialty          String?
-  hospital           String?
-  created_at         DateTime            @default(now())
-  updated_at         DateTime?           @updatedAt
-  appointments       Appointment[]
-  blogPosts          BlogPost[]
-  schedules          DoctorSchedule?
-  user               User                @relation(fields: [id], references: [id], onDelete: Cascade)
-  examinationReports ExaminationReport[]
+  id                       String    @id @default(uuid())
+  user                     User      @relation(fields: [id], references: [id], onDelete: Cascade)
+  qualifications           String?
+  specialty                String?
+  work_seniority           Int?
+  hospital                 String?
+  default_fee              Float?     @default(0)
+  titles                   String?
+  positions                String?
+  rating                   Float?     @default(0)
+  rating_details           Json?
+  profile_views            Int       @default(0)
+  gender                   String?   @default("OTHER") // Giữ lại nếu bạn cố ý thêm
+  created_at               DateTime  @default(now())
+  updated_at               DateTime? @updatedAt
+  appointments             Appointment[]
+  examinationReports       ExaminationReport[] // Sửa tên cho rõ ràng
+  blogPosts                BlogPost[]
+
+  schedules               DoctorSchedule[]
 }
 
 model DoctorSchedule {
   id           Int           @id @default(autoincrement())
-  doctor_id    String        @unique
-  start_time   DateTime?
-  end_time     DateTime?
+  doctor_id    String
+  start_time   DateTime
+  end_time     DateTime
   is_available Boolean?
   created_at   DateTime      @default(now())
-  Appointment  Appointment[]
   doctor       Doctors       @relation(fields: [doctor_id], references: [id])
+  slots        AppointmentSlot[]
+}
+
+model AppointmentSlot {
+  id           Int           @id @default(autoincrement())
+  schedule_id  Int
+  start_time   DateTime
+  end_time     DateTime
+  max_patients Int           @default(6)
+  booked_count Int           @default(0)
+  created_at   DateTime      @default(now())
+  schedule     DoctorSchedule @relation(fields: [schedule_id], references: [id])
+  appointments Appointment[]
 }
 
 model Patient {
-  patient_id         String        @id
+  patient_id         String        @id @default(uuid())
   date_of_birth      DateTime?
   gender             String        @default("OTHER")
   hiv_diagnosis_date DateTime?
   created_at         DateTime      @default(now())
   updated_at         DateTime?     @updatedAt
   appointments       Appointment[]
-  User               User          @relation(fields: [patient_id], references: [id])
-  reminders          Reminder[]
+  user               User          @relation(fields: [patient_id], references: [id])
+  Reminder           Reminder[]
 }
 
 model Appointment {
   appointment_id   Int             @id @default(autoincrement())
   patient_id       String
   doctor_id        String
-  schedule_id      Int
+  slot_id          Int
   appointment_type String
   appointment_date DateTime
-  status           String
+  status            String         @default("PENDING")
   is_anonymous     Boolean         @default(false)
   notes            String?
   created_at       DateTime        @default(now())
   updated_at       DateTime?       @updatedAt
   doctor           Doctors         @relation(fields: [doctor_id], references: [id])
   patient          Patient         @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
-  schedule         DoctorSchedule  @relation(fields: [schedule_id], references: [id])
+  slot             AppointmentSlot @relation(fields: [slot_id], references: [id])
   TreatmentPlan    TreatmentPlan[] @relation("AppointmentToTreatmentPlan")
 
   @@index([doctor_id])
@@ -147,6 +166,7 @@ model Reminder {
 }
 
 model BlogPost {
+  id           Int       @id @default(autoincrement())
   title        String
   content      String
   author_id    String
@@ -154,8 +174,8 @@ model BlogPost {
   published_at DateTime?
   created_at   DateTime  @default(now())
   updated_at   DateTime?
-  id           Int       @id @default(autoincrement())
-  author       Doctors   @relation(fields: [author_id], references: [id])
+
+  author Doctors @relation(fields: [author_id], references: [id])
 }
 
 model Document {

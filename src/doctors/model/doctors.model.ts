@@ -9,9 +9,9 @@ export class Doctor {
   @Field(() => String)
   id: string;
 
-  @Field(() => String)
+  @Field(() => String,{nullable: true})
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   qualifications: string;
   
   @Field(() => String)
