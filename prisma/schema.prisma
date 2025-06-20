@@ -100,6 +100,7 @@ model Appointment {
   appointment_type String
   appointment_date DateTime
   status           String          @default("PENDING")
+  is_done          Boolean?        @default(false)
   is_anonymous     Boolean         @default(false)
   notes            String?
   created_at       DateTime        @default(now())

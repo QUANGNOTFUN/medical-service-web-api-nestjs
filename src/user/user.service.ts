@@ -47,7 +47,6 @@ export class UserService {
       itemsPerPage: limit,
     };
   }
-
   async update(id: string, input: UpdateUserInput): Promise<PrismaUser> {
     await this.findById(id); // kiểm tra tồn tại
     return this.prisma.user.update({
