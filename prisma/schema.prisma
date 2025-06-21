@@ -81,15 +81,15 @@ model AppointmentSlot {
 }
 
 model Patient {
-  patient_id         String        @id @default(uuid())
-  date_of_birth      DateTime?
-  gender             String        @default("OTHER")
-  hiv_diagnosis_date DateTime?
-  created_at         DateTime      @default(now())
-  updated_at         DateTime?     @updatedAt
-  appointments       Appointment[]
-  user               User          @relation(fields: [patient_id], references: [id])
-  Reminder           Reminder[]
+  patient_id   String         @id @default(uuid())
+  plan_id      Int?
+  gender       String         @default("OTHER")
+  created_at   DateTime       @default(now())
+  updated_at   DateTime?      @updatedAt
+  appointments Appointment[]
+  user         User           @relation(fields: [patient_id], references: [id])
+  plan         TreatmentPlan? @relation(fields: [plan_id], references: [id])
+  Reminder     Reminder[]
 }
 
 model Appointment {
@@ -125,6 +125,8 @@ model TreatmentPlan {
   updated_at             DateTime?           @updatedAt
   examinations           ExaminationReport[]
   follow_up_appointments Appointment[]       @relation("AppointmentToTreatmentPlan")
+
+  Patient Patient[]
 }
 
 model ExaminationReport {
