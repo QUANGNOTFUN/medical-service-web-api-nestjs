@@ -26,6 +26,9 @@ export class AppointmentService {
         skip,
         take: pageSize,
         orderBy: { created_at: 'desc' },
+        include:{
+          patient:true,
+        }
       }),
       this.prisma.appointment.count({
         where: { doctor_id: doctorId },
@@ -62,6 +65,7 @@ export class AppointmentService {
       where: { appointment_id: input.appointment_id },
       data: {
         status: input.status,
+        is_done:input.is_done,
       },
     });
   }

@@ -16,6 +16,17 @@ type Appointment {
   updated_at: Timestamp
 }
 
+type AppointmentSlot {
+  booked_count: Int!
+  created_at: DateTime!
+  end_time: DateTime!
+  id: Int!
+  max_patients: Int!
+  schedule: DoctorSchedule
+  schedule_id: Int!
+  start_time: DateTime!
+}
+
 type BlogPost {
   author_id: String!
   category: String!
@@ -35,6 +46,14 @@ input CreateAppointmentInput {
   patient_id: String!
   slot_id: Int!
   status: String!
+}
+
+input CreateAppointmentSlotInput {
+  booked_count: Int! = 0
+  end_time: DateTime!
+  max_patients: Int! = 6
+  schedule_id: Int!
+  start_time: DateTime!
 }
 
 input CreateBlogPostInput {
@@ -59,9 +78,9 @@ input CreateDoctorDto {
 
 input CreateDoctorDto_Schedules {
   doctor_id: String!
-  end_time: Date
+  end_time: DateTime
   is_available: Boolean
-  start_time: Date
+  start_time: DateTime
 }
 
 input CreateExaminationReportInput {
@@ -218,6 +237,7 @@ type Medication {
 
 type Mutation {
   createAppointment(input: CreateAppointmentInput!): Appointment!
+  createAppointmentSlot(createAppointmentSlotInput: CreateAppointmentSlotInput!): AppointmentSlot!
   createBlogPost(input: CreateBlogPostInput!): BlogPost!
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
@@ -241,7 +261,9 @@ type Mutation {
   login(userData: LoginDto!): LoginResponse!
   makeMedicalExamination(input: MedicalExaminationInput!): Boolean!
   register(userData: RegisterDto!): User!
+  removeAppointmentSlot(id: Int!): AppointmentSlot!
   updateAppointment(input: UpdateAppointmentInput!): Boolean!
+  updateAppointmentSlot(id: Int!, updateAppointmentSlotInput: UpdateAppointmentSlotInput!): AppointmentSlot!
   updateBlogPost(id: Int!, input: UpdateBlogPostInput!): BlogPost!
   updateDoctor(doctorData: UpdateDoctorInput!, id: String!): Doctor!
   updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: String!): DoctorSchedule!
@@ -300,7 +322,15 @@ type Patient {
   updated_at: Timestamp
 }
 
+type PatientPlanResponse {
+  patient_id: String!
+  plan: TreatmentPlan
+  plan_id: Float
+}
+
 type Query {
+  appointmentSlot(id: Int!): AppointmentSlot!
+  appointmentSlots: [AppointmentSlot!]!
   doctor(id: String!): Doctor
   doctorSchedules: [DoctorSchedule!]!
   doctors: [Doctor!]!
@@ -313,10 +343,12 @@ type Query {
   findOneAppointment(input: GetAppointmentByIdInput!): Appointment!
   findOneBlogPost(input: GetBlogPostByIdInput!): BlogPost!
   findOnePatient(input: GetPatientByIdInput!): Patient!
+  findPatientPlan(patient_id: String!): PatientPlanResponse!
   findRegimen(id: Int!): Regimen!
   findTreatmentPlan(id: Int!): TreatmentPlan!
   getAllPatients(input: GetPatientByIdInput!): [Patient!]!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
+  getAppointmentSlotByScheduleId(id: Int!): [AppointmentSlot!]!
   getAppointmentsByDoctor(input: PaginationAppointmentInput!): PaginatedAppointment!
 
   """Lấy thông tin người dùng theo email"""
@@ -378,7 +410,16 @@ type TreatmentPlan {
 
 input UpdateAppointmentInput {
   appointment_id: Int!
+  is_done: Boolean
   status: String
+}
+
+input UpdateAppointmentSlotInput {
+  booked_count: Int
+  end_time: DateTime!
+  max_patients: Int
+  schedule_id: Int
+  start_time: DateTime!
 }
 
 input UpdateBlogPostInput {

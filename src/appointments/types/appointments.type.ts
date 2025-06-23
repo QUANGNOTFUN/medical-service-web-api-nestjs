@@ -98,7 +98,7 @@ export class CreateAppointmentInput {
   @Field(() => String)
   @IsOptional()
   @IsString()
-  status: string;
+  status?: string;
 
   @Field(() => Boolean, { defaultValue: false })
   @IsOptional()
@@ -115,6 +115,10 @@ export class UpdateAppointmentInput {
   @IsOptional()
   @IsString()
   status?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  @IsOptional()
+  is_done?: boolean;
 }
 
 

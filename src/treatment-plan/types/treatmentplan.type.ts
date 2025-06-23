@@ -29,6 +29,19 @@ export class TreatmentPlan {
   updated_at?: Date;
 }
 
+@ObjectType()
+export class PatientPlanResponse {
+  @Field()
+  patient_id: string;
+
+  @Field({ nullable: true })
+  plan_id?: number;
+
+  @Field(() => TreatmentPlan, { nullable: true })
+  plan?: TreatmentPlan;
+}
+
+
 @InputType()
 export class CreateTreatmentPlanInput {
   @Field()

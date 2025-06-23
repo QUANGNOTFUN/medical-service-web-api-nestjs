@@ -1,7 +1,7 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TreatmentPlanService } from './treatment-plan.service';
 import {
-  CreateTreatmentPlanInput,
+  CreateTreatmentPlanInput, PatientPlanResponse,
   TreatmentPlan, UpdateTreatmentPlanInput,
 } from './types/treatmentplan.type';
 
@@ -32,5 +32,10 @@ export class TreatmentPlanResolver {
   @Mutation(() => TreatmentPlan)
   deleteTreatmentPlan(@Args('id', { type: () => Int }) id: number) {
     return this.service.delete(id);
+  }
+
+  @Query(() => PatientPlanResponse)
+  findPatientPlan(@Args('patient_id', { type: () => String }) patient_id: string) {
+    return this.service.getPatientPlan(patient_id);
   }
 }

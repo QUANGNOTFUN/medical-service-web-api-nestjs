@@ -44,4 +44,21 @@ export class TreatmentPlanService {
     await this.findOne(id);
     return this.prisma.treatmentPlan.delete({ where: { id } });
   }
+
+  async getPatientPlan(patient_id: string) {
+    const patient = await this.prisma.patient.findUnique({
+      where: { patient_id: patient_id },
+      include: {
+        plan: true,
+      },
+    });
+
+    if (!patient) return null;
+
+    return {
+      patient_id: patient.patient_id,
+      plan_id: patient.plan_id,
+      plan: patient.plan,
+    };
+  }
 }

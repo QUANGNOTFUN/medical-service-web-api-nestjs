@@ -1,6 +1,5 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
 import { IsNotEmpty, IsDate, IsOptional, IsInt, Min } from 'class-validator';
-import { CreateDoctorDto_Schedules } from '../../doctor_schedules/dto/doctor_schedules.dto';
 
 @InputType()
 export class CreateAppointmentSlotInput {
