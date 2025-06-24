@@ -295,9 +295,11 @@ input PaginationInput {
 
 type Patient {
   created_at: Timestamp!
+  gender: String!
   id: ID!
   plan_id: Int!
   updated_at: Timestamp
+  user: User!
 }
 
 type Query {
@@ -410,10 +412,9 @@ input UpdateMedicationInput {
 }
 
 input UpdatePatientInput {
-  date_of_birth: Date
   gender: String
-  hiv_diagnosis_date: Date
   patient_id: String!
+  user: UpdateUserInput
 }
 
 input UpdateTreatmentPlanInput {
@@ -427,8 +428,6 @@ input UpdateTreatmentPlanInput {
 
 input UpdateUserInput {
   address: String
-
-  """Avatar"""
   avatar: String
   date_of_birth: Date
   email: String

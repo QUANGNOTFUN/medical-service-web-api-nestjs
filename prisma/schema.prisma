@@ -82,14 +82,13 @@ model AppointmentSlot {
 
 model Patient {
   patient_id         String        @id @default(uuid())
-  date_of_birth      DateTime?
   gender             String        @default("OTHER")
-  hiv_diagnosis_date DateTime?
   created_at         DateTime      @default(now())
   updated_at         DateTime?     @updatedAt
   appointments       Appointment[]
-  user               User          @relation(fields: [patient_id], references: [id])
+  user               User          @relation(fields: [patient_id], references: [id], onUpdate: Cascade)
   Reminder           Reminder[]
+
 }
 
 model Appointment {

@@ -1,6 +1,7 @@
 import {Field, ID, InputType, Int, ObjectType} from '@nestjs/graphql';
 import { GraphQLDate, GraphQLTimestamp } from 'graphql-scalars';
 import { IsDate, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import { UpdateUserInput, User } from '../../user/types/user.type';
 
 @ObjectType()
 export class Patient {
@@ -10,11 +11,17 @@ export class Patient {
   @Field(() => Int)
   plan_id: number;
 
+  @Field(() => String)
+  gender: string;
+
   @Field(() => GraphQLTimestamp)
   created_at: Date;
 
   @Field(() => GraphQLTimestamp, { nullable: true })
   updated_at?: Date;
+
+  @Field(() => User)
+  user?: User;
 }
 
 @InputType()
@@ -24,6 +31,7 @@ export class PaginationPatientInput {
 
   @Field(() => Int)
   pageSize: number;
+
 }
 
 @ObjectType()
@@ -69,25 +77,13 @@ export class CreatePatientInput {
 @InputType()
 export class UpdatePatientInput {
   @Field(() => String)
-  @IsString({ message: 'patient_id phải là số chuoi' })
-  @IsNotEmpty({ message: 'patient_id không được để trống' })
   patient_id: string;
 
-  @Field(() => GraphQLDate, { nullable: true })
-  @IsOptional()
-  @IsDate({ message: 'date_of_birth phải là kiểu ngày' })
-  date_of_birth?: Date;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString({ message: 'gender phải là chuỗi' })
-  @Matches(/^(male|female|other)$/i, { message: 'gender phải là male, female hoặc other' })
+  @Field({ nullable: true })
   gender?: string;
 
-  @Field(() => GraphQLDate, { nullable: true })
-  @IsOptional()
-  @IsDate({ message: 'hiv_diagnosis_date phải là kiểu ngày' })
-  hiv_diagnosis_date?: Date;
+  @Field(() => UpdateUserInput, { nullable: true })
+  user?: UpdateUserInput;
 }
 
 @InputType()
@@ -96,6 +92,7 @@ export class GetPatientByIdInput {
   @IsString({ message: 'patient_id phải là chuôi' })
   @IsNotEmpty({ message: 'patient_id không được để trống' })
   patient_id: string;
+
 }
 
 @InputType()

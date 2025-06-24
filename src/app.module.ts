@@ -17,6 +17,9 @@ import { TreatmentPlanModule } from './treatment-plan/treatment-plan.module';
 import { ExaminationReportModule } from './examination-report/examination-report.module';
 import { RegimenModule } from './regimen/regimen.module';
 import { BlogPostsModule } from './blog-posts/blog-posts.module';
+import { UploadController } from './upload/upload.controller';
+import { UploadService } from './upload/upload.service';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -42,15 +45,17 @@ import { BlogPostsModule } from './blog-posts/blog-posts.module';
     TreatmentPlanModule,
     ExaminationReportModule,
     RegimenModule,
+    UploadModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, UploadController],
   providers: [
     AppService,
     JwtStrategy,
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
-    }
+    },
+    UploadService
   ],
 })
 export class AppModule {}
