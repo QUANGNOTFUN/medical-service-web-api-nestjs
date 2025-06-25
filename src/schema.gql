@@ -9,11 +9,22 @@ type Appointment {
   created_at: Timestamp!
   doctor_id: String!
   is_anonymous: Boolean!
-  notes: String
+  notes: String!
   patient_id: String!
   slot_id: Int!
   status: String!
   updated_at: Timestamp
+}
+
+type AppointmentSlot {
+  booked_count: Int!
+  created_at: DateTime!
+  end_time: DateTime!
+  id: Int!
+  max_patients: Int!
+  schedule: DoctorSchedule
+  schedule_id: Int!
+  start_time: DateTime!
 }
 
 type BlogPost {
@@ -32,9 +43,18 @@ input CreateAppointmentInput {
   appointment_type: String!
   doctor_id: String!
   is_anonymous: Boolean! = false
+  notes: String!
   patient_id: String!
   slot_id: Int!
   status: String!
+}
+
+input CreateAppointmentSlotInput {
+  booked_count: Int! = 0
+  end_time: DateTime!
+  max_patients: Int! = 6
+  schedule_id: Int!
+  start_time: DateTime!
 }
 
 input CreateBlogPostInput {
@@ -50,7 +70,7 @@ input CreateDoctorDto {
   hospital: String!
   id: String!
   positions: String
-  qualifications: String!
+  qualifications: String
   rating: Float! = 0
   specialty: String!
   titles: String
@@ -59,9 +79,9 @@ input CreateDoctorDto {
 
 input CreateDoctorDto_Schedules {
   doctor_id: String!
-  end_time: Date
+  end_time: DateTime!
   is_available: Boolean
-  start_time: Date
+  start_time: DateTime!
 }
 
 input CreateExaminationReportInput {
@@ -130,7 +150,7 @@ type Doctor {
   hospital: String!
   id: String!
   positions: String
-  qualifications: String!
+  qualifications: String
   rating: Float!
 
   """Doctor's schedule (if any)"""
@@ -149,11 +169,12 @@ type Doctor {
 type DoctorSchedule {
   """Creation date of the user record"""
   created_at: Date!
+  doctor: Doctor
   doctor_id: String!
-  end_time: Date
+  end_time: Date!
   id: Int!
   is_available: Boolean
-  start_time: Date
+  start_time: Date!
 }
 
 type ExaminationReport {
@@ -218,6 +239,7 @@ type Medication {
 
 type Mutation {
   createAppointment(input: CreateAppointmentInput!): Appointment!
+  createAppointmentSlot(createAppointmentSlotInput: CreateAppointmentSlotInput!): AppointmentSlot!
   createBlogPost(input: CreateBlogPostInput!): BlogPost!
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
   createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
@@ -241,7 +263,8 @@ type Mutation {
   login(userData: LoginDto!): LoginResponse!
   makeMedicalExamination(input: MedicalExaminationInput!): Boolean!
   register(userData: RegisterDto!): User!
-  updateAppointment(input: UpdateAppointmentInput!): Boolean!
+  removeAppointmentSlot(id: Int!): AppointmentSlot!
+  updateAppointmentSlot(id: Int!, updateAppointmentSlotInput: UpdateAppointmentSlotInput!): AppointmentSlot!
   updateBlogPost(id: Int!, input: UpdateBlogPostInput!): BlogPost!
   updateDoctor(doctorData: UpdateDoctorInput!, id: String!): Doctor!
   updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: String!): DoctorSchedule!
@@ -251,14 +274,6 @@ type Mutation {
 
   """Cập nhật thông tin người dùng"""
   updateUser(id: String!, input: UpdateUserInput!): User!
-}
-
-type PaginatedAppointment {
-  items: [Appointment!]!
-  page: Int!
-  pageSize: Int!
-  total: Int!
-  totalPages: Int!
 }
 
 type PaginatedBlogPosts {
@@ -275,12 +290,6 @@ type PaginatedMedications {
   pageSize: Int!
   total: Int!
   totalPages: Int!
-}
-
-input PaginationAppointmentInput {
-  doctor_id: String
-  page: Int!
-  pageSize: Int!
 }
 
 input PaginationBlogInput {
@@ -303,6 +312,8 @@ type Patient {
 }
 
 type Query {
+  appointmentSlot(id: Int!): AppointmentSlot!
+  appointmentSlots: [AppointmentSlot!]!
   doctor(id: String!): Doctor
   doctorSchedules: [DoctorSchedule!]!
   doctors: [Doctor!]!
@@ -319,7 +330,9 @@ type Query {
   findTreatmentPlan(id: Int!): TreatmentPlan!
   getAllPatients(input: GetPatientByIdInput!): [Patient!]!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
-  getAppointmentsByDoctor(input: PaginationAppointmentInput!): PaginatedAppointment!
+  getAppointmentSlotByScheduleId(id: Int!): [AppointmentSlot!]!
+  getAvailableScheduleDates(doctor_id: String!): [String!]!
+  getDoctorSchedulesIdByDate(date: String!, doctor_id: String!): [DoctorSchedule!]!
 
   """Lấy thông tin người dùng theo email"""
   getUserByEmail(email: String!): User!
@@ -378,9 +391,12 @@ type TreatmentPlan {
   updated_at: Timestamp
 }
 
-input UpdateAppointmentInput {
-  appointment_id: Int!
-  status: String
+input UpdateAppointmentSlotInput {
+  booked_count: Int
+  end_time: DateTime!
+  max_patients: Int
+  schedule_id: Int
+  start_time: DateTime!
 }
 
 input UpdateBlogPostInput {

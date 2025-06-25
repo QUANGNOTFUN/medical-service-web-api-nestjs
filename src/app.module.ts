@@ -20,6 +20,8 @@ import { BlogPostsModule } from './blog-posts/blog-posts.module';
 import { UploadController } from './upload/upload.controller';
 import { UploadService } from './upload/upload.service';
 import { UploadModule } from './upload/upload.module';
+import { AppointmentSlotsModule } from './appointment-slots/appointment-slots.module';
+import { DateTimeScalar } from './common/scalars/date.scalar';
 
 @Module({
   imports: [
@@ -33,6 +35,7 @@ import { UploadModule } from './upload/upload.module';
       autoSchemaFile: 'src/schema.gql',
       sortSchema: true,
       playground: true, // Bật GraphQL Playground để debug
+      resolvers: { DateTime: DateTimeScalar }, // 👈 Đăng ký duy nhất tại đây
     }),
     UserModule,
     MedicationsModule,
@@ -46,6 +49,7 @@ import { UploadModule } from './upload/upload.module';
     ExaminationReportModule,
     RegimenModule,
     UploadModule,
+    AppointmentSlotsModule
   ],
   controllers: [AppController, UploadController],
   providers: [
