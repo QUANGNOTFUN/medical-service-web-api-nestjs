@@ -27,7 +27,11 @@ export class AppointmentService {
         take: pageSize,
         orderBy: { created_at: 'desc' },
         include:{
-          patient:true,
+          patient:{
+            include:{
+              user: true,
+            }
+          }
         }
       }),
       this.prisma.appointment.count({

@@ -1,6 +1,7 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLTimestamp } from 'graphql-scalars';
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {Patient} from "../../patients/types/patients.type";
 
 @ObjectType()
 export class Appointment {
@@ -36,6 +37,9 @@ export class Appointment {
 
   @Field(() => GraphQLTimestamp, { nullable: true })
   updated_at?: Date | null;
+
+  @Field(() => Patient)
+  patient: Patient;
 }
 
 @InputType()

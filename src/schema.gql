@@ -10,6 +10,7 @@ type Appointment {
   doctor_id: String!
   is_anonymous: Boolean!
   notes: String
+  patient: Patient!
   patient_id: String!
   slot_id: Int!
   status: String!
@@ -317,9 +318,12 @@ input PaginationInput {
 
 type Patient {
   created_at: Timestamp!
-  id: ID!
-  plan_id: Int!
+  gender: String!
+  patient_id: ID!
+  plan: TreatmentPlan
+  plan_id: Int
   updated_at: Timestamp
+  user: User!
 }
 
 type PatientPlanResponse {

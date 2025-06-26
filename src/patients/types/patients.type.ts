@@ -1,20 +1,31 @@
 import {Field, ID, InputType, Int, ObjectType} from '@nestjs/graphql';
 import { GraphQLDate, GraphQLTimestamp } from 'graphql-scalars';
 import { IsDate, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
+import { User } from '../../user/types/user.type';
+import { TreatmentPlan } from '../../treatment-plan/types/treatmentplan.type';
 
 @ObjectType()
 export class Patient {
   @Field(() => ID)
-  id: string;
+  patient_id: string;
 
-  @Field(() => Int)
-  plan_id: number;
+  @Field(() => Int, { nullable: true })
+  plan_id?: number | null ;
+
+  @Field(() => String, )
+  gender: string;
 
   @Field(() => GraphQLTimestamp)
   created_at: Date;
 
   @Field(() => GraphQLTimestamp, { nullable: true })
-  updated_at?: Date;
+  updated_at?: Date | null;
+
+  @Field(() => TreatmentPlan, { nullable: true })
+  plan?: TreatmentPlan;
+
+  @Field(() => User)
+  user: User;
 }
 
 @InputType()
