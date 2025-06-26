@@ -35,7 +35,7 @@ export class PatientService {
 
   async update(id: string, input: UpdatePatientInput): Promise<PrismaPatient> {
     await this.findOne(id); // Đảm bảo bệnh nhân tồn tại
-    const { user, patient_id, ...rest } = input; // Loại bỏ patient_id khỏi rest
+    const { user, ...rest } = input; // Loại bỏ patient_id khỏi rest
 
     const data: Prisma.PatientUpdateInput = {
       ...rest,

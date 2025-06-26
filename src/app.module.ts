@@ -1,8 +1,8 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {GraphQLModule} from '@nestjs/graphql';
-import {ApolloDriver, ApolloDriverConfig} from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UserModule } from './user/user.module';
 import { APP_PIPE } from '@nestjs/core';
 import { MedicationsModule } from './medications/medications.module';
@@ -22,20 +22,45 @@ import { UploadService } from './upload/upload.service';
 import { UploadModule } from './upload/upload.module';
 import { AppointmentSlotsModule } from './appointment-slots/appointment-slots.module';
 import { DateTimeScalar } from './common/scalars/date.scalar';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
+import { EmailService } from './api/send-email/email.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env', // Ensure .env file is loaded
+      envFilePath: '.env',
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       graphiql: true,
       autoSchemaFile: 'src/schema.gql',
       sortSchema: true,
-      playground: true, // Bật GraphQL Playground để debug
-      resolvers: { DateTime: DateTimeScalar }, // 👈 Đăng ký duy nhất tại đây
+      playground: true,
+      resolvers: { DateTime: DateTimeScalar },
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.MAIL_HOST || 'smtp.sendgrid.net',
+        port:  587,
+        secure: false, // Sử dụng STARTTLS
+        auth: {
+          user: process.env.MAIL_USER || 'apikey',
+          pass: process.env.MAIL_PASS || 'your-sendgrid-api-key',
+        },
+      },
+      defaults: {
+        from: 'thanhhien.work.2004@gmail.com', // Thay bằng email đã xác thực
+      },
+      template: {
+        dir: join(__dirname,'..', 'templates'),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
     }),
     UserModule,
     MedicationsModule,
@@ -49,7 +74,7 @@ import { DateTimeScalar } from './common/scalars/date.scalar';
     ExaminationReportModule,
     RegimenModule,
     UploadModule,
-    AppointmentSlotsModule
+    AppointmentSlotsModule,
   ],
   controllers: [AppController, UploadController],
   providers: [
@@ -59,7 +84,9 @@ import { DateTimeScalar } from './common/scalars/date.scalar';
       provide: APP_PIPE,
       useClass: ValidationPipe,
     },
-    UploadService
+    UploadService,
+    EmailService,
   ],
+  exports: [EmailService],
 })
 export class AppModule {}
