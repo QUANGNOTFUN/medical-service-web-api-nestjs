@@ -11,6 +11,7 @@ type Appointment {
   doctor_id: String!
   is_anonymous: Boolean!
   notes: String
+  patient: Patient!
   patient_id: String!
   slot_id: Int!
   status: String!
@@ -195,10 +196,6 @@ input GetAppointmentByIdInput {
   appointment_id: Int!
 }
 
-input GetAppointmentByPatientIdInput {
-  patient_id: String!
-}
-
 input GetBlogPostByIdInput {
   id: ID!
 }
@@ -269,6 +266,7 @@ type Mutation {
   makeMedicalExamination(input: MedicalExaminationInput!): Boolean!
   register(userData: RegisterDto!): User!
   removeAppointmentSlot(id: Int!): AppointmentSlot!
+  updateAppointment(input: UpdateAppointmentInput!): Boolean!
   updateAppointmentSlot(id: Int!, updateAppointmentSlotInput: UpdateAppointmentSlotInput!): AppointmentSlot!
   updateAppointmentStatus(appointmentId: Int!, newStatus: String!): Appointment!
   updateBlogPost(id: Int!, input: UpdateBlogPostInput!): BlogPost!
@@ -280,6 +278,14 @@ type Mutation {
 
   """Cập nhật thông tin người dùng"""
   updateUser(id: String!, input: UpdateUserInput!): User!
+}
+
+type PaginatedAppointment {
+  items: [Appointment!]!
+  page: Int!
+  pageSize: Int!
+  total: Int!
+  totalPages: Int!
 }
 
 type PaginatedBlogPosts {
@@ -298,6 +304,12 @@ type PaginatedMedications {
   totalPages: Int!
 }
 
+input PaginationAppointmentInput {
+  doctor_id: String
+  page: Int!
+  pageSize: Int!
+}
+
 input PaginationBlogInput {
   page: Int!
   pageSize: Int!
@@ -311,10 +323,17 @@ input PaginationInput {
 type Patient {
   created_at: Timestamp!
   gender: String!
-  id: ID!
-  plan_id: Int!
+  patient_id: ID!
+  plan: TreatmentPlan
+  plan_id: Int
   updated_at: Timestamp
   user: User!
+}
+
+type PatientPlanResponse {
+  patient_id: String!
+  plan: TreatmentPlan
+  plan_id: Float
 }
 
 type Query {
@@ -328,16 +347,17 @@ type Query {
   findAllPatients: [Patient!]!
   findAllRegimens: [Regimen!]!
   findAllTreatmentPlans: [TreatmentPlan!]!
-  findAppointmentByPatientId(input: GetAppointmentByPatientIdInput!): [Appointment!]!
   findExaminationReport(id: Int!): ExaminationReport!
   findOneAppointment(input: GetAppointmentByIdInput!): Appointment!
   findOneBlogPost(input: GetBlogPostByIdInput!): BlogPost!
   findOnePatient(input: GetPatientByIdInput!): Patient!
+  findPatientPlan(patient_id: String!): PatientPlanResponse!
   findRegimen(id: Int!): Regimen!
   findTreatmentPlan(id: Int!): TreatmentPlan!
   getAllPatients(input: GetPatientByIdInput!): [Patient!]!
   getAllUsers(pagination: PaginationInput): UserPaginationResponse!
   getAppointmentSlotByScheduleId(id: Int!): [AppointmentSlot!]!
+  getAppointmentsByDoctor(input: PaginationAppointmentInput!): PaginatedAppointment!
   getAvailableScheduleDates(doctor_id: String!): [String!]!
   getDoctorSchedulesIdByDate(date: String!, doctor_id: String!): [DoctorSchedule!]!
 
@@ -396,6 +416,16 @@ type TreatmentPlan {
   notes: String
   start_date: Timestamp!
   updated_at: Timestamp
+}
+
+input UpdateAppointmentInput {
+  appointment_date: Timestamp
+  appointment_id: Int!
+  appointment_type: String
+  is_anonymous: Boolean
+  is_done: Boolean
+  notes: String
+  status: String
 }
 
 input UpdateAppointmentSlotInput {

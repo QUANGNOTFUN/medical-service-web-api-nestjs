@@ -148,9 +148,7 @@ export class UpdateAppointmentInput {
   @IsOptional()
   notes?: string;
 
-  @Field(() => Doctor, { nullable: true })
-  @IsOptional()
-  doctor?: Doctor | null;
+
 }
 
 @InputType()
