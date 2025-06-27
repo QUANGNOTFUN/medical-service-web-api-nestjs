@@ -90,4 +90,3 @@ export class UpdateTreatmentPlanInput {
   @IsOptional()
   notes?: string;
 }
-

@@ -6,15 +6,15 @@ import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  // 👇 ép kiểu về NestExpressApplication
+  // Typecast to NestExpressApplication
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Các config như cũ
+  // Global pipes configuration
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  // ✅ Serve thư mục uploads nằm ở gốc dự án (cùng cấp src/)
+  // Serve static assets from the 'uploads' folder at project root
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads', // URL truy cập sẽ là http://localhost:3000/uploads/filename.png
+    prefix: '/uploads', // URL will be http://localhost:3000/uploads/filename.png
   });
   app.useGlobalFilters(new GraphQLExceptionFilter());
 

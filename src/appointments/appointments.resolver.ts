@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import {
   CreateAppointmentInput,
   DeleteAppointmentInput,
-  GetAppointmentByIdInput,
+  GetAppointmentByIdInput, GetAppointmentByPatientIdInput,
   PaginatedAppointment, PaginationAppointmentInput, UpdateAppointmentInput,
 } from './types/appointments.type';
 import { Appointment } from './types/appointments.type';
@@ -31,7 +31,10 @@ export class AppointmentResolver {
   findOneAppointment(@Args('input') input: GetAppointmentByIdInput) {
     return this.appointmentService.findOne(input.appointment_id);
   }
-
+  @Query(() => [Appointment])
+  findAppointmentByPatientId(@Args('input') input: GetAppointmentByPatientIdInput) {
+    return this.appointmentService.getAppointmentByPatientId(input.patient_id);
+  }
   @Mutation(() => Boolean)
   async updateAppointment(
     @Args('input') input: UpdateAppointmentInput
@@ -53,8 +56,6 @@ export class AppointmentResolver {
     // @ts-ignore
     return this.appointmentService.updateStatus(appointmentId, newStatus);
   }
-
-
 
   @Mutation(() => Boolean)
   async deleteAppointment(@Args('input') input: DeleteAppointmentInput) {
