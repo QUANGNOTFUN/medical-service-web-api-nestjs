@@ -1,6 +1,7 @@
-import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InputType, ObjectType, Int } from '@nestjs/graphql';
 import { GraphQLTimestamp } from 'graphql-scalars';
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Doctor } from '../../doctors/model/doctors.model';
+import { IsIn, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import {Patient} from "../../patients/types/patients.type";
 
 @ObjectType()
@@ -29,7 +30,7 @@ export class Appointment {
   @Field(() => Boolean)
   is_anonymous: boolean;
 
-  @Field(() => String,{nullable : true})
+  @Field(() => String, { nullable: true })
   notes?: string | null;
 
   @Field(() => GraphQLTimestamp)
@@ -52,25 +53,9 @@ export class PaginationAppointmentInput {
 
   @Field(() => String, { nullable: true })
   doctor_id: string;
-}
 
-
-@ObjectType()
-export class PaginatedAppointment {
-  @Field(() => [Appointment])
-  items: Appointment[];
-
-  @Field(() => Int)
-  total: number;
-
-  @Field(() => Int)
-  page: number;
-
-  @Field(() => Int)
-  pageSize: number;
-
-  @Field(() => Int)
-  totalPages: number;
+  @Field(() => Doctor, { nullable: true })
+  doctor: Doctor; // Quan hệ với Doctors
 }
 
 @InputType()
@@ -86,7 +71,6 @@ export class CreateAppointmentInput {
   doctor_id: string;
 
   @Field(() => Int)
-  @IsInt()
   @IsNotEmpty()
   slot_id: number;
 
@@ -107,13 +91,28 @@ export class CreateAppointmentInput {
   @Field(() => Boolean, { defaultValue: false })
   @IsOptional()
   is_anonymous?: boolean;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  notes?: string | null;
+
 }
 
 @InputType()
 export class UpdateAppointmentInput {
   @Field(() => Int)
+  @IsInt()
+  @IsNotEmpty()
   appointment_id: number;
 
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  appointment_type?: string;
+
+  @Field(() => GraphQLTimestamp, { nullable: true })
+  @IsOptional()
+  appointment_date?: Date;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -123,9 +122,36 @@ export class UpdateAppointmentInput {
   @Field(() => Boolean, { nullable: true })
   @IsOptional()
   is_done?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  @IsOptional()
+  is_anonymous?: boolean;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  notes?: string;
+
+  @Field(() => Doctor, { nullable: true })
+  @IsOptional()
+  doctor?: Doctor | null;
 }
 
+// InputType mới cho việc cập nhật trạng thái
+@InputType()
+export class UpdateAppointmentStatusInput {
+  @Field(() => Int)
+  @IsInt()
+  @IsNotEmpty()
+  appointment_id: number;
 
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['PENDING', 'COMPLETED', 'CANCELLED'], { message: 'Trạng thái phải là PENDING, COMPLETED hoặc CANCELLED' })
+  status: string;
+}
+
+// InputType cho việc lấy appointment theo ID
 @InputType()
 export class GetAppointmentByIdInput {
   @Field(() => Int)
@@ -134,6 +160,16 @@ export class GetAppointmentByIdInput {
   appointment_id: number;
 }
 
+// InputType cho việc lấy appointment theo patient_id
+@InputType()
+export class GetAppointmentByPatientIdInput {
+  @Field(() => String)
+  @IsString({ message: 'patient_id phải là chuỗi' })
+  @IsNotEmpty({ message: 'patient_id không được để trống' })
+  patient_id: string;
+}
+
+// InputType cho việc xóa appointment
 @InputType()
 export class DeleteAppointmentInput {
   @Field(() => Int)

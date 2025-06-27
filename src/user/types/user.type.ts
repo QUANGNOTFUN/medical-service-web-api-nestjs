@@ -2,6 +2,8 @@ import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Min, MinLength } from 'class-validator';
 import { Role } from '../../role/role.enum';
+import { DoctorSchedule } from '../../doctor_schedules/model/doctor_schedules.model';
+import { Patient } from '../../patients/types/patients.type';
 
 @ObjectType()
 export class User {
@@ -37,6 +39,7 @@ export class User {
 
   @Field(() => GraphQLDate, {  nullable: true, description: 'Last update date of the user record' })
   updated_at?: Date | null; //
+
 }
 
 @ObjectType()
@@ -131,10 +134,10 @@ export class CreateUserInput {
 @InputType()
 export class UpdateUserInput {
   @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsString({ message: 'full_name phải là chuỗi' })
-  @IsNotEmpty({ message: 'full_name không được để trống' })
   @MinLength(3, { message: 'full_name phải có ít nhất 3 ký tự' })
-  full_name: string;
+  full_name?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -142,29 +145,26 @@ export class UpdateUserInput {
   phone?: string;
 
   @Field(() => String, { nullable: true })
-  @IsEmail({}, { message: 'email không đúng định dạng' })
   @IsOptional()
-  @IsNotEmpty({ message: 'email không được để trống' })
-  email: string;
+  @IsEmail({}, { message: 'email không đúng định dạng' })
+  email?: string;
 
   @Field(() => String, { nullable: true })
-  @IsString({ message: 'password phải là chuỗi' })
   @IsOptional()
-  @IsNotEmpty({ message: 'password không được để trống' })
-  password: string;
+  @IsString({ message: 'password phải là chuỗi' })
+  password?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString({ message: 'address phải là chuỗi' })
   address?: string;
 
-  @Field(() => String, { nullable: true, description: 'Avatar' })
+  @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'avatar phải là chuỗi' })
   avatar?: string;
 
   @Field(() => GraphQLDate, { nullable: true })
   @IsOptional()
-  @IsOptional({ message: 'date_of_birth là tùy chọn' })
   date_of_birth?: string;
 }
