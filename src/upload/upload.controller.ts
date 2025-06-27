@@ -13,7 +13,7 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('file', multerConfig))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     return {
-      url: `/uploads/${file.filename}`, // Trả về đường dẫn ảnh để FE lưu
+      url: `/uploads/${file.filename}`,
     };
   }
 }

@@ -2,15 +2,77 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Appointment as PrismaAppointment } from '@prisma/client';
 import { CreateAppointmentInput, PaginatedAppointment, UpdateAppointmentInput } from './types/appointments.type';
+import { EmailService } from '../api/send-email/email.service';
 
 @Injectable()
 export class AppointmentService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService
+  ) {}
 
   async create(input: CreateAppointmentInput): Promise<PrismaAppointment> {
-    return this.prisma.appointment.create({
+    const appointment = await this.prisma.appointment.create({
       data: { ...input },
+      include: {
+        patient: { include: { user: true } },
+        doctor: { include: { user: true } },
+      },
     });
+
+    // Gửi mail xác nhận lịch hẹn tự động
+    const patientEmail = appointment.patient.user.email;
+    const patientName = appointment.patient.user.full_name;
+    const doctorName = appointment.doctor.user.full_name;
+    const appointmentDateTime = new Date(appointment.appointment_date);
+    const formattedDateTime = appointmentDateTime.toISOString().slice(0, 19).replace('T', ' ');
+    const [date, time] = formattedDateTime.split(' ');
+
+    try {
+      await this.emailService.sendAppointmentConfirmation(patientEmail, {
+        patientName,
+        appointmentDate: date,
+        appointmentTime: time,
+        doctorName,
+        clinicName: 'Phòng khám Quận 12',
+      });
+    } catch (emailError) {
+      console.warn('Gửi email thất bại:', emailError.message);
+    }
+
+    return appointment;
+  }
+  async updateStatus(appointmentId: number, newStatus: string): Promise<PrismaAppointment> {
+    // Kiểm tra trạng thái hợp lệ
+    const validStatuses = ['PENDING', 'COMPLETED', 'CANCELLED'];
+    if (!validStatuses.includes(newStatus)) {
+      throw new Error(`Trạng thái không hợp lệ. Chỉ chấp nhận: ${validStatuses.join(', ')}`);
+    }
+
+    // Kiểm tra appointment tồn tại
+    const appointment = await this.prisma.appointment.findUnique({
+      where: { appointment_id: appointmentId },
+      include: {
+        patient: { include: { user: true } },
+        doctor: { include: { user: true } },
+      },
+    });
+
+    if (!appointment) {
+      throw new NotFoundException(`Appointment #${appointmentId} not found`);
+    }
+
+    // Cập nhật trạng thái
+    const updatedAppointment = await this.prisma.appointment.update({
+      where: { appointment_id: appointmentId },
+      data: { status: newStatus },
+      include: {
+        patient: { include: { user: true } },
+        doctor: { include: { user: true } },
+      },
+    });
+
+    return updatedAppointment;
   }
 
   async findAllByDoctorId(
@@ -46,6 +108,20 @@ export class AppointmentService {
       pageSize,
       totalPages: Math.ceil(total / pageSize)
     };
+  }
+
+  async getAppointmentByPatientId(id: string): Promise<PrismaAppointment[]> {
+    return this.prisma.appointment.findMany({
+      where: { patient_id: id },
+      orderBy: { appointment_date: 'desc' },
+      include: {
+        doctor: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
   }
 
   async findAll(): Promise<PrismaAppointment[]> {

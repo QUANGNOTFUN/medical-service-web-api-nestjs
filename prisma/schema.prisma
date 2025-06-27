@@ -125,6 +125,8 @@ model TreatmentPlan {
   updated_at             DateTime?           @updatedAt
   examinations           ExaminationReport[]
   follow_up_appointments Appointment[]       @relation("AppointmentToTreatmentPlan")
+
+  Patient Patient[]
 }
 
 model ExaminationReport {

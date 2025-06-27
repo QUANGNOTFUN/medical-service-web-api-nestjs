@@ -19,7 +19,7 @@ export class Patient {
   created_at: Date;
 
   @Field(() => GraphQLTimestamp, { nullable: true })
-  updated_at?: Date;
+  updated_at?: Date | null;
 
 
   @Field(() => TreatmentPlan, { nullable: true })
