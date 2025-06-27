@@ -1,6 +1,6 @@
 import { Field, ObjectType, Int } from '@nestjs/graphql';
 import { IsNotEmpty, IsInt, IsDate, Min } from 'class-validator';
-import { DoctorSchedule } from '../../doctor_schedules/model/doctor_schedules.model';
+import { DoctorSchedule } from '../../doctor_schedules/types/doctor_schedules.model';
 
 @ObjectType()
 export class AppointmentSlot {

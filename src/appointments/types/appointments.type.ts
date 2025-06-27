@@ -1,8 +1,8 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLTimestamp } from 'graphql-scalars';
 import { IsIn, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import {Patient} from "../../patients/types/patients.type";
-import { Doctor } from '../../doctors/model/doctors.model';
+import { Patient } from '../../patients/types/patients.type';
+import { Doctor } from 'src/doctors/type/doctors.model';
 
 @ObjectType()
 export class Appointment {

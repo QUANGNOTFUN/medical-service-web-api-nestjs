@@ -57,9 +57,28 @@ model Doctors {
   schedules DoctorSchedule[]
 }
 
+// ---------------- SCHEDULE ---------------------
+enum ShiftType {
+  MORNING
+  AFTERNOON
+  OVERTIME
+}
+
+enum Days {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
 model DoctorSchedule {
   id           Int               @id @default(autoincrement())
   doctor_id    String
+  day          Days
+  shift        ShiftType
   start_time   DateTime
   end_time     DateTime
   is_available Boolean?
