@@ -82,8 +82,6 @@ export class CreatePatientInput {
 @InputType()
 export class UpdatePatientInput {
   @Field(() => String)
-  @IsString({ message: 'patient_id phải là số chuoi' })
-  @IsNotEmpty({ message: 'patient_id không được để trống' })
   patient_id: string;
 
   @Field({ nullable: true })
