@@ -1,6 +1,6 @@
 import { IsString, IsInt, Min, IsOptional, IsNotEmpty, IsNumber } from 'class-validator';
 import { Field, InputType, Int, Float } from '@nestjs/graphql';
-import { DoctorSchedule } from '../../doctor_schedules/model/doctor_schedules.model';
+import { DoctorSchedule } from '../../doctor_schedules/types/doctor_schedules.model';
 import { User } from '../../user/types/user.type';
 
 @InputType()

@@ -1,8 +1,8 @@
 // doctors.resolver.ts
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { DoctorsService } from './doctors.service';
-import { Doctor as DoctorsGraphQL } from './model/doctors.model';
-import { CreateDoctorDto, UpdateDoctorInput } from './dto/doctors.dto';
+import { Doctor as DoctorsGraphQL } from './type/doctors.model';
+import { CreateDoctorDto, UpdateDoctorInput } from './type/doctors.dto';
 import { DoctorWithRelations } from './type/doctors.type';
 import { AuthService } from '../auth/auth.service';
 

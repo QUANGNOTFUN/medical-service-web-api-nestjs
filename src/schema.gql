@@ -79,11 +79,13 @@ input CreateDoctorDto {
   work_seniority: Int!
 }
 
-input CreateDoctorDto_Schedules {
+input CreateDoctorScheduleInput {
+  date: String!
+  day: Days!
   doctor_id: String!
-  end_time: DateTime!
   is_available: Boolean
-  start_time: DateTime!
+  shift: ShiftType!
+  week_count: Float!
 }
 
 input CreateExaminationReportInput {
@@ -136,6 +138,16 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+enum Days {
+  FRIDAY
+  MONDAY
+  SATURDAY
+  SUNDAY
+  THURSDAY
+  TUESDAY
+  WEDNESDAY
+}
+
 input DeleteAppointmentInput {
   appointment_id: Int!
 }
@@ -149,7 +161,7 @@ type Doctor {
   created_at: Date!
   default_fee: Float!
   gender: String
-  hospital: String!
+  hospital: String
   id: String!
   positions: String
   qualifications: String
@@ -157,7 +169,7 @@ type Doctor {
 
   """Doctor's schedule (if any)"""
   schedules: DoctorSchedule
-  specialty: String!
+  specialty: String
   titles: String
 
   """Last update date of the doctor record"""
@@ -165,18 +177,27 @@ type Doctor {
 
   """Related user information"""
   user: User!
-  work_seniority: Int!
+  work_seniority: Int
 }
 
 type DoctorSchedule {
   """Creation date of the user record"""
   created_at: Date!
-  doctor: Doctor
+  day: Days!
   doctor_id: String!
   end_time: Date!
   id: Int!
   is_available: Boolean
+  shift: ShiftType!
   start_time: Date!
+}
+
+type DoctorScheduleResponse {
+  day: Days!
+  doctor_id: String!
+  full_name: String!
+  is_available: Boolean
+  shift: ShiftType!
 }
 
 type ExaminationReport {
@@ -248,7 +269,7 @@ type Mutation {
   createAppointmentSlot(createAppointmentSlotInput: CreateAppointmentSlotInput!): AppointmentSlot!
   createBlogPost(input: CreateBlogPostInput!): BlogPost!
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
-  createDoctorSchedule(doctorData: CreateDoctorDto_Schedules!): DoctorSchedule!
+  createDoctorSchedule(input: CreateDoctorScheduleInput!): DoctorSchedule!
   createExaminationReport(input: CreateExaminationReportInput!): ExaminationReport!
   createMedication(input: CreateMedicationInput!): Medication!
   createPatient(input: CreatePatientInput!): Patient!
@@ -275,7 +296,7 @@ type Mutation {
   updateAppointmentStatus(appointmentId: Int!, newStatus: String!): Appointment!
   updateBlogPost(id: Int!, input: UpdateBlogPostInput!): BlogPost!
   updateDoctor(doctorData: UpdateDoctorInput!, id: String!): Doctor!
-  updateDoctorSchedule(doctorData: CreateDoctorDto_Schedules!, id: String!): DoctorSchedule!
+  updateDoctorSchedule(doctorData: CreateDoctorScheduleInput!, id: String!): DoctorSchedule!
   updateMedication(id: Int!, input: UpdateMedicationInput!): Medication!
   updatePatient(input: UpdatePatientInput!): Patient!
   updateTreatmentPlan(input: UpdateTreatmentPlanInput!): TreatmentPlan!
@@ -344,7 +365,6 @@ type Query {
   appointmentSlot(id: Int!): AppointmentSlot!
   appointmentSlots: [AppointmentSlot!]!
   doctor(id: String!): Doctor
-  doctorSchedules: [DoctorSchedule!]!
   doctors: [Doctor!]!
   findAllAppointments: [Appointment!]!
   findAllExaminationReports: [ExaminationReport!]!
@@ -364,6 +384,7 @@ type Query {
   getAppointmentSlotByScheduleId(id: Int!): [AppointmentSlot!]!
   getAppointmentsByDoctor(input: PaginationAppointmentInput!): PaginatedAppointment!
   getAvailableScheduleDates(doctor_id: String!): [String!]!
+  getDoctorScheduleByWeekDate(input: WeekDateInput!): [DoctorScheduleResponse!]!
   getDoctorSchedulesIdByDate(date: String!, doctor_id: String!): [DoctorSchedule!]!
 
   """Lấy thông tin người dùng theo email"""
@@ -405,6 +426,12 @@ input RegisterDto {
 
 input SearchMedicationsInput {
   keyword: String!
+}
+
+enum ShiftType {
+  AFTERNOON
+  MORNING
+  OVERTIME
 }
 
 """
@@ -530,4 +557,9 @@ type UserPaginationResponse {
   data: [User!]!
   itemsPerPage: Int!
   total: Int!
+}
+
+input WeekDateInput {
+  end_week: String!
+  start_week: String!
 }

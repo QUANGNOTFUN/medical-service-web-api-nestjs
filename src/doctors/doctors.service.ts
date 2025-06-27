@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateDoctorDto, UpdateDoctorInput } from './dto/doctors.dto';
 import { DoctorWithRelations } from './type/doctors.type';
+import { CreateDoctorDto, UpdateDoctorInput } from './type/doctors.dto';
 
 @Injectable()
 export class DoctorsService {
@@ -73,6 +73,5 @@ export class DoctorsService {
       },
       include: { user: true, schedules: true },
     });
-
   }
 }

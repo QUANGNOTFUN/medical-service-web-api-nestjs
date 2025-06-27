@@ -1,9 +1,15 @@
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
-import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Min, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Min,
+  MinLength,
+} from 'class-validator';
 import { Role } from '../../role/role.enum';
-import { DoctorSchedule } from '../../doctor_schedules/model/doctor_schedules.model';
-import { Patient } from '../../patients/types/patients.type';
 
 @ObjectType()
 export class User {
@@ -19,7 +25,10 @@ export class User {
   @Field(() => String)
   password: string;
 
-  @Field(() => String, { nullable: true, description: 'Phone number of the user' })
+  @Field(() => String, {
+    nullable: true,
+    description: 'Phone number of the user',
+  })
   phone?: string | null;
 
   @Field(() => String, { nullable: true, description: 'Address of the user' })
@@ -28,18 +37,27 @@ export class User {
   @Field(() => String, { nullable: true, description: 'Avatar' })
   avatar?: string | null;
 
-  @Field(() => GraphQLDate, { nullable: true, description: 'Date of birth of the user' })
+  @Field(() => GraphQLDate, {
+    nullable: true,
+    description: 'Date of birth of the user',
+  })
   date_of_birth?: Date | null;
 
-  @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
+  @Field(() => String, {
+    nullable: true,
+    description: 'Role of the user',
+    defaultValue: Role.USER,
+  })
   role: string;
 
   @Field(() => GraphQLDate, { description: 'Creation date of the user record' })
   created_at: Date;
 
-  @Field(() => GraphQLDate, {  nullable: true, description: 'Last update date of the user record' })
+  @Field(() => GraphQLDate, {
+    nullable: true,
+    description: 'Last update date of the user record',
+  })
   updated_at?: Date | null; //
-
 }
 
 @ObjectType()
@@ -121,7 +139,11 @@ export class CreateUserInput {
   @IsString()
   avatar?: string | null;
 
-  @Field(() => String, { nullable: true, description: 'Role of the user', defaultValue: Role.USER })
+  @Field(() => String, {
+    nullable: true,
+    description: 'Role of the user',
+    defaultValue: Role.USER,
+  })
   @IsString({ message: 'role phải là chuỗi' })
   @IsNotEmpty({ message: 'role không được để trống' })
   role: string;
