@@ -166,9 +166,6 @@ type Doctor {
   positions: String
   qualifications: String
   rating: Float!
-
-  """Doctor's schedule (if any)"""
-  schedules: DoctorSchedule
   specialty: String
   titles: String
 
@@ -184,20 +181,13 @@ type DoctorSchedule {
   """Creation date of the user record"""
   created_at: Date!
   day: Days!
+  doctor: Doctor!
   doctor_id: String!
   end_time: Date!
   id: Int!
   is_available: Boolean
   shift: ShiftType!
   start_time: Date!
-}
-
-type DoctorScheduleResponse {
-  day: Days!
-  doctor_id: String!
-  full_name: String!
-  is_available: Boolean
-  shift: ShiftType!
 }
 
 type ExaminationReport {
@@ -269,7 +259,7 @@ type Mutation {
   createAppointmentSlot(createAppointmentSlotInput: CreateAppointmentSlotInput!): AppointmentSlot!
   createBlogPost(input: CreateBlogPostInput!): BlogPost!
   createDoctor(doctorData: CreateDoctorDto!): Doctor!
-  createDoctorSchedule(input: CreateDoctorScheduleInput!): DoctorSchedule!
+  createDoctorSchedule(input: CreateDoctorScheduleInput!): Boolean!
   createExaminationReport(input: CreateExaminationReportInput!): ExaminationReport!
   createMedication(input: CreateMedicationInput!): Medication!
   createPatient(input: CreatePatientInput!): Patient!
@@ -384,7 +374,7 @@ type Query {
   getAppointmentSlotByScheduleId(id: Int!): [AppointmentSlot!]!
   getAppointmentsByDoctor(input: PaginationAppointmentInput!): PaginatedAppointment!
   getAvailableScheduleDates(doctor_id: String!): [String!]!
-  getDoctorScheduleByWeekDate(input: WeekDateInput!): [DoctorScheduleResponse!]!
+  getDoctorScheduleByWeekDate(input: WeekDateInput!): [DoctorSchedule!]!
   getDoctorSchedulesIdByDate(date: String!, doctor_id: String!): [DoctorSchedule!]!
 
   """Lấy thông tin người dùng theo email"""

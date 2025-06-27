@@ -1,7 +1,7 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
 import { Days, ShiftType } from './doctor_schedules.dto';
-import { User } from '../../user/types/user.type';
+import { Doctor } from '../../doctors/type/doctors.model';
 
 @ObjectType()
 export class DoctorSchedule {
@@ -29,12 +29,6 @@ export class DoctorSchedule {
   @Field(() => GraphQLDate, { description: 'Creation date of the user record' })
   created_at: Date;
 
-  @Field(() => User, { nullable: false })
-  user: User;
+  @Field(() => Doctor, { nullable: false })
+  doctor: Doctor;
 }
-
-export type DoctorScheduleResponse = DoctorSchedule & {
-  doctor: {
-    user: User
-  }
-};

@@ -1,7 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   DoctorSchedule,
-  DoctorScheduleResponse,
 } from './types/doctor_schedules.model';
 import { DoctorScheduleService } from './doctor_schedules.service';
 import { CreateDoctorScheduleInput } from './types/doctor_schedules.dto';
@@ -12,7 +11,9 @@ export class DoctorScheduleResolver {
   constructor(private doctorScheduleService: DoctorScheduleService) {}
 
   @Query(() => [DoctorSchedule])
-  async getDoctorScheduleByWeekDate(@Args('input') weekDate: WeekDateInput): Promise<DoctorScheduleResponse[]> {
+  async getDoctorScheduleByWeekDate(
+    @Args('input') weekDate: WeekDateInput,
+  ): Promise<DoctorSchedule[]> {
     return this.doctorScheduleService.getDoctorScheduleByWeekDate(weekDate);
   }
 
@@ -21,7 +22,10 @@ export class DoctorScheduleResolver {
     @Args('doctor_id', { type: () => String }) doctor_id: string,
     @Args('date', { type: () => String }) date: string,
   ) {
-    return this.doctorScheduleService.findSchedulesByDoctorAndDate(doctor_id, date);
+    return this.doctorScheduleService.findSchedulesByDoctorAndDate(
+      doctor_id,
+      date,
+    );
   }
 
   @Query(() => [String])
@@ -31,7 +35,7 @@ export class DoctorScheduleResolver {
     return this.doctorScheduleService.getAvailableScheduleDates(doctor_id);
   }
 
-  @Mutation(() => DoctorSchedule)
+  @Mutation(() => Boolean)
   async createDoctorSchedule(
     @Args('input') scheduleInput: CreateDoctorScheduleInput,
   ) {
