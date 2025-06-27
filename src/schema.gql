@@ -196,6 +196,10 @@ input GetAppointmentByIdInput {
   appointment_id: Int!
 }
 
+input GetAppointmentByPatientIdInput {
+  patient_id: String!
+}
+
 input GetBlogPostByIdInput {
   id: ID!
 }
@@ -347,6 +351,7 @@ type Query {
   findAllPatients: [Patient!]!
   findAllRegimens: [Regimen!]!
   findAllTreatmentPlans: [TreatmentPlan!]!
+  findAppointmentByPatientId(input: GetAppointmentByPatientIdInput!): [Appointment!]!
   findExaminationReport(id: Int!): ExaminationReport!
   findOneAppointment(input: GetAppointmentByIdInput!): Appointment!
   findOneBlogPost(input: GetBlogPostByIdInput!): BlogPost!
