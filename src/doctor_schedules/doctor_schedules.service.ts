@@ -4,10 +4,7 @@ import {
   CreateDoctorScheduleInput,
   ShiftType,
 } from './types/doctor_schedules.dto';
-import {
-  DoctorSchedule,
-  DoctorScheduleResponse,
-} from './types/doctor_schedules.model';
+import { DoctorSchedule } from './types/doctor_schedules.model';
 import { WeekDateInput } from './types/week_date_input.type';
 
 @Injectable()
@@ -16,7 +13,7 @@ export class DoctorScheduleService {
 
   async getDoctorScheduleByWeekDate(
     weekDate: WeekDateInput,
-  ): Promise<DoctorScheduleResponse[]> {
+  ): Promise<DoctorSchedule[]> {
     const startDate = new Date(weekDate.start_week);
     const endDate = new Date(weekDate.end_week);
 
@@ -29,15 +26,13 @@ export class DoctorScheduleService {
       },
       include: {
         doctor: {
-          include: {
-            user: true,
-          },
+          include: { user: true },
         },
       },
     });
   }
 
-  async create(input: CreateDoctorScheduleInput): Promise<DoctorSchedule> {
+  async create(input: CreateDoctorScheduleInput): Promise<boolean> {
     try {
       const doctor = await this.prisma.doctors.findUnique({
         where: { id: input.doctor_id },
@@ -47,8 +42,6 @@ export class DoctorScheduleService {
       }
 
       const baseDate = new Date(input.date);
-      let latestSchedule = new DoctorSchedule();
-
       for (let i = 0; i < input.week_count; i++) {
         const startTime = new Date(baseDate);
         const endTime = new Date(baseDate);
@@ -56,40 +49,41 @@ export class DoctorScheduleService {
         endTime.setDate(baseDate.getDate() + i * 7);
 
         switch (input.shift) {
-          case ShiftType.MORNING:
-            startTime.setHours(8, 0, 0, 0);
-            endTime.setHours(12, 0, 0, 0);
+          case ShiftType.MORNING: {
+            startTime.setUTCHours(8, 0, 0, 0);
+            endTime.setUTCHours(12, 0, 0, 0);
             break;
-          case ShiftType.AFTERNOON:
-            startTime.setHours(13, 0, 0, 0);
-            endTime.setHours(17, 0, 0, 0);
+          }
+          case ShiftType.AFTERNOON: {
+            startTime.setUTCHours(13, 0, 0, 0);
+            endTime.setUTCHours(17, 0, 0, 0);
             break;
-          case ShiftType.OVERTIME:
-            startTime.setHours(18, 0, 0, 0);
-            endTime.setHours(22, 0, 0, 0);
+          }
+          case ShiftType.OVERTIME: {
+            startTime.setUTCHours(18, 0, 0, 0);
+            endTime.setUTCHours(22, 0, 0, 0);
             break;
-          default:
+          }
+          default: {
             new Error('Invalid shift type');
+            break;
+          }
         }
 
-        // Tạo bản ghi và lưu kết quả
-        latestSchedule = await this.prisma.doctorSchedule.create({
+        await this.prisma.doctorSchedule.create({
           data: {
             doctor_id: input.doctor_id,
             day: input.day,
             shift: input.shift,
             start_time: startTime,
             end_time: endTime,
-            is_available: input.is_available ?? true,
+            is_available: true,
           },
         });
       }
 
-      if (!latestSchedule) {
-        new Error('No schedule created');
-      }
+      return true;
 
-      return latestSchedule;
     } catch (error) {
       throw new Error(
         error instanceof Error ? error.message : 'An unknown error occurred',
@@ -136,8 +130,8 @@ export class DoctorScheduleService {
 
     const uniqueDates = Array.from(
       new Set(
-        schedules.map((s) => s.start_time.toISOString().split('T')[0]) // lấy phần yyyy-mm-dd
-      )
+        schedules.map((s) => s.start_time.toISOString().split('T')[0]), // lấy phần yyyy-mm-dd
+      ),
     );
 
     return uniqueDates.sort(); // sắp xếp tăng dần
@@ -147,6 +141,11 @@ export class DoctorScheduleService {
   async delete(id: number): Promise<DoctorSchedule> {
     return this.prisma.doctorSchedule.delete({
       where: { id },
+      include: {
+        doctor: {
+          include: { user: true },
+        },
+      },
     });
   }
 
@@ -157,6 +156,11 @@ export class DoctorScheduleService {
     return this.prisma.doctorSchedule.update({
       where: { id },
       data,
+      include: {
+        doctor: {
+          include: { user: true },
+        },
+      },
     });
   }
 }

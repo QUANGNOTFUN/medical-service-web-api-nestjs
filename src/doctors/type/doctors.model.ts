@@ -1,7 +1,6 @@
 import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { GraphQLDate } from 'graphql-scalars';
 import { User } from '../../user/types/user.type';
-import { DoctorSchedule } from '../../doctor_schedules/types/doctor_schedules.model';
 
 @ObjectType()
 export class Doctor {
@@ -9,36 +8,36 @@ export class Doctor {
   id: string;
 
   @Field(() => String, { nullable: true })
-  qualifications: string;
+  qualifications?: string | null;
 
   @Field(() => String, { nullable: true })
-  specialty: string;
+  specialty?: string | null;
 
   @Field(() => Int, { nullable: true })
-  work_seniority: number;
+  work_seniority: number | null;
 
   @Field(() => String, { nullable: true })
-  hospital: string;
+  hospital: string | null;
 
   @Field(() => Float, { defaultValue: 0 })
-  default_fee: number;
+  default_fee: number | null;
 
   @Field(() => String, { nullable: true })
-  titles?: string;
+  titles?: string | null;
 
   @Field(() => String, { nullable: true })
-  positions?: string;
+  positions?: string | null;
 
   @Field(() => Float, { defaultValue: 0 })
-  rating: number;
+  rating: number | null;
 
   @Field(() => String, { nullable: true })
-  gender: string;
+  gender: string | null;
 
   @Field(() => GraphQLDate, {
     description: 'Creation date of the doctor record',
   })
-  created_at: Date;
+  created_at: Date | null;
 
   @Field(() => GraphQLDate, {
     nullable: true,
@@ -49,11 +48,4 @@ export class Doctor {
   // 👇 Quan hệ đến bảng users
   @Field(() => User, { description: 'Related user information' })
   user: User;
-
-  // 👇 Quan hệ đến bảng doctor_schedules (có thể không có)
-  @Field(() => DoctorSchedule, {
-    nullable: true,
-    description: "Doctor's schedule (if any)",
-  })
-  schedules: DoctorSchedule | null;
 }
