@@ -2,9 +2,10 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { DoctorsService } from './doctors.service';
 import { Doctor as DoctorsGraphQL } from './type/doctors.model';
-import { CreateDoctorDto, UpdateDoctorInput } from './type/doctors.dto';
+import { CreateDoctorDto, RegisterDoctorInput, UpdateDoctorInput } from './type/doctors.dto';
 import { DoctorWithRelations } from './type/doctors.type';
 import { AuthService } from '../auth/auth.service';
+import { boolean } from 'zod';
 
 @Resolver(() => DoctorsGraphQL)
 export class DoctorsResolver {
@@ -23,10 +24,19 @@ export class DoctorsResolver {
     return this.doctorsService.findOne(id);
   }
 
-  @Mutation(() => DoctorsGraphQL)
-  async createDoctor(@Args('doctorData') doctorData: CreateDoctorDto): Promise<DoctorWithRelations> {
-    return this.doctorsService.create(doctorData);
+  @Mutation(() => Boolean)
+  async createDoctor(
+    @Args('doctorData') doctorData: RegisterDoctorInput
+  ): Promise<boolean> {
+    try {
+      await this.authService.register(doctorData);
+      return true;
+    } catch (error) {
+      console.error('Lỗi khi tạo doctor:', error);
+      return false;
+    }
   }
+
 
   @Mutation(() => DoctorsGraphQL)
   async deleteDoctor(@Args('id') id: string): Promise<DoctorWithRelations> {

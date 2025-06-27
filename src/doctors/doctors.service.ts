@@ -1,21 +1,28 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { DoctorWithRelations } from './type/doctors.type';
-import { CreateDoctorDto, UpdateDoctorInput } from './type/doctors.dto';
+import { RegisterDoctorInput, UpdateDoctorInput } from './type/doctors.dto';
 
 @Injectable()
 export class DoctorsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(dataDoctor: CreateDoctorDto): Promise<DoctorWithRelations> {
-    return this.prisma.doctors.create({
-      data: dataDoctor,
-      include: {
-        user: true,
-        schedules: true,
-      },
-    });
+  async create(dataDoctor: RegisterDoctorInput): Promise<boolean> {
+    try {
+      await this.prisma.doctors.create({
+        data: dataDoctor,
+        include: {
+          user: true,
+          schedules: true,
+        },
+      });
+      return true;
+    } catch (error) {
+      console.error('Lỗi khi tạo doctor:', error);
+      return false;
+    }
   }
+
 
   async findAll(): Promise<DoctorWithRelations[]> {
     return this.prisma.doctors.findMany({
