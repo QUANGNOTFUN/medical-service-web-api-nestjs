@@ -24,8 +24,8 @@ export class BlogPostsResolver {
   }
 
   @Query(() => BlogPost)
-  findOneBlogPost(@Args('input') input: GetBlogPostByIdInput) {
-    return this.blogPostsService.findOne(input.id);
+  findOneBlogPost(@Args('id',{ type: () => Int }) id: number) {
+    return this.blogPostsService.findOne(id);
   }
 
   @Mutation(() => BlogPost)
