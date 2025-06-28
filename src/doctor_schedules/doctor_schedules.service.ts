@@ -138,15 +138,12 @@ export class DoctorScheduleService {
   }
 
   // Xóa lịch
-  async delete(id: number): Promise<DoctorSchedule> {
-    return this.prisma.doctorSchedule.delete({
+  async delete(id: number): Promise<boolean> {
+    await this.prisma.doctorSchedule.delete({
       where: { id },
-      include: {
-        doctor: {
-          include: { user: true },
-        },
-      },
     });
+
+		return true;
   }
 
   async update(

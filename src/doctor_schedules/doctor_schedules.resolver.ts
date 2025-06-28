@@ -12,7 +12,7 @@ export class DoctorScheduleResolver {
 
   @Query(() => [DoctorSchedule])
   async getDoctorScheduleByWeekDate(
-    @Args('input') weekDate: WeekDateInput,
+    @Args('weekDate') weekDate: WeekDateInput,
   ): Promise<DoctorSchedule[]> {
     return this.doctorScheduleService.getDoctorScheduleByWeekDate(weekDate);
   }
@@ -42,10 +42,10 @@ export class DoctorScheduleResolver {
     return this.doctorScheduleService.create(scheduleInput);
   }
 
-  @Mutation(() => DoctorSchedule)
+  @Mutation(() => Boolean)
   async deleteDoctorSchedule(
-    @Args('id', { type: () => String }) schedule_id: number,
-  ): Promise<DoctorSchedule> {
+    @Args('schedule_id', { type: () => Number }) schedule_id: number,
+  ): Promise<boolean> {
     return this.doctorScheduleService.delete(schedule_id);
   }
 

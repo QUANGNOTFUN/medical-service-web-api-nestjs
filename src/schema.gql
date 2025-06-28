@@ -268,7 +268,7 @@ type Mutation {
   deleteAppointment(input: DeleteAppointmentInput!): Boolean!
   deleteBlogPost(id: Int!): Boolean!
   deleteDoctor(id: String!): Doctor!
-  deleteDoctorSchedule(id: String!): DoctorSchedule!
+  deleteDoctorSchedule(schedule_id: Float!): Boolean!
   deleteExaminationReport(id: Int!): ExaminationReport!
   deleteMedication(id: Int!): Medication!
   deletePatient(input: DeletePatientInput!): Boolean!
@@ -374,7 +374,7 @@ type Query {
   getAppointmentSlotByScheduleId(id: Int!): [AppointmentSlot!]!
   getAppointmentsByDoctor(input: PaginationAppointmentInput!): PaginatedAppointment!
   getAvailableScheduleDates(doctor_id: String!): [String!]!
-  getDoctorScheduleByWeekDate(input: WeekDateInput!): [DoctorSchedule!]!
+  getDoctorScheduleByWeekDate(weekDate: WeekDateInput!): [DoctorSchedule!]!
   getDoctorSchedulesIdByDate(date: String!, doctor_id: String!): [DoctorSchedule!]!
 
   """Lấy thông tin người dùng theo email"""
