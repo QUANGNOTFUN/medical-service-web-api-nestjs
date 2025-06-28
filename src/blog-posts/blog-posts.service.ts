@@ -55,10 +55,6 @@ export class BlogPostsService {
     };
   }
 
-
-
-
-
   async findOne(id: number): Promise<PrismaBlogPost> {
     const blogPost = await this.prisma.blogPost.findUnique({
       where: { id },

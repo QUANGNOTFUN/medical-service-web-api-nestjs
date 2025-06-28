@@ -198,10 +198,6 @@ input GetAppointmentByPatientIdInput {
   patient_id: String!
 }
 
-input GetBlogPostByIdInput {
-  id: ID!
-}
-
 input GetMedicationByIdInput {
   id: Float!
 }
@@ -351,7 +347,7 @@ type Query {
   findAppointmentByPatientId(input: GetAppointmentByPatientIdInput!): [Appointment!]!
   findExaminationReport(id: Int!): ExaminationReport!
   findOneAppointment(input: GetAppointmentByIdInput!): Appointment!
-  findOneBlogPost(input: GetBlogPostByIdInput!): BlogPost!
+  findOneBlogPost(id: Int!): BlogPost!
   findOnePatient(input: GetPatientByIdInput!): Patient!
   findPatientPlan(patient_id: String!): PatientPlanResponse!
   findRegimen(id: Int!): Regimen!
