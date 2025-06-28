@@ -17,37 +17,28 @@ export class BlogPostsService {
   async findAll(page: number, pageSize: number): Promise<PaginatedBlogPosts> {
     const skip = (page - 1) * pageSize;
 
-    const [rawItems, total] = await this.prisma.$transaction([
+    const [items, total] = await this.prisma.$transaction([
       this.prisma.blogPost.findMany({
         skip,
         take: pageSize,
         orderBy: { created_at: 'desc' },
+        include: {
+          author: {
+            include: {
+              user: true,
+            },
+          },
+        },
       }),
       this.prisma.blogPost.count(),
     ]);
 
-    const items: {
-      id: number;
-      title: string;
-      content: string;
-      category: string;
-      author_id: string;
-      created_at: Date;
-      updated_at: Date | undefined;
-      publish_at: Date | undefined
-    }[] = rawItems.map((item) => ({
-      id: item.id,
-      title: item.title,
-      content: item.content,
-      category: item.category,
-      author_id: item.author_id,
-      created_at: item.created_at,
-      updated_at: item.updated_at ?? undefined,
-      publish_at: item.published_at ?? undefined,
-    }));
-
     return {
-      items,
+      items: items.map((item) => ({
+        ...item,
+        updated_at: item.updated_at ?? undefined,
+        publish_at: item.published_at ?? undefined,
+      })),
       total,
       page,
       pageSize,
@@ -58,12 +49,22 @@ export class BlogPostsService {
   async findOne(id: number): Promise<PrismaBlogPost> {
     const blogPost = await this.prisma.blogPost.findUnique({
       where: { id },
+      include: {
+        author: {
+          include: {
+            user: true,
+          },
+        },
+      },
     });
+
     if (!blogPost) {
       throw new NotFoundException(`Blog post #${id} not found`);
     }
+
     return blogPost;
   }
+
 
   async update(id: number, input: UpdateBlogPostInput): Promise<PrismaBlogPost> {
     await this.findOne(id);
