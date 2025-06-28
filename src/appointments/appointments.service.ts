@@ -12,6 +12,19 @@ export class AppointmentService {
   ) {}
 
   async create(input: CreateAppointmentInput): Promise<PrismaAppointment> {
+    // Bước 1: Kiểm tra trùng lịch
+    const existingAppointment = await this.prisma.appointment.findFirst({
+      where: {
+        doctor_id: input.doctor_id,
+        appointment_date: input.appointment_date,
+      },
+    });
+
+    if (existingAppointment) {
+      throw new Error('Đã có lịch hẹn vào thời gian này. Vui lòng chọn khung giờ khác.');
+    }
+
+    // Bước 2: Tạo appointment
     const appointment = await this.prisma.appointment.create({
       data: { ...input },
       include: {
@@ -20,7 +33,17 @@ export class AppointmentService {
       },
     });
 
-    // Gửi mail xác nhận lịch hẹn tự động
+    // ✅ Bước 2.5: Tăng booked_count trong slot
+    await this.prisma.appointmentSlot.update({
+      where: { id: input.slot_id },
+      data: {
+        booked_count: {
+          increment: 1,
+        },
+      },
+    });
+
+    // Bước 3: Gửi email xác nhận
     const patientEmail = appointment.patient.user.email;
     const patientName = appointment.patient.user.full_name;
     const doctorName = appointment.doctor.user.full_name;
@@ -42,6 +65,9 @@ export class AppointmentService {
 
     return appointment;
   }
+
+
+
   async updateStatus(appointmentId: number, newStatus: string): Promise<PrismaAppointment> {
     // Kiểm tra trạng thái hợp lệ
     const validStatuses = ['PENDING', 'COMPLETED', 'CANCELLED'];

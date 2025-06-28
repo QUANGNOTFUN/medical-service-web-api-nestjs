@@ -66,19 +66,6 @@ input CreateBlogPostInput {
   title: String!
 }
 
-input CreateDoctorDto {
-  default_fee: Float! = 0
-  gender: String
-  hospital: String!
-  id: String!
-  positions: String
-  qualifications: String
-  rating: Float! = 0
-  specialty: String!
-  titles: String
-  work_seniority: Int!
-}
-
 input CreateDoctorScheduleInput {
   date: String!
   day: Days!
@@ -258,7 +245,7 @@ type Mutation {
   createAppointment(input: CreateAppointmentInput!): Appointment!
   createAppointmentSlot(createAppointmentSlotInput: CreateAppointmentSlotInput!): AppointmentSlot!
   createBlogPost(input: CreateBlogPostInput!): BlogPost!
-  createDoctor(doctorData: CreateDoctorDto!): Doctor!
+  createDoctor(doctorData: RegisterDoctorInput!): Boolean!
   createDoctorSchedule(input: CreateDoctorScheduleInput!): Boolean!
   createExaminationReport(input: CreateExaminationReportInput!): ExaminationReport!
   createMedication(input: CreateMedicationInput!): Medication!
@@ -397,6 +384,14 @@ type Regimen {
   regimen_type: String!
   updated_at: Timestamp!
   user_guide: String!
+}
+
+input RegisterDoctorInput {
+  email: String!
+  full_name: String!
+  gender: String!
+  password: String!
+  role: String!
 }
 
 input RegisterDto {
