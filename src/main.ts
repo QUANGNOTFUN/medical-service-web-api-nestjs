@@ -13,8 +13,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   // Serve static assets from the 'uploads' folder at project root
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads', // URL will be http://localhost:3000/uploads/filename.png
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads',
   });
   app.useGlobalFilters(new GraphQLExceptionFilter());
 
