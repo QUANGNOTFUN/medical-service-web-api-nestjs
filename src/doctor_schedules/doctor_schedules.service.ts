@@ -70,7 +70,7 @@ export class DoctorScheduleService {
           }
         }
 
-        await this.prisma.doctorSchedule.create({
+        const schedule = await this.prisma.doctorSchedule.create({
           data: {
             doctor_id: input.doctor_id,
             day: input.day,
@@ -80,6 +80,26 @@ export class DoctorScheduleService {
             is_available: true,
           },
         });
+
+        if (!schedule) {
+          new Error('Schedule not created');
+        }
+        const baseStartTime = new Date(startTime);
+        const baseEndTime = new Date(startTime);
+        baseEndTime.setMinutes(baseEndTime.getMinutes() + 30);
+        for (let j = 0; j < 8; j++) {
+          const startTime = new Date(baseStartTime);
+          startTime.setMinutes(baseStartTime.getMinutes() + j * 30);
+          const endTime = new Date(baseEndTime);
+          endTime.setMinutes(baseEndTime.getMinutes() + j * 30);
+          await this.prisma.appointmentSlot.create({
+            data: {
+              schedule_id: schedule.id,
+              start_time: startTime,
+              end_time: endTime,
+            }
+          })
+        }
       }
 
       return true;
