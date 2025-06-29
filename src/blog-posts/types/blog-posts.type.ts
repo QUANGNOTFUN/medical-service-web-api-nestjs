@@ -1,5 +1,6 @@
 // types/blog-posts.type.ts
 import { Field, ID, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Doctor } from '../../doctors/type/doctors.model';
 
 @ObjectType()
 export class BlogPost{
@@ -21,11 +22,15 @@ export class BlogPost{
   @Field()
   created_at: Date;
 
-  @Field({nullable: true})
-  updated_at?: Date;
+  @Field(() => Date, { nullable: true })
+  updated_at?: Date | null;
 
-  @Field({nullable: true})
-  publish_at?: Date;
+  @Field(() => Date, { nullable: true })
+  publish_at?: Date | null;
+
+  @Field(() => Doctor, { nullable: true })
+  author: Doctor | null;
+
 }
 
 @InputType()
