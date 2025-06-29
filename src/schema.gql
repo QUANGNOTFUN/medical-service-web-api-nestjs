@@ -264,10 +264,16 @@ type Mutation {
 
   """Xóa người dùng"""
   deleteUser(id: String!): User!
+
+  """Gửi mã xác nhận qua email để đặt lại mật khẩu"""
+  forgotPassword(email: String!): Boolean!
   login(userData: LoginDto!): LoginResponse!
   makeMedicalExamination(input: MedicalExaminationInput!): Boolean!
   register(userData: RegisterDto!): User!
   removeAppointmentSlot(id: Int!): AppointmentSlot!
+
+  """Đặt lại mật khẩu bằng mã xác nhận (OTP)"""
+  resetPassword(input: ResetPasswordInput!): Boolean!
   updateAppointment(input: UpdateAppointmentInput!): Boolean!
   updateAppointmentSlot(id: Int!, updateAppointmentSlotInput: UpdateAppointmentSlotInput!): AppointmentSlot!
   updateAppointmentStatus(appointmentId: Int!, newStatus: String!): Appointment!
@@ -407,6 +413,12 @@ input RegisterDto {
 
   """Role of the user"""
   role: String = "USER"
+}
+
+input ResetPasswordInput {
+  email: String!
+  newPassword: String!
+  otp: String!
 }
 
 input SearchMedicationsInput {

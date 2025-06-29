@@ -1,11 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { User as PrismaUser } from '@prisma/client';
-import {  PaginationInput, UpdateUserInput, UserPaginationResponse } from './types/user.type'; // <- đây là types thực tế trong DB
+import {  PaginationInput, UpdateUserInput, UserPaginationResponse } from './types/user.type';
+import { MailService } from '../mail/mail.service';
+import { OtpService } from '../mail/otp.service'; // <- đây là types thực tế trong DB
+import * as bcrypt from 'bcrypt';
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mailService: MailService,
+    private readonly otpService: OtpService,
+    ) {}
 
   async findByEmail(email: string): Promise<PrismaUser> {
     const user = await this.prisma.user.findUnique({
@@ -60,4 +68,37 @@ export class UserService {
     await this.findById(id); // kiểm tra tồn tại
     return this.prisma.user.delete({ where: { id } });
   }
+
+  async forgotPassword(email: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) return true; // Tránh lộ email tồn tại
+
+    const otp = this.otpService.generate(); // ví dụ: random 6 số
+    this.otpService.saveOtp(email, otp); // lưu DB hoặc cache
+
+    await this.mailService.sendOtpEmail(user.email, user.full_name, otp); // gửi email
+
+    return true;
+  }
+
+  async resetPassword(email: string, otp: string, newPassword: string): Promise<boolean> {
+    const isValid = this.otpService.verifyOtp(email, otp);
+
+    if (!isValid) {
+      throw new BadRequestException('Mã xác nhận không đúng hoặc đã hết hạn');
+    }
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+
+    await this.prisma.user.update({
+      where: { email },
+      data: { password: hashed },
+    });
+
+    this.otpService.deleteOtp(email); // xoá sau khi dùng
+
+    return true;
+  }
+
+
 }

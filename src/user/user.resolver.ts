@@ -5,18 +5,24 @@ import {
   User,
   PaginationInput,
   UserPaginationResponse,
-  UpdateUserInput,
+  UpdateUserInput, ResetPasswordInput,
 } from './types/user.type';
 import { User as PrismaUser } from '@prisma/client';
 import { Query } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
+import { BadRequestException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { CurrentUser } from '../auth/decorators/auth.decorator';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { MailService } from '../mail/mail.service';
+import { OtpService } from '../mail/otp.service';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly mailService: MailService,
+    private readonly otpService: OtpService
+    ) {}
 
   @Query(() => User, { description: 'Lấy thông tin người dùng theo ID' })
   async getUserById(
@@ -53,4 +59,16 @@ export class UserResolver {
   async deleteUser(@Args('id') id: string): Promise<PrismaUser> {
     return this.userService.delete(id);
   }
+
+  @Mutation(() => Boolean, { description: 'Gửi mã xác nhận qua email để đặt lại mật khẩu' })
+  async forgotPassword(@Args('email') email: string): Promise<boolean> {
+    return this.userService.forgotPassword(email);
+  }
+
+  @Mutation(() => Boolean, { description: 'Đặt lại mật khẩu bằng mã xác nhận (OTP)' })
+  async resetPassword(@Args('input') input: ResetPasswordInput): Promise<boolean> {
+    const { email, otp, newPassword } = input;
+    return this.userService.resetPassword(email, otp, newPassword);
+  }
+
 }

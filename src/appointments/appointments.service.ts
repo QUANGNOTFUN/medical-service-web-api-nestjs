@@ -66,8 +66,6 @@ export class AppointmentService {
     return appointment;
   }
 
-
-
   async updateStatus(appointmentId: number, newStatus: string): Promise<PrismaAppointment> {
     // Kiểm tra trạng thái hợp lệ
     const validStatuses = ['PENDING', 'COMPLETED', 'CANCELLED'];

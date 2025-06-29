@@ -190,3 +190,15 @@ export class UpdateUserInput {
   @IsOptional()
   date_of_birth?: string;
 }
+
+@InputType()
+export class ResetPasswordInput {
+  @Field()
+  email: string;
+
+  @Field()
+  otp: string;
+
+  @Field()
+  newPassword: string;
+}

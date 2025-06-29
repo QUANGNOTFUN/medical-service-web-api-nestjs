@@ -22,10 +22,13 @@ import { UploadService } from './upload/upload.service';
 import { UploadModule } from './upload/upload.module';
 import { AppointmentSlotsModule } from './appointment-slots/appointment-slots.module';
 import { DateTimeScalar } from './common/scalars/date.scalar';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
 import { EmailService } from './api/send-email/email.service';
+import { OtpService } from './mail/otp.service';
+import { OtpModule } from './mail/otp.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -41,27 +44,6 @@ import { EmailService } from './api/send-email/email.service';
       playground: true,
       resolvers: { DateTime: DateTimeScalar },
     }),
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.MAIL_HOST || 'smtp.sendgrid.net',
-        port:  587,
-        secure: false, // Sử dụng STARTTLS
-        auth: {
-          user: process.env.MAIL_USER || 'apikey',
-          pass: process.env.MAIL_PASS || 'your-sendgrid-api-key',
-        },
-      },
-      defaults: {
-        from: 'thanhhien.work.2004@gmail.com', // Thay bằng email đã xác thực
-      },
-      template: {
-        dir: join(__dirname,'..', 'templates'),
-        adapter: new HandlebarsAdapter(),
-        options: {
-          strict: true,
-        },
-      },
-    }),
     UserModule,
     MedicationsModule,
     DoctorsModule,
@@ -75,6 +57,8 @@ import { EmailService } from './api/send-email/email.service';
     RegimenModule,
     UploadModule,
     AppointmentSlotsModule,
+    OtpModule,
+    MailModule,
   ],
   controllers: [AppController, UploadController],
   providers: [
