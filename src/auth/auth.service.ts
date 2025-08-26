@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { UserAccount } from '@prisma/client';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { compare, hash } from 'bcrypt';
 import { LoginResponse } from './models/auth.model';
@@ -15,8 +15,8 @@ export class AuthService {
     private configService: ConfigService,
 ) {}
 
-  async register(userData: RegisterDto): Promise<User> {
-    const user = await this.prismaService.user.findUnique({
+  async register(userData: RegisterDto): Promise<UserAccount> {
+    const user = await this.prismaService.userAccount.findUnique({
       where: { email: userData.email, },
     });
     if (user) {
@@ -27,14 +27,23 @@ export class AuthService {
     }
     const hashPass = await hash(userData.password, 10);
 
-    return this.prismaService.user.create({
-      data: { ...userData, password: hashPass },
+    return this.prismaService.userAccount.create({
+      data: {
+        email: userData.email,
+        phone: userData.phone,
+        role: userData.role,
+        password: hashPass,
+        Employee: {
+          connect: { employee_id: userData.employee_id }, // chỉ connect, không thêm trực tiếp employee_id
+        },
+      },
     });
+
   }
 
   async login(userData: LoginDto): Promise<LoginResponse> {
     //step1: check email
-    const user = await this.prismaService.user.findUnique({
+    const user = await this.prismaService.userAccount.findUnique({
       where: {
         email: userData.email,
       },
@@ -59,7 +68,6 @@ export class AuthService {
 
     //step3: generate accessToken and refreshToken
     const payload = {
-      sub: user.id,
       email: user.email,
       role: user.role,
     };

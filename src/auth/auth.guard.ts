@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
-import { User } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from './decorators/roles.decorator';
+import { UserAccountService } from '../user-account/user-account.service';
+import { UserAccount } from '../user-account/types/user-account.type';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userService: UserService,
+    private readonly userAccountService: UserAccountService,
     private readonly configService: ConfigService,
     private readonly reflector: Reflector,
   ) {}
@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate {
 
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext<{
-      req: { headers: Record<string, string | undefined>; user_data?: User };
+      req: { headers: Record<string, string | undefined>; user_data?: UserAccount };
     }>().req;
 
     const token = this.extractToken(req);
@@ -53,13 +53,13 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException('Token không hợp lệ: thiếu email');
       }
 
-      const user = await this.userService.findByEmail(payload.email);
+      const user = await this.userAccountService.getByEmail(payload.email);
       req.user_data = user;
 
-      // ✅ Kiểm tra role nếu có yêu cầu
-      if (requiredRoles && !requiredRoles.includes(user.role)) {
-        throw new ForbiddenException('Bạn không có quyền truy cập');
-      }
+      // // ✅ Kiểm tra role nếu có yêu cầu
+      // if (requiredRoles && !requiredRoles.includes(user.role)) {
+      //   throw new ForbiddenException('Bạn không có quyền truy cập');
+      // }
 
       return true;
     } catch (error) {
