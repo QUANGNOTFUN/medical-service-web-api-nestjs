@@ -14,7 +14,6 @@ import { EmailService } from './api/send-email/email.service';
 import { OtpModule } from './mail/otp.module';
 import { MailModule } from './mail/mail.module';
 import { EmployeeModule } from './employee/employee.module';
-import { UserAccount } from './user-account/types/user-account.type';
 import { UserAccountModule } from './user-account/user-account.module';
 import { PositionAssignmentModule } from './position-assignment/position-assignment.module';
 import { DepartmentModule } from './department/department.module';
@@ -25,6 +24,8 @@ import { WorkTypeModule } from './work-type/work-type.module';
 import { SalaryAdvanceModule } from './salary-advance/salary-advance.module';
 import { OvertimeTypeModule } from './overtime-type/overtime-type.module';
 import { ContractModule } from './contract/contract.module';
+import { LeaveModule } from './leave/leave.module';
+import { LeaveTypeModule } from './leave-type/leave-type.module';
 
 @Module({
   imports: [
@@ -38,6 +39,8 @@ import { ContractModule } from './contract/contract.module';
       playground: true, // bật GraphQL Playground
       path: '/graphql',
     }),
+    LeaveModule,
+    LeaveTypeModule,
     ContractModule,
     OvertimeModule,
     TimekeepingModule,

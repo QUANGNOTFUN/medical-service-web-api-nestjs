@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID, InputType, PartialType } from '@nestjs/graphql';
+import { ObjectType, Field, ID, InputType, PartialType, Int } from '@nestjs/graphql';
 import { Employee } from '../../employee/types/employee.type';
 import { Department } from '../../department/types/department.type';
 import { Position } from '../../position/types/position.type';
@@ -9,6 +9,10 @@ import { Position } from '../../position/types/position.type';
  */
 @ObjectType()
 export class PositionAssignment {
+
+  @Field(() => Int)
+  id: number;
+
   @Field(() => ID)
   employee_id: string;
 
@@ -18,11 +22,8 @@ export class PositionAssignment {
   @Field(() => String)
   position_id: string;
 
-  @Field(() => String, { nullable: true })
-  department_name?: string;
-
-  @Field(() => String, { nullable: true })
-  position_name?: string;
+  @Field(() => Boolean, { defaultValue: true })
+  active: boolean; // 👈 Thêm field active
 
   // Relations
   @Field(() => Employee, { nullable: true })
@@ -33,6 +34,7 @@ export class PositionAssignment {
 
   @Field(() => Position, { nullable: true })
   position?: Position;
+
 }
 
 @InputType()
@@ -45,6 +47,9 @@ export class CreatePositionAssignmentInput {
 
   @Field(() => String)
   position_id: string;
+
+  @Field(() => Boolean, { defaultValue: true })
+  active: boolean; // 👈 default là true khi tạo
 }
 
 
@@ -58,4 +63,7 @@ export class UpdatePositionAssignmentInput extends PartialType(CreatePositionAss
 
   @Field(() => String)
   position_id: string;
+
+  @Field(() => Boolean, { defaultValue: true })
+  active: boolean; // 👈 default là true khi tạo
 }

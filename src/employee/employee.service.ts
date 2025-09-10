@@ -7,7 +7,17 @@ export class EmployeeService {
   constructor(private prisma: PrismaService) {}
 
   async getAll() {
-    return this.prisma.employee.findMany();
+    return this.prisma.employee.findMany({
+        include:{
+          positionAssignments:{
+            include: {
+              department: true,
+              position: true,
+            },
+          },
+        },
+      }
+    );
   }
 
   async getById(id: string) {
@@ -30,10 +40,42 @@ export class EmployeeService {
   }
 
   async update(id: string, data: UpdateEmployeeInput) {
-    await this.getById(id); // Check tồn tại
+    const { department_id, position_id, ...rest } = data;
+
     return this.prisma.employee.update({
       where: { employee_id: id },
-      data,
+      data: {
+        ...rest,
+        positionAssignments: department_id && position_id
+          ? {
+            upsert: {
+              create: {
+                department_id,
+                position_id,
+              },
+              update: {
+                department_id,
+                position_id,
+              },
+              where: {
+                employee_id_department_id_position_id: {
+                  employee_id: id,
+                  department_id,
+                  position_id,
+                },
+              },
+            },
+          }
+          : undefined,
+      },
+      include: {
+        positionAssignments: {
+          include: {
+            department: true,
+            position: true,
+          },
+        },
+      },
     });
   }
 

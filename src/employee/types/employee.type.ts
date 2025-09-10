@@ -1,10 +1,13 @@
 import { Field, ID, ObjectType, InputType, registerEnumType } from '@nestjs/graphql';
 import { GraphQLISODateTime } from '@nestjs/graphql';
+import { Department } from '../../department/types/department.type';
+import { PositionAssignment } from '../../position-assignment/types/position-assignment.type';
+import { Position } from '../../position/types/position.type';
 
 export enum Gender {
-  MALE = 'Male',
-  FEMALE = 'Female',
-  OTHER = 'Other',
+  MALE = 'male',
+  FEMALE = 'female',
+  OTHER = 'other',
 }
 registerEnumType(Gender, { name: 'Gender' });
 
@@ -45,8 +48,17 @@ export class Employee {
 
   @Field({ nullable: true })
   avatar_url?: string;
-}
 
+  @Field(() => [Department], { nullable: true })
+  departments?: Department[];
+
+  @Field(() => [PositionAssignment], { nullable: true })
+  positionAssignments?: PositionAssignment[];
+
+  // thêm field position
+  @Field(() => Position, { nullable: true })
+  position?: Position;
+}
 
 @InputType()
 export class CreateEmployeeInput {
@@ -82,6 +94,9 @@ export class CreateEmployeeInput {
 
   @Field({ nullable: true })
   avatar_url?: string;
+
+  @Field(() => [String], { nullable: true })
+  department_ids?: string[];
 }
 
 @InputType()
@@ -118,4 +133,16 @@ export class UpdateEmployeeInput {
 
   @Field({ nullable: true })
   avatar_url?: string;
+
+  @Field(() => [String], { nullable: true })
+  department_ids?: string[];
+
+
+  // 👇 Thêm 2 field này
+  @Field({ nullable: true })
+  department_id?: string;
+
+  @Field({ nullable: true })
+  position_id?: string;
+
 }

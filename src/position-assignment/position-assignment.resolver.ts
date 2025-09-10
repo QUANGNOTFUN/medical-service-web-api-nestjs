@@ -1,10 +1,11 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Parent, ResolveField } from '@nestjs/graphql';
 import { PositionAssignmentService } from './position-assignment.service';
 import {
   CreatePositionAssignmentInput,
   PositionAssignment,
   UpdatePositionAssignmentInput,
 } from './types/position-assignment.type';
+import { Employee } from '@prisma/client';
 
 @Resolver(() => PositionAssignment)
 export class PositionAssignmentResolver {
@@ -12,7 +13,8 @@ export class PositionAssignmentResolver {
 
   @Mutation(() => PositionAssignment)
   createPositionAssignment(
-    @Args('createPositionAssignmentInput') createPositionAssignmentInput: CreatePositionAssignmentInput,
+    @Args('createPositionAssignmentInput')
+    createPositionAssignmentInput: CreatePositionAssignmentInput,
   ) {
     return this.service.create(createPositionAssignmentInput);
   }
@@ -22,7 +24,10 @@ export class PositionAssignmentResolver {
     return this.service.findAll();
   }
 
-  @Query(() => PositionAssignment, { name: 'positionAssignment', nullable: true })
+  @Query(() => PositionAssignment, {
+    name: 'positionAssignment',
+    nullable: true,
+  })
   findOne(
     @Args('employee_id') employee_id: string,
     @Args('department_id') department_id: string,
@@ -33,7 +38,8 @@ export class PositionAssignmentResolver {
 
   @Mutation(() => PositionAssignment)
   updatePositionAssignment(
-    @Args('updatePositionAssignmentInput') updatePositionAssignmentInput: UpdatePositionAssignmentInput,
+    @Args('updatePositionAssignmentInput')
+    updatePositionAssignmentInput: UpdatePositionAssignmentInput,
   ) {
     return this.service.update(updatePositionAssignmentInput);
   }
@@ -46,4 +52,5 @@ export class PositionAssignmentResolver {
   ) {
     return this.service.remove(employee_id, department_id, position_id);
   }
+
 }

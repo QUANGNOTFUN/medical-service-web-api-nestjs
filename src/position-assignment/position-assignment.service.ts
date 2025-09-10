@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePositionAssignmentInput, UpdatePositionAssignmentInput } from './types/position-assignment.type';
 
-
 @Injectable()
 export class PositionAssignmentService {
   constructor(private prisma: PrismaService) {}
@@ -13,6 +12,7 @@ export class PositionAssignmentService {
 
   async findAll() {
     return this.prisma.positionAssignment.findMany({
+      where: { active: true }, // 👈 chỉ lấy assignment còn hiệu lực
       include: {
         employee: true,
         department: true,
@@ -38,9 +38,10 @@ export class PositionAssignmentService {
     });
   }
 
-  async update(data: UpdatePositionAssignmentInput) {
-    const { employee_id, department_id, position_id, ...rest } = data;
-    return this.prisma.positionAssignment.update({
+  async update(input: UpdatePositionAssignmentInput) {
+    const { employee_id, department_id, position_id, active } = input;
+
+    return this.prisma.positionAssignment.upsert({
       where: {
         employee_id_department_id_position_id: {
           employee_id,
@@ -48,7 +49,13 @@ export class PositionAssignmentService {
           position_id,
         },
       },
-      data: rest,
+      update: { active },
+      create: {
+        employee_id,
+        department_id,
+        position_id,
+        active: true,
+      },
     });
   }
 

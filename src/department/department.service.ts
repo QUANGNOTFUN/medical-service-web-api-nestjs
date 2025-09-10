@@ -7,11 +7,33 @@ export class DepartmentService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateDepartmentInput) {
-    return this.prisma.department.create({ data });
+    // Lấy department có ID lớn nhất
+    const lastDept = await this.prisma.department.findFirst({
+      orderBy: { department_id: "desc" },
+    });
+
+    // Sinh ID mới
+    let newId = "D001";
+    if (lastDept) {
+      const lastNumber = parseInt(lastDept.department_id.replace("D", ""), 10);
+      newId = `D${String(lastNumber + 1).padStart(3, "0")}`;
+    }
+
+    return this.prisma.department.create({
+      data: {
+        ...data,
+        department_id: newId,
+      },
+    });
   }
 
-  async findAll() {
-    return this.prisma.department.findMany();
+  findAll() {
+    return this.prisma.department.findMany({
+      include: { positionAssignments: {
+          include: { employee: true, position: true },
+        }
+        }, // ✅ lấy cả nhân sự
+    });
   }
 
   async findOne(department_id: string) {

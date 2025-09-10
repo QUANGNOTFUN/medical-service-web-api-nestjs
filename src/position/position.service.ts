@@ -7,11 +7,32 @@ export class PositionService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreatePositionInput) {
-    return this.prisma.position.create({ data });
+    const lastPosi = await this.prisma.position.findFirst({
+      orderBy: { position_id: "desc" },
+    });
+
+    // Sinh ID mới
+    let newId = "P001";
+    if (lastPosi) {
+      const lastNumber = parseInt(lastPosi.position_id.replace("P", ""), 10);
+      newId = `P${String(lastNumber + 1).padStart(3, "0")}`;
+    }
+
+    return this.prisma.position.create({
+      data: {
+        ...data,
+        position_id: newId,
+      },
+    });
   }
 
   async findAll() {
-    return this.prisma.position.findMany();
+    return this.prisma.position.findMany({
+      include: { positionAssignments: {
+          include: { employee: true, department: true },
+        }
+      },
+    });
   }
 
   async findOne(position_id: string) {

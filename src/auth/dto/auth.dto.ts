@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import {
   IsEmail, IsInt,
   IsNotEmpty,
@@ -7,6 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { Role } from '../../role/role.enum';
+import { number } from 'zod';
 
 @InputType()
 export class RegisterDto {
@@ -26,11 +27,7 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'password không được để trống' })
   password: string;
 
-  @Field(() => String, {
-    nullable: true,
-    description: 'Role of the user',
-    defaultValue: Role.USER,
-  })
+  @Field(() => Int)
   @IsInt({ message: 'role phải là số' })
   @IsNotEmpty({ message: 'role không được để trống' })
   role: number;

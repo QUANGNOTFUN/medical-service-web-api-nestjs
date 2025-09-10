@@ -6,13 +6,13 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendOtpEmail(email: string, name: string, otp: string) {
+  async sendOtpEmail(email: string, employee_id: string, otp: string) {
     await this.mailerService.sendMail({
       to: email,
       subject: 'Mã xác nhận đặt lại mật khẩu',
       template: './otp',
       context: {
-        name,
+        employee_id,
         otp,
       },
     });

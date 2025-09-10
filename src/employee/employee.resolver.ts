@@ -36,4 +36,5 @@ export class EmployeeResolver {
     await this.employeeService.delete(id);
     return true;
   }
+
 }

@@ -60,3 +60,15 @@ export class UpdateUserAccountInput {
   @Field({ nullable: true })
   note?: string;
 }
+
+@InputType()
+export class ResetPasswordInput {
+  @Field()
+  email: string;
+
+  @Field()
+  otp: string;
+
+  @Field()
+  newPassword: string;
+}

@@ -6,14 +6,17 @@ import { CreateTimekeepingInput, Timekeeping, UpdateTimekeepingInput } from './t
 export class TimekeepingResolver {
   constructor(private readonly timekeepingService: TimekeepingService) {}
 
-  @Query(() => [Timekeeping])
-  timekeepings() {
-    return this.timekeepingService.findAll();
-  }
 
   @Query(() => Timekeeping, { nullable: true })
   timekeeping(@Args('id', { type: () => Int }) id: number) {
     return this.timekeepingService.findOne(id);
+  }
+  @Query(() => [Timekeeping])
+  timekeepings(
+    @Args('from', { type: () => String, nullable: true }) from?: string,
+    @Args('to', { type: () => String, nullable: true }) to?: string,
+  ) {
+    return this.timekeepingService.findAll(from, to);
   }
 
   @Mutation(() => Timekeeping)

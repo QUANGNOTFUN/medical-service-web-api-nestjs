@@ -17,7 +17,7 @@ import { join } from 'path';
         },
       },
       defaults: {
-        from: process.env.MAIL_FROM || 'thanhhien.work.2004@gmail.com',
+        from: process.env.MAIL_FROM || 'hiencoi9600@gmail.com',
       },
       template: {
         dir: join(__dirname, '..','..', 'templates'),

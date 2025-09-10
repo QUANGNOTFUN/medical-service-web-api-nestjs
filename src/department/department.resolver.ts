@@ -1,6 +1,7 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { DepartmentService } from './department.service';
 import { Department, CreateDepartmentInput, UpdateDepartmentInput } from './types/department.type';
+import { Employee } from '../employee/types/employee.type';
 
 @Resolver(() => Department)
 export class DepartmentResolver {

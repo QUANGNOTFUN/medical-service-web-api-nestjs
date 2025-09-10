@@ -1,7 +1,12 @@
 // src/user-account/user-account.resolver.ts
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UserAccountService } from './user-account.service';
-import { CreateUserAccountInput, UpdateUserAccountInput, UserAccount } from './types/user-account.type';
+import {
+  CreateUserAccountInput,
+  ResetPasswordInput,
+  UpdateUserAccountInput,
+  UserAccount,
+} from './types/user-account.type';
 
 @Resolver(() => UserAccount)
 export class UserAccountResolver {
@@ -34,5 +39,16 @@ export class UserAccountResolver {
   async deleteUserAccount(@Args('email') email: string) {
     await this.userAccountService.delete(email);
     return true;
+  }
+
+  @Mutation(() => Boolean, { description: 'Gửi mã xác nhận qua email để đặt lại mật khẩu' })
+  async forgotPassword(@Args('email') email: string): Promise<boolean> {
+    return this.userAccountService.forgotPassword(email);
+  }
+
+  @Mutation(() => Boolean, { description: 'Đặt lại mật khẩu bằng mã xác nhận (OTP)' })
+  async resetPassword(@Args('input') input: ResetPasswordInput): Promise<boolean> {
+    const { email, otp, newPassword } = input;
+    return this.userAccountService.resetPassword(email, otp, newPassword);
   }
 }
